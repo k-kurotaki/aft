@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>【短期TOBE】業務一覧表｜半導体材料メーカー</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: "Yu Gothic", "Meiryo", sans-serif; margin: 0; padding: 24px 32px; background: #f5f6f8; color: #1f2937; font-size: 13px; line-height: 1.6; }
+  h1 { font-size: 24px; border-bottom: 4px solid #0e7490; padding-bottom: 8px; color: #0e7490; }
+  h2 { font-size: 18px; border-left: 6px solid #0e7490; padding: 6px 12px; background: #cffafe; color: #0e7490; margin-top: 32px; }
+  .meta { color: #64748b; font-size: 12px; margin-bottom: 16px; }
+  .badge { display: inline-block; background: #0e7490; color: white; padding: 4px 12px; border-radius: 4px; font-weight: bold; margin-right: 8px; }
+  .premise { background: #ecfeff; border: 1px solid #0e7490; padding: 14px 18px; border-radius: 6px; margin: 12px 0; }
+  table { width: 100%; border-collapse: collapse; background: white; margin-top: 12px; font-size: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+  th, td { border: 1px solid #cbd5e1; padding: 9px 11px; vertical-align: top; text-align: left; }
+  th { background: #0e7490; color: white; font-weight: bold; text-align: center; }
+  tbody tr:nth-child(even) { background: #f8fafc; }
+  td.step-cell { background: #cffafe; font-weight: bold; text-align: center; width: 110px; color: #0e7490; vertical-align: middle; }
+  ul.compact { margin: 2px 0 2px 18px; padding: 0; } ul.compact li { margin: 2px 0; }
+  .human-role { color: #1e3a8a; font-weight: bold; }
+  .ai-role { color: #7c3aed; font-weight: bold; }
+  .handoff { background: #fee2e2; color: #991b1b; padding: 1px 5px; border-radius: 3px; font-size: 11px; font-weight: bold; }
+  .summary-box { background: #ecfeff; border: 1px solid #0e7490; padding: 14px 18px; border-radius: 6px; margin: 16px 0; }
+</style>
+</head>
+<body>
+
+<h1><span class="badge">短期TOBE</span>業務一覧表｜業務ステップ別TOBE詳細</h1>
+<div class="meta">作成日：2026-05-14 ／ バージョン：短期（個別業務AI自動化／業務間接続は人間）</div>
+
+<div class="premise">
+  <strong>本一覧表の見方：</strong>各業務ステップに対し「TOBE業務内容」「人の役割」「AIの役割」「業務間接続の担い手」「期待効果」「残課題」を整理。
+  業務間接続が<span class="handoff">人</span>に残ることが短期TOBEの本質的制約。
+</div>
+
+<h2>業務ステップ別 TOBE詳細</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width:110px;">業務ステップ</th>
+      <th style="width:22%;">TOBE業務内容</th>
+      <th style="width:14%;">人の役割</th>
+      <th style="width:20%;">AIの役割（単機能AI）</th>
+      <th style="width:12%;">業務間接続</th>
+      <th style="width:14%;">期待効果</th>
+      <th>残課題</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <tr>
+      <td class="step-cell">①PO受領</td>
+      <td>顧客から受領したPO（EDI／PDF／FAX）をAI-OCR＋LLMパーサで自動構造化し、CSシステムへ自動登録。営業は例外取込結果のみ確認。</td>
+      <td><span class="human-role">人：</span>例外時のレビュー、顧客フォーマット差の解釈確認</td>
+      <td><span class="ai-role">AI：</span>AI-OCR、LLM項目抽出、異常値検知（数量・納期の過去パターン乖離フラグ）</td>
+      <td><span class="handoff">人</span>取込結果を確認し、②へ進める判断は営業</td>
+      <td>取込工数▲70〜80%、入力ミス激減</td>
+      <td>例外フォーマット解釈は人依存／顧客毎差異の継続発生</td>
+    </tr>
+
+    <tr>
+      <td class="step-cell">②在庫引き当て①</td>
+      <td>余剰在庫と新規POを自動引き当て。同一品目で複数顧客POが競合する場合、顧客優先度AIが推奨優先順位を提示し、営業が承認。</td>
+      <td><span class="human-role">人：</span>AI推奨優先度の承認、例外判断（戦略顧客・特殊契約等）</td>
+      <td><span class="ai-role">AI：</span>顧客優先度推奨AI（過去履歴・売上・関係性）、引き当てシミュレーションAI</td>
+      <td><span class="handoff">人</span>営業承認後に③へ</td>
+      <td>属人化解消、引き当てLT▲50%、公平性可視化</td>
+      <td>AI推奨の妥当性検証は人が行う／優先度ルールの陳腐化リスク</td>
+    </tr>
+
+    <tr>
+      <td class="step-cell">③生産依頼入力</td>
+      <td>引き当て後の不足数がCSシステム→オーダー登録ツールへAPI連携で自動反映。営業は差分を確認し承認。</td>
+      <td><span class="human-role">人：</span>転送差分の確認・承認、生産依頼数の例外調整</td>
+      <td><span class="ai-role">AI：</span>生産依頼数妥当性チェック、歩留まりリスクを織り込んだ補正値提示</td>
+      <td><span class="handoff">人</span>承認後に④⑤へ進む</td>
+      <td>二重入力廃止、データ整合性向上</td>
+      <td>2システム並存の責務分担管理／将来のシステム統合が次の課題</td>
+    </tr>
+
+    <tr>
+      <td class="step-cell">④納期一次回答</td>
+      <td>納期予測AIがリアルタイム生産能力・歩留まり予測を加味した推奨LTを算出。営業が確認し顧客に一次回答。</td>
+      <td><span class="human-role">人：</span>推奨LTの最終承認、顧客送信</td>
+      <td><span class="ai-role">AI：</span>納期予測AI（信頼区間つき）、生産シミュレーションAI</td>
+      <td><span class="handoff">人</span>承認後に顧客へ送付</td>
+      <td>一次／二次回答の乖離縮小、顧客満足度向上</td>
+      <td>確定計画策定（⑤⑥）が会議承認待ちのため、二次回答は依然として残る</td>
+    </tr>
+
+    <tr>
+      <td class="step-cell">⑤生産計画策定</td>
+      <td>APSと最適化AIが計画案を自動生成。SCM担当はライン能力制約・段取り替えコスト・歩留まりリスクを確認し承認。</td>
+      <td><span class="human-role">人：</span>計画案の承認、現場制約反映、例外調整</td>
+      <td><span class="ai-role">AI：</span>歩留まり予測AI、生産最適化AI（多目的）、感応度分析AI</td>
+      <td><span class="handoff">人</span>承認後に⑥需給調整会議へ</td>
+      <td>計画立案工数▲60〜70%、計画品質安定化</td>
+      <td>会議承認待ちでリアルタイム化に限界／現場混乱抑制のため見直し頻度に制約</td>
+    </tr>
+
+    <tr>
+      <td class="step-cell">⑥需給調整会議</td>
+      <td>Control Towerダッシュボードで需給ギャップ・引き剥がしリスク・トレードオフを可視化。営業／SCMが会議で最終調整。会議準備の集計工数はほぼゼロ化。</td>
+      <td><span class="human-role">人：</span>トレードオフ判断、顧客優先合意、品目間調整の最終決定</td>
+      <td><span class="ai-role">AI：</span>シナリオ比較AI、需給最適化AI、連鎖影響予測AI、会議サマリ自動生成</td>
+      <td><span class="handoff">人</span>会議体が業務間接続の最大ハブ</td>
+      <td>会議準備工数▲80%、意思決定品質向上</td>
+      <td>会議自体は残存／緊急変動への対応は会議開催待ちでスピード限界</td>
+    </tr>
+
+    <tr>
+      <td class="step-cell">⑦納期二次回答</td>
+      <td>生産計画確定後、変更が発生した場合のみAIが顧客通知文を生成。営業がレビューして送信。</td>
+      <td><span class="human-role">人：</span>通知文レビュー、顧客への送信</td>
+      <td><span class="ai-role">AI：</span>通知文自動生成（顧客毎のトーン最適化）、顧客感情分析</td>
+      <td><span class="handoff">人</span>承認後に顧客送信</td>
+      <td>説明工数削減、コミュニケーション品質向上</td>
+      <td>二段階回答プロセス自体は残存／顧客対応の即時性は人に依存</td>
+    </tr>
+
+    <tr>
+      <td class="step-cell">⑧出荷依頼受領</td>
+      <td>出荷依頼もAI-OCR＋自動紐付けで処理。営業は紐付け例外のみ確認。</td>
+      <td><span class="human-role">人：</span>紐付け例外確認・修正</td>
+      <td><span class="ai-role">AI：</span>AI-OCR、LLMパーサ、PO自動紐付け（あいまい一致解消）</td>
+      <td><span class="handoff">人</span>例外承認後に⑨へ</td>
+      <td>受領工数▲70%、紐付けミス激減</td>
+      <td>顧客毎フォーマット差は継続／緊急依頼の夜間休日対応は人依存</td>
+    </tr>
+
+    <tr>
+      <td class="step-cell">⑨在庫引き当て②／<br>引き剥がし／出荷</td>
+      <td>在庫不足時、AIが引き剥がしトレードオフ（影響顧客・補填可能性・連続発生履歴・離反リスク）を定量化し、推奨案を複数提示。営業／SCMが判断・承認。</td>
+      <td><span class="human-role">人：</span>引き剥がし最終判断、顧客への事前連絡、翌週計画反映確認</td>
+      <td><span class="ai-role">AI：</span>引き剥がしトレードオフ定量化AI、連鎖影響予測AI、顧客離反リスク予測AI</td>
+      <td><span class="handoff">人</span>営業＋SCM合議承認</td>
+      <td>判断品質・公平性可視化、しわ寄せ連鎖の予防</td>
+      <td>最終判断は人／合議承認の時間ロス／連続発生時の自律的回避機構は未実装</td>
+    </tr>
+
+  </tbody>
+</table>
+
+<h2>短期TOBE の効果総括と長期に向けた橋渡し</h2>
+<div class="summary-box">
+  <strong>定量効果（想定）：</strong>
+  <ul class="compact">
+    <li>営業部 作業工数：▲40〜60%（手入力・転記・集計のAI代替）</li>
+    <li>SCM部 計画立案工数：▲60〜70%（APS＋AI最適化）</li>
+    <li>需給調整会議 準備工数：▲80%（ダッシュボード化）</li>
+    <li>納期回答精度：一次vs実績乖離日数を 50%短縮（推定）</li>
+    <li>引き剥がし発生時の顧客間公平性：可視化により担当者間ばらつき縮小</li>
+  </ul>
+  <strong>短期TOBEの本質的限界：</strong>
+  <ul class="compact">
+    <li>AIは各業務内に閉じている。業務横断の<strong>全体最適</strong>は依然として会議＋人の判断に依存。</li>
+    <li>業務間ハンドオフ（赤タグ箇所）が9ステップ中6箇所に残存し、リードタイムの滞留点となる。</li>
+    <li>緊急変動・夜間休日対応は人に依存し、24/7対応や即応性に限界。</li>
+  </ul>
+  <strong>中期TOBE（Agentic AI導入後）への進化方向：</strong>
+  <ul class="compact">
+    <li>各業務内の単機能AIを、業務横断で自律連携するエージェントへ進化させる。</li>
+    <li>会議体を廃止／月次戦略会議のみに縮退させ、エージェント間で日常調整を完結。</li>
+    <li>人は方針設定・例外承認・戦略判断にのみ関与する役割へ転換。</li>
+  </ul>
+</div>
+
+</body>
+</html>

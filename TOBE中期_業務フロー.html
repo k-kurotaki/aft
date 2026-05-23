@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>【中期TOBE】業務フロー｜半導体材料メーカー</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: "Yu Gothic", "Meiryo", sans-serif; margin: 0; padding: 24px 32px; background: #f5f6f8; color: #1f2937; font-size: 13px; line-height: 1.6; }
+  h1 { font-size: 24px; border-bottom: 4px solid #6d28d9; padding-bottom: 8px; color: #6d28d9; }
+  h2 { font-size: 18px; border-left: 6px solid #6d28d9; padding: 6px 12px; background: #ede9fe; color: #6d28d9; margin-top: 32px; }
+  .meta { color: #64748b; font-size: 12px; margin-bottom: 16px; }
+  .badge { display: inline-block; background: #6d28d9; color: white; padding: 4px 12px; border-radius: 4px; font-weight: bold; margin-right: 8px; }
+  .premise { background: #f5f3ff; border: 1px solid #6d28d9; padding: 14px 18px; border-radius: 6px; margin: 12px 0; }
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; margin: 12px 0; background: white; padding: 10px 14px; border-radius: 6px; border: 1px solid #cbd5e1; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+  .legend-swatch { width: 16px; height: 16px; border-radius: 3px; border: 2px solid; }
+  .sw-agent { background: #ede9fe; border-color: #6d28d9; }
+  .sw-human { background: #dbeafe; border-color: #1e3a8a; }
+  .sw-gate { background: #fef9c3; border-color: #ca8a04; }
+  .sw-customer { background: #dcfce7; border-color: #15803d; }
+  .sw-a2a { background: #fce7f3; border-color: #be185d; }
+
+  .lane-wrapper { overflow-x: auto; background: white; border: 1px solid #cbd5e1; border-radius: 6px; padding: 16px; }
+  .lane-grid { display: grid; grid-template-columns: 56px repeat(5, 1fr); gap: 0; min-width: 1200px; }
+  .lane-head { background: #6d28d9; color: white; font-weight: bold; padding: 10px 8px; text-align: center; border: 1px solid #6d28d9; }
+  .step-col-head { background: #475569; }
+  .lane-cell { border: 1px solid #e2e8f0; min-height: 80px; padding: 6px; display: flex; align-items: center; justify-content: center; position: relative; background: #fafafa; }
+  .step-num { background: #475569; color: white; font-weight: bold; text-align: center; border: 1px solid #475569; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+  .box { background: #ede9fe; border: 2px solid #6d28d9; border-radius: 6px; padding: 6px 8px; font-size: 11.5px; text-align: center; width: 100%; line-height: 1.4; }
+  .box.human { background: #dbeafe; border-color: #1e3a8a; }
+  .box.gate { background: #fef9c3; border-color: #ca8a04; }
+  .box.customer { background: #dcfce7; border-color: #15803d; }
+  .box.a2a { background: #fce7f3; border-color: #be185d; }
+  .agent-tag { background: #6d28d9; color: white; font-size: 10px; padding: 1px 5px; border-radius: 3px; margin-top: 3px; display: inline-block; }
+  .human-tag { background: #1e3a8a; color: white; font-size: 10px; padding: 1px 5px; border-radius: 3px; margin-top: 3px; display: inline-block; }
+  .gate-tag { background: #ca8a04; color: white; font-size: 10px; padding: 1px 5px; border-radius: 3px; margin-top: 3px; display: inline-block; }
+  .a2a-tag { background: #be185d; color: white; font-size: 10px; padding: 1px 5px; border-radius: 3px; margin-top: 3px; display: inline-block; }
+  .arrow-down::after { content: "▼"; position: absolute; bottom: -14px; left: 50%; transform: translateX(-50%); color: #6d28d9; font-size: 14px; z-index: 2; }
+  .summary-box { background: #f5f3ff; border: 1px solid #6d28d9; padding: 14px 18px; border-radius: 6px; margin: 16px 0; }
+  ul.compact { margin: 4px 0 4px 20px; padding: 0; } ul.compact li { margin: 2px 0; }
+  .agent-map { background: white; border: 1px solid #cbd5e1; border-radius: 6px; padding: 16px; margin-top: 12px; }
+  .agent-map table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .agent-map th, .agent-map td { border: 1px solid #cbd5e1; padding: 8px 10px; vertical-align: top; }
+  .agent-map th { background: #6d28d9; color: white; }
+</style>
+</head>
+<body>
+
+<h1><span class="badge">中期TOBE</span>業務フロー｜半導体材料メーカー 受注・出荷業務</h1>
+<div class="meta">作成日：2026-05-14 ／ バージョン：中期（社内Agentic AI 導入完了状態）</div>
+
+<div class="premise">
+  <strong>中期TOBE 前提：</strong>
+  <ul class="compact">
+    <li>社内にAgentic AI（自律エージェント）が導入されきっており、業務横断で<strong>エージェント同士が自律的に連携・調整</strong>する。</li>
+    <li>個別業務AIではなく、目的指向のエージェントが「観察→判断→行動→学習」のループを24/7で実行。</li>
+    <li>人間の役割は ①方針・KPIの設定／②例外承認・倫理判断／③戦略レビュー の3点に縮退。</li>
+    <li>需給調整会議は<strong>原則廃止</strong>。月次戦略レビュー会議のみ存続。日次・週次の調整はエージェント間で完結。</li>
+    <li>CSシステムとオーダー登録ツールは統合され、データレイヤーは単一の真実情報源（SSOT）となる。</li>
+    <li>顧客側はまだAgentic AI未導入の前提（=長期との差分）。顧客との接点（PO・出荷依頼受領・納期回答）は引き続き従来インタフェース経由だが、社内側は受信エージェントが処理。</li>
+  </ul>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><span class="legend-swatch sw-agent"></span>エージェント（自律実行）</div>
+  <div class="legend-item"><span class="legend-swatch sw-a2a"></span>エージェント間連携（A2A）</div>
+  <div class="legend-item"><span class="legend-swatch sw-gate"></span>人間の承認ゲート（例外時のみ）</div>
+  <div class="legend-item"><span class="legend-swatch sw-human"></span>人間（方針設定・戦略レビュー）</div>
+  <div class="legend-item"><span class="legend-swatch sw-customer"></span>顧客アクション</div>
+</div>
+
+<h2>主要エージェント構成</h2>
+<div class="agent-map">
+  <table>
+    <thead>
+      <tr><th style="width:170px;">エージェント名</th><th>責務</th><th style="width:35%;">他エージェント連携</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>受注エージェント</strong></td><td>PO受領・解釈・登録、納期回答送信、顧客コミュニケーション</td><td>在庫エージェント／計画エージェント／需給最適化エージェントへ依頼。</td></tr>
+      <tr><td><strong>在庫エージェント</strong></td><td>在庫照会・引き当て・引き剥がし判断、在庫健全性監視</td><td>需給最適化エージェントに引き剥がし候補を相談、出荷エージェントと連動。</td></tr>
+      <tr><td><strong>計画エージェント</strong></td><td>生産計画策定、ライン能力管理、段取り替え最適化</td><td>歩留まり予測エージェントと連携、需給最適化エージェントの調整指示を受領。</td></tr>
+      <tr><td><strong>歩留まり予測エージェント</strong></td><td>化学反応条件・原料ロットから歩留まり予測、計画見直しトリガ</td><td>計画エージェントに予測値・信頼区間を継続的に供給。</td></tr>
+      <tr><td><strong>需給最適化エージェント<br>（Orchestrator）</strong></td><td>顧客間・品目間の全体最適化、トレードオフ判断、引き剥がし方針決定</td><td>全エージェントの調停役。人間ゲートにエスカレーション。</td></tr>
+      <tr><td><strong>出荷エージェント</strong></td><td>出荷依頼受領・紐付け・出荷指示、配送調整</td><td>在庫エージェントと連動、顧客通知を受注エージェント経由で送信。</td></tr>
+      <tr><td><strong>顧客対話エージェント</strong></td><td>顧客問い合わせ応答、納期変更通知、関係性モニタリング</td><td>受注エージェントと統合運用、必要時に営業へエスカレーション。</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h2>業務フロー（縦スイムレーン）</h2>
+<p>レーンは従来構成を維持しつつ、各レーンの中心役者がエージェントに置換される。人間レーンは「方針設定・例外承認・戦略レビュー」のみ。</p>
+
+<div class="lane-wrapper">
+  <div class="lane-grid">
+    <div class="lane-head step-col-head">No.</div>
+    <div class="lane-head">顧客</div>
+    <div class="lane-head">営業部（人）</div>
+    <div class="lane-head">SCM部（人）</div>
+    <div class="lane-head">生産部（人）</div>
+    <div class="lane-head">システム（Agentic AI）</div>
+  </div>
+
+  <div class="lane-grid">
+
+    <!-- ① -->
+    <div class="step-num">①</div>
+    <div class="lane-cell"><div class="box customer arrow-down">PO発行<br>（任意フォーマット）</div></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"><div class="box arrow-down">受注エージェントが<br>PO自動受領・解釈・登録<br>異常検知時のみ営業に通知<br><span class="agent-tag">Agent</span></div></div>
+
+    <!-- ② -->
+    <div class="step-num">②</div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"><div class="box a2a arrow-down">受注Agent ⇔ 在庫Agent<br>余剰在庫を自律引き当て<br>顧客優先度ポリシー適用<br><span class="a2a-tag">A2A</span></div></div>
+
+    <!-- ③ -->
+    <div class="step-num">③</div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"><div class="box a2a arrow-down">在庫Agent ⇔ 計画Agent<br>不足分の生産依頼を<br>自動連携（システム統合）<br><span class="a2a-tag">A2A</span></div></div>
+
+    <!-- ④ -->
+    <div class="step-num">④</div>
+    <div class="lane-cell"><div class="box customer arrow-down">確定納期回答<br>（一発回答）</div></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"><div class="box arrow-down">計画Agent＋歩留まり予測Agentが<br>確定納期を算出し<br>受注Agentが顧客回答<br><span class="agent-tag">Agent</span></div></div>
+
+    <!-- ⑤ -->
+    <div class="step-num">⑤</div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"><div class="box gate arrow-down">方針設定／例外承認<br>（閾値超過時のみ）<br><span class="gate-tag">人ゲート</span></div></div>
+    <div class="lane-cell"><div class="box gate arrow-down">現場制約フィードバック<br><span class="human-tag">人</span></div></div>
+    <div class="lane-cell"><div class="box arrow-down">計画Agentが生産計画を<br>自律策定／継続最適化<br><span class="agent-tag">Agent</span></div></div>
+
+    <!-- ⑥（旧需給調整会議 → 自律調整） -->
+    <div class="step-num">⑥</div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"><div class="box gate arrow-down">月次戦略レビューのみ<br>（顧客ポートフォリオ方針）<br><span class="gate-tag">月次のみ</span></div></div>
+    <div class="lane-cell"><div class="box gate arrow-down">月次戦略レビューのみ<br><span class="gate-tag">月次のみ</span></div></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"><div class="box a2a arrow-down">需給最適化Agent（Orchestrator）が<br>全Agentを調停し<br>常時需給最適化<br><span class="a2a-tag">A2A常時</span></div></div>
+
+    <!-- ⑦（旧二次回答 → 統合済） -->
+    <div class="step-num">⑦</div>
+    <div class="lane-cell"><div class="box customer arrow-down">納期変更通知受領<br>（変更発生時のみ）</div></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"><div class="box arrow-down">顧客対話Agentが<br>計画変更を検知し<br>顧客に自動通知<br><span class="agent-tag">Agent</span></div></div>
+
+    <!-- ⑧ -->
+    <div class="step-num">⑧</div>
+    <div class="lane-cell"><div class="box customer arrow-down">出荷依頼発行</div></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"><div class="box arrow-down">出荷Agentが<br>依頼受領・自動紐付け<br><span class="agent-tag">Agent</span></div></div>
+
+    <!-- ⑨ -->
+    <div class="step-num">⑨</div>
+    <div class="lane-cell"><div class="box customer">出荷品受領</div></div>
+    <div class="lane-cell"><div class="box gate">引き剥がし方針承認<br>（閾値超過時のみ）<br><span class="gate-tag">人ゲート</span></div></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"><div class="box">出荷準備・出庫</div></div>
+    <div class="lane-cell"><div class="box a2a">在庫Agent ⇔ 需給最適化Agent<br>引き剥がし自律判断<br>連鎖影響を事前回避<br><span class="a2a-tag">A2A</span></div></div>
+  </div>
+</div>
+
+<h2>中期TOBE の特徴</h2>
+<div class="summary-box">
+  <strong>業務構造の本質的変化：</strong>
+  <ul class="compact">
+    <li><strong>需給調整会議の廃止：</strong>日常的な顧客間・品目間調整は需給最適化エージェント（Orchestrator）が常時実行。会議は月次戦略レビューのみ。</li>
+    <li><strong>一次／二次納期回答の統合：</strong>計画エージェントが歩留まり予測込みの確定納期を即時算出。回答は一発化。</li>
+    <li><strong>業務間ハンドオフの消滅：</strong>エージェント間A2A（Agent-to-Agent）連携で業務間引き渡しが自律実行。短期TOBEで残った滞留点が解消。</li>
+    <li><strong>連鎖影響の事前回避：</strong>引き剥がし発生前にOrchestratorが翌週生産しわ寄せを予測し、別の選択肢（代替顧客・段取り替え調整・前倒し生産）を自律的に試行。</li>
+    <li><strong>24/7 自律運用：</strong>夜間・休日の緊急変動にもエージェントが即応。人は閾値超過時のみ承認ゲートに呼び出される。</li>
+    <li><strong>システム統合：</strong>CSシステム×オーダー登録ツールは単一プラットフォームに統合（SSOT）。データ整合性管理コスト消滅。</li>
+  </ul>
+  <strong>人間に残る役割：</strong>
+  <ul class="compact">
+    <li>方針・KPI設定（顧客優先度ポリシー、引き剥がし閾値、倫理ガードレール）</li>
+    <li>例外承認ゲート（戦略顧客への影響大・契約逸脱可能性等の閾値超過時）</li>
+    <li>月次戦略レビュー（顧客ポートフォリオ・能力投資・新規顧客受入方針）</li>
+    <li>エージェントの監督・チューニング（Human-in-the-Loop の上位レイヤ）</li>
+  </ul>
+  <strong>残る課題（長期で解消される領域）：</strong>
+  <ul class="compact">
+    <li>顧客側がまだAgentic AI未導入のため、PO受領・納期回答・出荷依頼は<strong>従来インタフェース経由</strong>に依存。顧客側のフォーマット差異・通信タイムラグが残る。</li>
+    <li>顧客の需要変動シグナルが事後（PO発行後）でしか得られない。需要予測の根本精度向上には顧客側エージェントとの双方向連携が必要（=長期TOBE）。</li>
+    <li>引き剥がし時の顧客との交渉は依然として人手（顧客側エージェントが受け答えできれば自律交渉化できる）。</li>
+  </ul>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>【TOBE補強】AICX観点フレームワーク適用｜半導体材料メーカー</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: "Yu Gothic", "Meiryo", "Hiragino Sans", sans-serif; margin: 0; padding: 24px 32px; background: #f5f6f8; color: #1f2937; font-size: 13px; line-height: 1.65; }
+  h1 { font-size: 25px; border-bottom: 4px solid #0f766e; padding-bottom: 8px; color: #0f766e; }
+  h2 { font-size: 19px; border-left: 6px solid #0f766e; padding: 6px 12px; background: #ccfbf1; color: #0f766e; margin-top: 40px; }
+  h3 { font-size: 15px; color: #0f766e; margin-top: 24px; border-bottom: 1px dashed #94a3b8; padding-bottom: 4px; }
+  .meta { color: #64748b; font-size: 12px; margin-bottom: 16px; }
+  .badge { display: inline-block; background: #0f766e; color: white; padding: 4px 12px; border-radius: 4px; font-weight: bold; margin-right: 8px; }
+  .toc { background: white; border: 1px solid #cbd5e1; padding: 12px 24px; border-radius: 6px; margin-bottom: 24px; }
+  .toc ul { margin: 4px 0; padding-left: 20px; } .toc a { color: #0f766e; text-decoration: none; } .toc a:hover { text-decoration: underline; }
+  .premise { background: #f0fdfa; border: 1px solid #0f766e; padding: 14px 18px; border-radius: 6px; margin: 12px 0; }
+  table { width: 100%; border-collapse: collapse; background: white; margin-top: 12px; font-size: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+  th, td { border: 1px solid #cbd5e1; padding: 9px 11px; vertical-align: top; text-align: left; }
+  th { background: #0f766e; color: white; font-weight: bold; text-align: center; }
+  tbody tr:nth-child(even) { background: #f8fafc; }
+  td.step-cell { background: #ccfbf1; font-weight: bold; text-align: center; width: 96px; color: #0f766e; vertical-align: middle; }
+  td.label-cell { background: #f1f5f9; font-weight: bold; }
+  ul.compact { margin: 2px 0 2px 18px; padding: 0; } ul.compact li { margin: 3px 0; }
+  .summary-box { background: #f0fdfa; border: 1px solid #0f766e; padding: 14px 18px; border-radius: 6px; margin: 16px 0; }
+  /* リスク・委譲タグ */
+  .risk-low { background: #dcfce7; color: #15803d; padding: 1px 7px; border-radius: 3px; font-size: 11px; font-weight: bold; border: 1px solid #16a34a; }
+  .risk-mid { background: #fef9c3; color: #854d0e; padding: 1px 7px; border-radius: 3px; font-size: 11px; font-weight: bold; border: 1px solid #ca8a04; }
+  .risk-high { background: #fee2e2; color: #991b1b; padding: 1px 7px; border-radius: 3px; font-size: 11px; font-weight: bold; border: 1px solid #dc2626; }
+  .deleg { background: #e0e7ff; color: #3730a3; padding: 1px 6px; border-radius: 3px; font-size: 11px; font-weight: bold; }
+  .lv { display:inline-block; min-width: 38px; text-align:center; color:white; padding: 1px 6px; border-radius: 3px; font-size: 11px; font-weight: bold; }
+  .lv1 { background:#94a3b8; } .lv2 { background:#0e7490; } .lv3 { background:#0f766e; } .lv4 { background:#6d28d9; }
+  .layer-box { border-radius: 6px; padding: 12px 16px; margin: 8px 0; border: 1px solid; }
+  .layer-3 { background:#eff6ff; border-color:#1d4ed8; } .layer-2 { background:#f0fdfa; border-color:#0f766e; } .layer-1 { background:#fefce8; border-color:#ca8a04; }
+  .layer-box h4 { margin: 0 0 6px; font-size: 14px; }
+  .layer-3 h4 { color:#1d4ed8; } .layer-2 h4 { color:#0f766e; } .layer-1 h4 { color:#a16207; }
+  .step5d { background: white; border: 1px solid #cbd5e1; border-left: 6px solid #0f766e; padding: 14px 18px; margin: 12px 0; border-radius: 4px; }
+  .step5d h4 { color: #0f766e; margin: 0 0 6px; font-size: 15px; }
+  .gate { background:#fefce8; border:1px dashed #ca8a04; padding:6px 10px; margin-top:8px; border-radius:4px; font-size:11.5px; }
+  .gate::before { content: "判断ゲート → "; font-weight:bold; color:#854d0e; }
+  .src { background:#f1f5f9; padding: 1px 5px; border-radius:3px; font-size:11px; color:#475569; }
+  .note { font-size: 11.5px; color:#475569; }
+  code { background: #f1f5f9; padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+</style>
+</head>
+<body>
+
+<h1><span class="badge">TOBE補強</span>AICX観点フレームワーク適用</h1>
+<div class="meta">作成日：2026-05-23 ／ 対象：受注～納期回答～出荷業務改革 ／ 出典フレーム：AICX認定｜AIエージェント・ストラテジスト 公式テキスト（一般社団法人AICX協会, 2026-05）</div>
+
+<div class="premise">
+  <strong>本資料の位置づけ：</strong>既存の <code>TOBE短期_業務一覧表.html</code> ／ <code>TOBE中期_業務一覧表.html</code> を作り直すものではなく、AICX公式テキストの主要フレームワークを当てはめて TOBE を「設計の根拠」「実装手順」「成果定義」の観点から補強する資料。<br>
+  AICXの中核命題は <strong>「AIエージェント × 業務設計 × 組織設計」の3本柱</strong>。本案件のTOBE（短期＝個別業務AI／中期＝社内Agentic AI／長期＝社外Agentic）は、テキストの自動化レベル進化論（Lv.2-3→Lv.4）と方向性が一致している。本資料では、その整合を明示したうえで、未反映だった4つの観点を追加する。
+</div>
+
+<div class="toc">
+  <strong>目次</strong>
+  <ul>
+    <li><a href="#lv">1. 自動化レベル（Lv.1-4）とTOBE段階の整合マップ</a></li>
+    <li><a href="#hyper">2. ハイパーオートメーション：定型処理とAI判断の切り分け</a></li>
+    <li><a href="#deleg">3. デリゲーション／HITL設計（業務ステップ別リスク×委譲範囲）</a></li>
+    <li><a href="#layer">4. 成功の3層フレームワーク＋KPI設計</a></li>
+    <li><a href="#5d">5. 5Dモデルによる実装ロードマップ</a></li>
+    <li><a href="#cm">6. チェンジマネジメント・ガバナンス上の留意点</a></li>
+  </ul>
+</div>
+
+<!-- ===================== 1. 自動化レベル ===================== -->
+<h2 id="lv">1. 自動化レベル（Lv.1-4）とTOBE段階の整合マップ</h2>
+<p>AICXテキストは自動化を4レベルに整理する。<span class="lv lv1">Lv.1</span>アドホック（都度利用）／<span class="lv lv2">Lv.2</span>カスタムボット（専門特化・対話型）／<span class="lv lv3">Lv.3</span>ワークフロー（トリガー起動・人がハンドオフ）／<span class="lv lv4">Lv.4</span>自律型エージェント（目標から自ら計画・実行）。<br>
+本案件のTOBE段階は次のように対応する。<strong>判別の決め手は「フローの構造自体をAIが作るか（Lv.3とLv.4の境界）」</strong>であり、短期TOBEは人が設計したフロー内でAIが判断を担うLv.3、中期TOBEはエージェントがA2Aで自律連携するLv.4にあたる。</p>
+
+<table>
+  <thead>
+    <tr><th style="width:96px;">業務ステップ</th><th style="width:18%;">現状(AS-IS)</th><th style="width:24%;">短期TOBE（個別業務AI）</th><th style="width:24%;">中期TOBE（社内Agentic AI）</th><th>長期TOBE（社外Agentic）</th></tr>
+  </thead>
+  <tbody>
+    <tr><td class="step-cell">①PO受領</td><td><span class="lv lv1">Lv.1</span>手入力</td><td><span class="lv lv3">Lv.3</span>AI-OCR＋LLMパーサで自動構造化、例外のみ人確認</td><td><span class="lv lv4">Lv.4</span>受注Agentが自律受領・解釈・SSOT登録</td><td>顧客Agentと構造化データ直接交換</td></tr>
+    <tr><td class="step-cell">②在庫引き当て①</td><td><span class="lv lv1">Lv.1</span>属人的合議</td><td><span class="lv lv2">Lv.2</span>顧客優先度推奨AI＋営業承認</td><td><span class="lv lv4">Lv.4</span>在庫Agent＋需給最適化Agentが自律引き当て</td><td>需要シグナルをPO前に共有し最適化</td></tr>
+    <tr><td class="step-cell">③生産依頼</td><td><span class="lv lv1">Lv.1</span>手作業転記</td><td><span class="lv lv3">Lv.3</span>CS→オーダー登録ツールAPI連携、差分承認</td><td><span class="lv lv4">Lv.4</span>A2A自動連携（プロセス自体が消滅）</td><td>SSOT統合済みで論点消滅</td></tr>
+    <tr><td class="step-cell">④納期回答</td><td><span class="lv lv1">Lv.1</span>標準LT自動回答</td><td><span class="lv lv3">Lv.3</span>納期予測AI＋営業承認（一次回答）</td><td><span class="lv lv4">Lv.4</span>計画＋歩留まり予測Agentが確定納期を一発回答</td><td>顧客AIへ機械可読納期を提供</td></tr>
+    <tr><td class="step-cell">⑤生産計画策定</td><td><span class="lv lv1">Lv.1</span>手動Excel</td><td><span class="lv lv2">Lv.2</span>APS＋最適化AI、SCM承認</td><td><span class="lv lv4">Lv.4</span>計画Agentが連続最適化、大規模変更のみ承認</td><td>サプライチェーン全体最適化</td></tr>
+    <tr><td class="step-cell">⑥需給調整<br>（旧会議）</td><td><span class="lv lv1">Lv.1</span>週次会議・合議</td><td><span class="lv lv2">Lv.2</span>Control Towerダッシュボード、会議で人判断</td><td><span class="lv lv4">Lv.4</span>需給最適化Agent（Orchestrator）が常時自律調整、月次戦略レビューのみ</td><td>顧客との合意も交渉Agent化</td></tr>
+    <tr><td class="step-cell">⑦納期変更通知</td><td><span class="lv lv1">Lv.1</span>個別手対応</td><td><span class="lv lv2">Lv.2</span>通知文生成AI＋営業レビュー</td><td><span class="lv lv4">Lv.4</span>顧客対話Agentが自動通知、戦略顧客のみフォロー</td><td>双方向Agentで人介在ゼロ</td></tr>
+    <tr><td class="step-cell">⑧出荷依頼受領</td><td><span class="lv lv1">Lv.1</span>手作業紐付け</td><td><span class="lv lv3">Lv.3</span>AI-OCR＋PO自動紐付け、例外のみ確認</td><td><span class="lv lv4">Lv.4</span>出荷Agentが自律受領・連動</td><td>顧客Agent化で完全機械化</td></tr>
+    <tr><td class="step-cell">⑨引き当て②／引き剥がし／出荷</td><td><span class="lv lv1">Lv.1</span>属人的判断</td><td><span class="lv lv2">Lv.2</span>引き剥がしトレードオフ定量化AI＋営業/SCM合議承認</td><td><span class="lv lv4">Lv.4</span>予兆検知＋代替策自律試行、戦略顧客への引き剥がし時のみ承認</td><td>引取・補填をスマートコントラクト化</td></tr>
+  </tbody>
+</table>
+<div class="summary-box">
+  <strong>So What（この整合が意味すること）：</strong>
+  <ul class="compact">
+    <li>短期TOBEは「単機能AIをLv.2-3で個別業務に組み込み、業務間接続（ハンドオフ）は人が担う」段階。AICXが推奨する<strong>「小さく始めて検証し段階的に引き上げる」MVPアプローチ</strong>と完全に整合する。いきなり中期Lv.4を目指さない設計判断は正しい。</li>
+    <li>短期→中期の本質的差分は <strong>Lv.3（人設計フロー内でAIが判断）→ Lv.4（エージェントがA2Aで業務間接続を自律実行）</strong>。需給調整会議の廃止（⑥）と一次/二次回答の一発化（④）は、この「業務間接続の自律化」の象徴であり、Lv.4移行の中核論点として位置づけられる。</li>
+  </ul>
+</div>
+
+<!-- ===================== 2. ハイパーオートメーション ===================== -->
+<h2 id="hyper">2. ハイパーオートメーション：定型処理とAI判断の切り分け</h2>
+<p>AICXテキストは「すべてをAIエージェント化しない」ことを強調する。手順が完全に決まり判断不要な処理はルールベース（RPA／API）が正確・安定・低コストであり、文脈判断が必要な処理にLLM／エージェントを充てる。本案件の9ステップを<strong>「定型処理（システム操作）」と「AI判断（文脈読解・トレードオフ判断）」</strong>に分解すると、AI適合の核心が需給調整領域に集中することが分かる。</p>
+<table>
+  <thead><tr><th style="width:36%;">定型処理（RPA／API／ワークフローが担当）</th><th>AI判断（LLM／エージェントが担当）</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>
+        <ul class="compact">
+          <li>PO・出荷依頼の添付取得、CSシステム登録（①⑧の機械操作部分）</li>
+          <li>CSシステム⇔オーダー登録ツールのデータ転記（③）</li>
+          <li>標準LT・確定納期のシステム登録、顧客への送信（④⑦）</li>
+          <li>引き当て結果・出荷指示の在庫システム反映（②⑨）</li>
+          <li>需給ダッシュボードへのデータ自動集計（⑥）</li>
+        </ul>
+      </td>
+      <td>
+        <ul class="compact">
+          <li>任意フォーマットPOからの項目抽出・異常検知（①）</li>
+          <li>顧客優先度・按分パターンの判断（②⑥）— 文脈依存・トレードオフ</li>
+          <li>歩留まり予測を加味した納期算出・計画最適化（④⑤）</li>
+          <li>引き剥がしトレードオフ（影響顧客・補填可能性・連鎖しわ寄せ・離反リスク）の定量化と最適解導出（⑨）</li>
+          <li>顧客への変更通知文の生成・トーン最適化（⑦）</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p class="note"><strong>留意：</strong>「汚いプロセスの自動化」の罠（非効率なフローを高速で回すだけの装置を作る）を避けるため、AI化の前にECRSでの業務見直しが前提となる（既存 <code>業務改革整理.html</code> でECRS適用済み）。本資料はその上で「どの処理にどの技術を割り当てるか」を整理する位置づけ。</p>
+
+<!-- ===================== 3. デリゲーション／HITL ===================== -->
+<h2 id="deleg">3. デリゲーション／HITL設計（業務ステップ別リスク×委譲範囲）</h2>
+<p>AICXテキストは、AIへの権限委譲を業務のリスクレベルに応じて段階設計せよと説く。<span class="risk-low">低リスク</span>＝判断・実行を委譲／<span class="risk-mid">中リスク</span>＝AIが判断し人が承認（HITL）／<span class="risk-high">高リスク</span>＝AIは情報提供にとどめ人が判断。リスクは業務単体でなく<strong>文脈で判定</strong>する（同じ「通知」でも社内連絡と顧客への契約変更通知では別物）。本案件の引き剥がし・顧客優先度判断は「不可逆性」と「顧客信頼毀損」の観点から高リスクに分類される。</p>
+<table>
+  <thead>
+    <tr><th style="width:90px;">業務ステップ</th><th style="width:64px;">リスク</th><th style="width:24%;">短期TOBEの委譲範囲（HITL設計）</th><th style="width:24%;">中期TOBEの委譲範囲</th><th>誤判断時の影響・論点</th></tr>
+  </thead>
+  <tbody>
+    <tr><td class="step-cell">①PO受領</td><td style="text-align:center;"><span class="risk-low">低</span></td><td><span class="deleg">委譲＋例外HITL</span>取込結果は後続で検出可。例外フォーマットのみ人確認</td><td><span class="deleg">完全委譲</span>異常時のみ通知</td><td>取込ミスは後工程で検出・修正可能。影響限定的</td></tr>
+    <tr><td class="step-cell">②在庫引き当て①</td><td style="text-align:center;"><span class="risk-mid">中</span></td><td><span class="deleg">HITL</span>顧客優先度AIが推奨、営業が承認</td><td><span class="deleg">条件付き委譲</span>閾値超過・戦略顧客大規模影響時のみ承認</td><td>顧客間公平性。優先度ロジックのバイアス（大口偏重）監視が必須</td></tr>
+    <tr><td class="step-cell">③生産依頼</td><td style="text-align:center;"><span class="risk-low">低</span></td><td><span class="deleg">委譲＋差分承認</span></td><td><span class="deleg">完全委譲</span>A2A自動</td><td>転記の機械的処理。整合性はシステムで担保</td></tr>
+    <tr><td class="step-cell">④納期回答</td><td style="text-align:center;"><span class="risk-mid">中</span></td><td><span class="deleg">HITL</span>納期予測AIの推奨を営業が承認し一次回答</td><td><span class="deleg">条件付き委譲</span>確定納期を自律回答</td><td>顧客への約束。予測精度不足は信頼低下に直結</td></tr>
+    <tr><td class="step-cell">⑤生産計画策定</td><td style="text-align:center;"><span class="risk-mid">中</span></td><td><span class="deleg">HITL</span>APS＋最適化AI案をSCMが承認</td><td><span class="deleg">条件付き委譲</span>連続最適化、大規模変更のみ承認</td><td>誤計画は現場混乱。暗黙の現場制約の学習が課題</td></tr>
+    <tr><td class="step-cell">⑥需給調整</td><td style="text-align:center;"><span class="risk-high">高</span></td><td><span class="deleg">情報提供＋人判断</span>AIがトレードオフ定量化、会議で人が決定</td><td><span class="deleg">委譲＋戦略レビュー</span>Orchestrator自律、月次戦略方針のみ人</td><td>顧客間・品目間トレードオフは戦略判断。顧客ポートフォリオへの中長期影響</td></tr>
+    <tr><td class="step-cell">⑦納期変更通知</td><td style="text-align:center;"><span class="risk-mid">中</span></td><td><span class="deleg">HITL</span>通知文生成、営業がレビュー送信</td><td><span class="deleg">条件付き委譲</span>自動通知、戦略顧客の重大変更のみフォロー</td><td>顧客コミュニケーション品質。クレーム対応の繊細さ</td></tr>
+    <tr><td class="step-cell">⑧出荷依頼受領</td><td style="text-align:center;"><span class="risk-low">低</span></td><td><span class="deleg">委譲＋例外HITL</span></td><td><span class="deleg">完全委譲</span></td><td>紐付けミスは検出・修正可能</td></tr>
+    <tr><td class="step-cell">⑨引き剥がし／出荷</td><td style="text-align:center;"><span class="risk-high">高</span></td><td><span class="deleg">情報提供＋合議承認</span>トレードオフ定量化AI、営業/SCM合議で判断</td><td><span class="deleg">委譲＋例外承認</span>予兆検知・代替策自律試行、戦略顧客への引き剥がし時のみ承認</td><td>顧客信頼の不可逆な毀損。引き剥がし＝「約束を破る」行為。連鎖しわ寄せ</td></tr>
+  </tbody>
+</table>
+<div class="summary-box">
+  <strong>設計の要点（AICXの原則の適用）：</strong>
+  <ul class="compact">
+    <li><strong>「請求書処理全体を自動化する/しない」の二択で考えない</strong>のと同様、本案件も<strong>9ステップを分解しステップ単位で委譲範囲を設計</strong>する。同じ受注出荷業務でもステップごとにリスクが異なる（①低 ⇔ ⑨高）。</li>
+    <li><strong>責任分界の事前定義：</strong>AI自体に責任は帰属できない。引き当て・引き剥がしの「ルール設計の誤り＝設計者」「承認時の見逃し＝承認者（営業/SCM）」「許容リスク・顧客優先度方針の設定＝経営」と分解し、HITLによって「AIの出力をそのまま実行したわけではない」状態を担保する。</li>
+    <li><strong>バイアス監視：</strong>顧客優先度AI（②）は売上規模等の属性で大口偏重のバイアスを再現しうる。同条件で属性を変えた配分結果の差を定期確認するガードレールを設ける（AICXのバイアステスト手法の応用）。</li>
+  </ul>
+</div>
+
+<!-- ===================== 4. 3層フレームワーク＋KPI ===================== -->
+<h2 id="layer">4. 成功の3層フレームワーク＋KPI設計</h2>
+<p>AICXテキストは、AIプロジェクトの成功を <strong>効果層→定着層→精度層</strong> の3層で定義する。重要なのは二重構造：<strong>定義はトップダウン（効果から逆算）、達成はボトムアップ（精度→定着→効果の順で積み上がる）</strong>。本案件はまず効果層（需給調整の構造改善）を定め、そこから定着層・精度層の目標を逆算する。KPIは活動量（アウトプット）でなく<strong>価値（アウトカム）を主軸</strong>に置く。</p>
+
+<div class="layer-box layer-3">
+  <h4>第1層：効果層（最初に定義｜KGI）— ビジネスに効果が出ているか</h4>
+  <ul class="compact">
+    <li>需給調整リードタイム：<strong>週単位 → 分単位</strong>（中期Orchestrator稼働時）</li>
+    <li>引き剥がし発生率：<strong>▲50〜70%</strong>（事前予兆検知・代替策自律試行による）</li>
+    <li>一次／二次納期回答の乖離日数：短期で<strong>50%短縮</strong>（推定）、中期で一発回答化により消滅</li>
+    <li>営業部 作業工数 ▲40〜60%／SCM部 計画立案工数 ▲60〜70%（短期）→ ▲90%以上（中期）</li>
+    <li>需給調整会議 準備工数 ▲80%（短期ダッシュボード化）→ 会議自体の廃止（中期）</li>
+  </ul>
+  <p class="note"><strong>ベースライン測定が必須：</strong>PoC開始前に現状値（調整LT・引き剥がし件数・回答乖離日数・各部工数・会議時間）を実測しておかないと、改善幅を客観的に示せない。AICXが最も起こりやすいミスとして警告する点。</p>
+</div>
+<div class="layer-box layer-2">
+  <h4>第2層：定着層（効果層から逆算｜現場が使っているか）</h4>
+  <ul class="compact">
+    <li>AI引き当て推奨案の<strong>承認採用率</strong>（営業の差し戻し率の低さ）— 効果層の工数削減には一定以上の採用率が前提</li>
+    <li>需給調整ダッシュボードの利用率（営業/SCM）</li>
+    <li>納期予測AI推奨の採用率</li>
+  </ul>
+  <p class="note"><strong>PoC中は定性、本運用後は定量</strong>で測定（短期間の定量利用率は「慣れの問題か使いにくさか」判別不能なため）。定性で「使いたくない」が出た場合は理由を分類：精度不信→精度層へ／UX→改善／業務フロー不適合→設計見直し／心理的抵抗→チェンジマネジメント。</p>
+</div>
+<div class="layer-box layer-1">
+  <h4>第3層：精度層（定着層から逆算｜AIが正しく答えられるか）</h4>
+  <ul class="compact">
+    <li>PO-OCR／LLM取込精度（項目抽出の正確性）</li>
+    <li>引き当て推奨の妥当性：ベテラン営業の判断との一致率（目標値は現状の担当者間一致率を上回る水準で逆算設定）</li>
+    <li>納期予測精度：予測LTと実績の乖離（信頼区間つき）</li>
+    <li>引き剥がしトレードオフ定量化の妥当性（影響顧客・補填可能性の予測精度）</li>
+    <li>顧客優先度配分のバイアステスト合格（属性変動での配分差が許容範囲内）</li>
+  </ul>
+  <p class="note"><strong>目標値は「とりあえず90%」で置かない。</strong>現状の人間の精度・現場の受容水準・誤判断時の許容リスクから逆算する。高リスクな引き剥がし（⑨）と低リスクなPO取込（①）では要求精度が異なる。</p>
+</div>
+<div class="summary-box">
+  <strong>KPI設計の補足（KGI/KPI/OKR）：</strong>
+  <ul class="compact">
+    <li>初期フェーズ（短期PoC）は探索的なため<strong>OKR</strong>が適する。例 — O:「SCM部がエージェントと協働し需給調整を会議レスで回せる状態をつくる」／KR:引き当て自動化率○%、会議準備工数▲80%、調整LT○日以内。</li>
+    <li>本格導入フェーズ（中期展開）は<strong>KGI/KPI</strong>で定量管理。アウトカム指標（調整LT・引き剥がし率・回答乖離）を主軸、アウトプット指標（処理件数・稼働率）は補助に置く。</li>
+    <li>KPIに現れない価値（属人的判断の標準化・SCM担当の戦略業務へのシフト）も「ロングテール改善」として意識的に拾う。</li>
+  </ul>
+</div>
+
+<!-- ===================== 5. 5Dモデル ===================== -->
+<h2 id="5d">5. 5Dモデルによる実装ロードマップ</h2>
+<p>AICXテキストの実装プロセス <strong>Discovery → Definition → Design → Development & PoC → Deployment & Scale</strong> を本案件に適用する。各ステップは前章までの観点（業務分解・デリゲーション・3層KPI）を統合する場となる。</p>
+
+<div class="step5d">
+  <h4>Step 1｜Discovery（発見・選定）</h4>
+  <ul class="compact">
+    <li><strong>ボトルネック特定：</strong>需給調整領域（⑥会議＋⑨引き剥がし）が最大の属人化・意思決定リードタイム滞留点。週次会議依存と引き剥がし判断のブラックボックス化が機会損失（優秀顧客の離反リスク）を生む。</li>
+    <li><strong>AI適合性診断（3基準）：</strong>①非構造化データ＝任意フォーマットPO・出荷依頼・職務的判断記録 → 該当／②文脈判断＝顧客優先度・引き剥がしトレードオフ → 該当／③ミス許容・HITL補完 → 一次判断は人承認で補完可。<strong>適合性は高い</strong>。</li>
+    <li><strong>クイックウィン選定：</strong>最初のMVPは <strong>①PO受領取込（AI-OCR＋LLM）</strong>を推奨。理由＝低リスク・効果定量化容易（取込工数▲70〜80%）・短期間で実装可。次に④納期予測AI。⑥⑨の高リスク領域は精度・運用知見を積んでから着手。</li>
+  </ul>
+  <div class="gate">解くべき課題が言語化され、必要データ（過去PO・引き当て履歴・歩留まり実績）が利用可能で、関係者が「成功の定義」に合意しているか</div>
+</div>
+
+<div class="step5d">
+  <h4>Step 2｜Definition（定義・構造化）</h4>
+  <ul class="compact">
+    <li><strong>業務フローチャート：</strong>既存 <code>業務改革整理.html</code> の9ステップ・5レーン（顧客/営業/SCM/生産/システム）スイムレーンを入力として、ステップ単位でAI／定型処理／人間を割当（第3章のデリゲーション表が該当）。</li>
+    <li><strong>要件定義書（叩き台）：</strong>機能要件（PO項目抽出・引き当て推奨・納期算出・引き剥がし定量化）／非機能要件（処理LT・24時間稼働・推奨の再現性）／制約条件（<strong>顧客優先度の公平性ルール・引取義務との整合・顧客機密の取扱い</strong>）／前提条件（PO形式・契約条件のデータ整備状況）。</li>
+    <li><strong>ペルソナ：</strong>営業担当（引き当て・納期回答の承認者）／SCM計画者（計画・需給調整の判断者）／間接ユーザー＝経営層（需給ダッシュボードで顧客ポートフォリオを見る）。SIPOCで出力受取者を漏れなく洗い出す。</li>
+    <li><strong>合格基準：</strong>第4章の精度層指標を「PoC合否を判定する一回限りの基準」として事前確定（運用KPIとは区別）。</li>
+  </ul>
+</div>
+
+<div class="step5d">
+  <h4>Step 3｜Design（設計・プロンプト）— 3領域</h4>
+  <ul class="compact">
+    <li><strong>コンテキスト設計：</strong>顧客優先度ポリシー・契約最低保証・歩留まり実績・引き剥がし履歴をRAGで参照。ベテランの引き当て判断ロジックを「例から判断ルールを抽出」する手法で言語化しシステムプロンプトへ。</li>
+    <li><strong>I/O設計：</strong>引き当て・引き剥がし推奨をJSONスキーマで構造化（推奨配分・<code>confidence</code>確信度・影響顧客・代替案）。確信度が低い場合は自動で人承認に回すルールを設計。</li>
+    <li><strong>セキュリティ設計：</strong>顧客機密・契約条件のアクセス制御（入力側）＋優先度判断のバイアス・属性依存表現を検知するガードレール（出力側）。引取義務契約データの保護。</li>
+  </ul>
+</div>
+
+<div class="step5d">
+  <h4>Step 4｜Development & PoC（開発・検証）</h4>
+  <ul class="compact">
+    <li>クイックウィン（PO取込 or 引き当て推奨）のプロトタイプをワークフローツールで構築し、<strong>サンドボックス</strong>（隔離環境・テストデータ）でPoC。</li>
+    <li>ベテラン営業/SCMを<strong>HITL</strong>として参加させ、推奨結果を1件ずつ確認しフィードバック収集。<strong>フィードバックループ</strong>を複数回回して精度を合格基準まで引き上げる（1回で届かないのは正常）。</li>
+    <li><strong>Go / No-Go / Pivot 判断：</strong>合格基準（第4章精度層）に照らして判定。精度が改善せず届かない→No-Go（要件・評価軸の見直し）／精度は満たすがコスト過大→Pivot（対象品目を絞る等）。</li>
+  </ul>
+  <div class="gate">事前定義の合格基準（精度）を満たし、現場が「使える」と判断し（定性）、本格投資のROIに関係者が合意しているか</div>
+</div>
+
+<div class="step5d">
+  <h4>Step 5｜Deployment & Scale（展開・定着）</h4>
+  <ul class="compact">
+    <li><strong>パイロット：</strong>1品目・少数顧客で実データ・実ユーザーによる本番運用。サンドボックスで見えなかった実データ特有のばらつき・運用フロー（誰に引き継ぐか・誤出力時の対応）を検証。</li>
+    <li><strong>ロールアウト：</strong>同機能を全品目・全担当へ段階拡大（機能は変えず利用者を広げる）。</li>
+    <li><strong>スケーリング：</strong>対象業務・機能の拡張＝個別業務AI（短期Lv.3）→ A2A連携の需給最適化Orchestrator（中期Lv.4）への進化。これが短期→中期TOBEの移行そのもの。</li>
+    <li><strong>AI-SECIで定着：</strong>ベテランの引き当て・引き剥がしの勘所（暗黙知）→ エージェントへのフィードバックで形式知化 → プロンプト/ナレッジに統合 → 改善された出力を通じて新人が判断力を内面化。この循環でエージェント精度と人の判断力が同時に向上。</li>
+    <li><strong>KPIモニタリング：</strong>アウトカム指標（調整LT短縮・引き剥がし率・回答乖離）を中心に追跡。各段階の進行判断基準（精度維持・バイアス合格・担当者満足度）を満たした場合のみ次段階へ。</li>
+  </ul>
+</div>
+
+<!-- ===================== 6. チェンジマネジメント・ガバナンス ===================== -->
+<h2 id="cm">6. チェンジマネジメント・ガバナンス上の留意点</h2>
+<table>
+  <thead><tr><th style="width:22%;">論点</th><th>本案件での具体策</th></tr></thead>
+  <tbody>
+    <tr><td class="label-cell">抵抗（否認→抵抗→受容）</td><td>「需給調整会議の廃止」「属人的判断のAI化」は営業・SCMのベテランに「経験が不要になる」という抵抗を生みやすい。恐怖（仕事を奪う）でなく<strong>役割再定義</strong>で語る：作業者・調整者 → <strong>方針設計者・例外監督者・戦略レビュアー</strong>へ。引き当ての勘所は例外対応と方針設計で引き続き不可欠。</td></tr>
+    <tr><td class="label-cell">抵抗曲線の「谷」</td><td>導入直後の一時的な生産性低下は正常な反応。この時期に「やはり使えない」と中止しないよう、谷を浅く・短くする施策（操作研修・並行運用・誤りパターンのナレッジ整備）を事前設計。谷の時期のKPIは処理速度でなく学習進捗で評価。</td></tr>
+    <tr><td class="label-cell">役割・評価の再設計</td><td>JD（職務定義）を「引き当て・転記の実行」から「AI出力の監督・例外判断・顧客との交渉・需給戦略」へ。リスキリング（職務自体の転換）として位置づけ、評価制度・キャリアパスと連動させる。</td></tr>
+    <tr><td class="label-cell">推進体制</td><td>営業・SCM・生産・ITをまたぐ横断プロジェクト。ハイブリッド型（中央がセキュリティ基準・ツール認定・監査を整備、現場が業務設計と運用を担う）が現実的。</td></tr>
+    <tr><td class="label-cell">ガバナンス</td><td>AIポリシー（顧客機密・契約条件・引取義務データの入力可否を定義）／責任分界点の文書化／エージェント台帳（受注・在庫・計画・需給最適化・出荷・顧客対話の各Agentの目的・データ範囲・管理者・監査日を登録）／四半期棚卸で野良エージェント防止。</td></tr>
+    <tr><td class="label-cell">データ整備</td><td>RAG・推奨精度の源泉は自社固有データの質。過去PO・引き当て履歴・引き剥がし履歴・歩留まり実績を「AIが読みやすい形」で蓄積する運用を定着（引き剥がし履歴が属人的メモに留まる現状＝AS-Is課題の解消が前提）。全件遡及でなく利用対象範囲から優先整備。</td></tr>
+  </tbody>
+</table>
+
+<div class="summary-box">
+  <strong>本資料の結論：</strong>既存TOBE（短期＝個別業務AI／中期＝社内Agentic AI）はAICXの自動化レベル進化論・MVPアプローチと整合している。本資料で追加した4観点（自動化レベル整合・デリゲーション/HITL・3層KPI・5Dロードマップ）により、TOBEは「あるべき姿の絵」から「リスクに応じた委譲設計・成果の測り方・実装手順を伴う実行計画」へと具体化される。次アクションは、5DのDiscoveryで合意したクイックウィン（PO受領取込を推奨）について、3層の成功定義シートを関係者と合意のうえPoCに着手すること。
+</div>
+
+</body>
+</html>

@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>データフロー｜半導体材料メーカー</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: "Yu Gothic", "Meiryo", sans-serif; margin: 0; padding: 24px 32px; background: #f5f6f8; color: #1f2937; font-size: 13px; line-height: 1.65; }
+  h1 { font-size: 24px; border-bottom: 4px solid #047857; padding-bottom: 8px; color: #047857; }
+  h2 { font-size: 18px; border-left: 6px solid #047857; padding: 6px 12px; background: #d1fae5; color: #047857; margin-top: 32px; }
+  h3 { font-size: 15px; color: #047857; margin-top: 20px; border-bottom: 1px dashed #94a3b8; padding-bottom: 3px; }
+  .meta { color: #64748b; font-size: 12px; margin-bottom: 16px; }
+  .premise { background: #ecfdf5; border: 1px solid #047857; padding: 14px 18px; border-radius: 6px; margin: 12px 0; }
+  ul.compact { margin: 4px 0 4px 18px; padding: 0; } ul.compact li { margin: 2px 0; }
+
+  table { width: 100%; border-collapse: collapse; background: white; margin-top: 12px; font-size: 11.5px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+  th, td { border: 1px solid #cbd5e1; padding: 8px 10px; vertical-align: top; text-align: left; }
+  th { background: #047857; color: white; font-weight: bold; text-align: center; }
+  tbody tr:nth-child(even) { background: #f8fafc; }
+  td.entity-cell { background: #d1fae5; font-weight: bold; color: #047857; vertical-align: middle; width: 150px; }
+  td.type-cell { text-align: center; font-weight: bold; width: 80px; }
+  .type-master { color: #1e40af; }
+  .type-trans { color: #b45309; }
+  .type-log { color: #be185d; }
+
+  /* DFD diagram */
+  .dfd-wrapper { background: white; border: 1px solid #cbd5e1; border-radius: 6px; padding: 24px; margin-top: 12px; overflow-x: auto; }
+  .dfd-grid { display: grid; grid-template-columns: 180px 1fr 180px; gap: 16px; min-width: 1000px; }
+  .dfd-zone { display: flex; flex-direction: column; gap: 14px; }
+  .external-box {
+    background: #dcfce7; border: 2px solid #15803d; border-radius: 6px;
+    padding: 12px; text-align: center; font-weight: bold; color: #14532d;
+  }
+  .process-box {
+    background: #fef3c7; border: 2px solid #d97706; border-radius: 50px;
+    padding: 12px 16px; text-align: center; font-weight: bold; color: #78350f;
+    position: relative;
+  }
+  .process-box .pnum { background: #d97706; color: white; border-radius: 50%; width: 22px; height: 22px; display: inline-block; line-height: 22px; font-size: 12px; margin-right: 6px; }
+  .store-box {
+    background: #ede9fe; border: 2px solid #6d28d9; border-left: none; border-right: none;
+    padding: 10px 14px; font-weight: bold; color: #4c1d95;
+  }
+  .flow-label { font-size: 10.5px; color: #475569; padding: 2px 6px; background: #f1f5f9; border-radius: 3px; display: inline-block; margin: 1px 0; }
+  .flow-arrow {
+    display: flex; align-items: center; justify-content: center;
+    color: #475569; font-size: 18px; font-weight: bold;
+  }
+
+  /* System data flow */
+  .sys-flow { background: white; border: 1px solid #cbd5e1; border-radius: 6px; padding: 20px; margin-top: 12px; }
+  .sys-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; align-items: center; }
+  .sys-node {
+    background: #dbeafe; border: 2px solid #1e3a8a; border-radius: 6px;
+    padding: 10px 12px; text-align: center; font-weight: bold; color: #1e3a8a;
+    font-size: 12px; min-height: 60px; display: flex; align-items: center; justify-content: center;
+  }
+  .sys-node.external { background: #dcfce7; border-color: #15803d; color: #14532d; }
+  .sys-node.system { background: #fef3c7; border-color: #d97706; color: #78350f; }
+  .sys-node.store { background: #ede9fe; border-color: #6d28d9; color: #4c1d95; }
+  .sys-arrow-label { font-size: 10px; color: #475569; text-align: center; }
+
+  /* ER diagram */
+  .er-wrapper { background: white; border: 1px solid #cbd5e1; border-radius: 6px; padding: 16px; margin-top: 12px; }
+  .er-entity { display: inline-block; vertical-align: top; background: #f8fafc; border: 1px solid #475569; margin: 6px; min-width: 200px; }
+  .er-entity .er-head { background: #475569; color: white; padding: 4px 8px; font-weight: bold; font-size: 12px; text-align: center; }
+  .er-entity .er-body { padding: 6px 10px; font-size: 11px; }
+  .er-entity .er-body div { padding: 1px 0; border-bottom: 1px dotted #cbd5e1; }
+  .er-entity .pk { color: #b45309; font-weight: bold; }
+  .er-entity .fk { color: #1e40af; }
+  .er-relation { margin: 8px 0; padding: 8px 12px; background: #f1f5f9; border-radius: 4px; font-size: 12px; }
+
+  .summary-box { background: #ecfdf5; border: 1px solid #047857; padding: 14px 18px; border-radius: 6px; margin: 16px 0; }
+</style>
+</head>
+<body>
+
+<h1>データフロー｜半導体材料メーカー 受注・出荷業務</h1>
+<div class="meta">作成日：2026-05-14 ／ AS-IS データエンティティ目録＋データフロー図＋エンティティ関係図</div>
+
+<div class="premise">
+  <strong>本資料の構成：</strong>
+  <ul class="compact">
+    <li><strong>第1部：データエンティティ目録</strong> — マスタ／トランザクション／ログ系の全エンティティを主要項目つきで網羅</li>
+    <li><strong>第2部：データフロー図（DFD）</strong> — 外部実体・プロセス・データストア間のデータの流れを業務横断で可視化</li>
+    <li><strong>第3部：システム間データフロー</strong> — CSシステム／オーダー登録ツール／倉庫システム間のデータ授受</li>
+    <li><strong>第4部：エンティティ関係図（ER）</strong> — 主要エンティティの主キー・外部キー・関係性</li>
+    <li><strong>第5部：データ起点での現状課題</strong> — データ視点で見た構造的問題</li>
+  </ul>
+</div>
+
+<!-- ============ 第1部：エンティティ目録 ============ -->
+<h2>第1部：データエンティティ目録</h2>
+
+<h3>マスタ系エンティティ</h3>
+<table>
+  <thead>
+    <tr><th style="width:140px;">エンティティ名</th><th style="width:80px;">種別</th><th>主要項目</th><th style="width:30%;">用途・備考</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="entity-cell">顧客マスタ</td>
+      <td class="type-cell type-master">マスタ</td>
+      <td>顧客コード（PK）、顧客名、業種、優先度ランク（A/B/C）、契約条件、最低保証数量、引取義務条項、与信限度額、納入先住所、担当営業</td>
+      <td>顧客識別・引き当て優先度判定の基礎。現状は優先度ランクが明文化されていない／属人的</td>
+    </tr>
+    <tr>
+      <td class="entity-cell">品目マスタ</td>
+      <td class="type-cell type-master">マスタ</td>
+      <td>品目コード（PK）、品目名、化学組成、規格、単位、安全在庫、保管温度、有効期限日数、QC基準、生産可能ライン</td>
+      <td>製品識別・生産制約の基礎。化学品特性（保管期限）が引き当て優先度に影響</td>
+    </tr>
+    <tr>
+      <td class="entity-cell">ラインマスタ</td>
+      <td class="type-cell type-master">マスタ</td>
+      <td>ラインコード（PK）、ライン名、生産可能品目リスト、品目別生産速度、品目別段取り時間、段取り替えコスト、稼働可能時間、メンテ予定</td>
+      <td>生産計画策定の能力データ。1ラインで複数品目を生産可能なため、品目間調整の制約となる</td>
+    </tr>
+    <tr>
+      <td class="entity-cell">標準LTマスタ</td>
+      <td class="type-cell type-master">マスタ</td>
+      <td>品目コード（PK）、顧客区分、標準リードタイム日数、適用開始日</td>
+      <td>納期一次回答に使用。実生産能力非考慮の固定値のため、二次回答との乖離が課題</td>
+    </tr>
+    <tr>
+      <td class="entity-cell">原料ロットマスタ</td>
+      <td class="type-cell type-master">マスタ</td>
+      <td>ロット番号（PK）、原料品目、仕入先、ロット特性、品質試験結果</td>
+      <td>歩留まりばらつきに影響する重要因子だが、歩留まり実績との紐付けが弱い</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>トランザクション系エンティティ</h3>
+<table>
+  <thead>
+    <tr><th style="width:140px;">エンティティ名</th><th style="width:80px;">種別</th><th>主要項目</th><th style="width:30%;">用途・備考</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="entity-cell">POヘッダ</td>
+      <td class="type-cell type-trans">トランザクション</td>
+      <td>PO番号（PK・採番）、顧客コード（FK）、顧客発行PO番号、PO発行日、希望納期、納入先、PO状態（受領／引当中／生産中／出荷待ち／完了）、登録ユーザ、登録日時</td>
+      <td>受注の親レコード。CSシステムが管理</td>
+    </tr>
+    <tr>
+      <td class="entity-cell">PO明細</td>
+      <td class="type-cell type-trans">トランザクション</td>
+      <td>PO番号（FK）、明細番号、品目コード（FK）、数量、単価、希望納入日、明細状態</td>
+      <td>品目別の数量・納期を保持</td>
+    </tr>
+    <tr>
+      <td class="entity-cell">在庫データ</td>
+      <td class="type-cell type-trans">トランザクション</td>
+      <td>在庫ID（PK）、品目コード（FK）、ロット番号（FK）、保管場所、製造日、有効期限、入庫数量、現在数量、引当ステータス、確保顧客コード（FK）、余剰在庫フラグ</td>
+      <td>引き当て・引き剥がしの中心エンティティ。化学反応の歩留まり差で生まれる余剰在庫を管理</td>
+    </tr>
+    <tr>
+      <td class="entity-cell">引当データ</td>
+      <td class="type-cell type-trans">トランザクション</td>
+      <td>引当ID（PK）、PO番号（FK）、PO明細番号、品目コード、ロット番号、引当数量、引当日時、引当区分（PO受領時／出荷依頼時）、優先度判定根拠</td>
+      <td>PO×在庫の引き当て関係。②と⑨で生成・更新され、整合性管理が複雑</td>
+    </tr>
+    <tr>
+      <td class="entity-cell">生産依頼データ</td>
+      <td class="type-cell type-trans">トランザクション</td>
+      <td>依頼番号（PK）、紐付PO番号（FK）、品目コード（FK）、依頼数量、希望生産完了日、優先度、依頼ステータス、登録日時、登録ユーザ</td>
+      <td>引当後の不足分。オーダー登録ツールが管理（CSシステム外）</td>
+    </tr>
+    <tr>
+      <td class="entity-cell">生産計画データ</td>
+      <td class="type-cell type-trans">トランザクション</td>
+      <td>計画番号（PK）、計画期間、品目コード（FK）、ラインコード（FK）、計画数量、計画開始日、計画完了日、段取り情報、計画版数、計画ステータス、策定者</td>
+      <td>SCM部が策定。Excel管理のケースが多く、版管理・履歴追跡が弱い</td>
+    </tr>
+    <tr>
+      <td class="entity-cell">納期回答データ</td>
+      <td class="type-cell type-trans">トランザクション</td>
+      <td>回答ID（PK）、PO番号（FK）、明細番号、回答区分（一次／二次／変更通知）、回答納期、回答日時、回答方法、変更理由</td>
+      <td>一次／二次の二段階で発生。顧客への通知履歴</td>
+    </tr>
+    <tr>
+      <td class="entity-cell">出荷依頼データ</td>
+      <td class="type-cell type-trans">トランザクション</td>
+      <td>出荷依頼番号（PK）、顧客依頼番号、紐付PO番号（FK）、品目コード、出荷数量、希望出荷日、配送先、状態、登録日時</td>
+      <td>POと紐付くが、顧客発行時期はPO受領から遅れる</td>
+    </tr>
+    <tr>
+      <td class="entity-cell">出荷指示／実績</td>
+      <td class="type-cell type-trans">トランザクション</td>
+      <td>指示番号（PK）、出荷依頼番号（FK）、ロット番号（FK）、出荷数量、出荷予定日、実出荷数量、実出荷日、伝票番号、配送業者、追跡番号</td>
+      <td>物流実行の中心。在庫データの数量更新トリガ</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>ログ・履歴系エンティティ</h3>
+<table>
+  <thead>
+    <tr><th style="width:140px;">エンティティ名</th><th style="width:80px;">種別</th><th>主要項目</th><th style="width:30%;">用途・備考</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="entity-cell">歩留まり実績データ</td>
+      <td class="type-cell type-log">ログ</td>
+      <td>ロット番号（PK）、品目コード、計画数量、実績数量、歩留まり率、製造条件（温度・反応時間・原料ロット）、製造日</td>
+      <td>化学反応の不確実性を定量化する重要データ。現状は活用が経験則ベース</td>
+    </tr>
+    <tr>
+      <td class="entity-cell">需給調整議事録</td>
+      <td class="type-cell type-log">ログ</td>
+      <td>議事録ID（PK）、会議日時、参加者、調整事項、決定内容、影響顧客、影響品目、責任者、関連PO一覧</td>
+      <td>週次会議の意思決定記録。属人的フリーテキスト中心で構造化されていない</td>
+    </tr>
+    <tr>
+      <td class="entity-cell">引き剥がし履歴</td>
+      <td class="type-cell type-log">ログ</td>
+      <td>履歴ID（PK）、対象出荷依頼、元顧客コード、先顧客コード、品目、数量、補填予定日、発生日時、理由、承認者</td>
+      <td>本来は最重要ログだが、現状は正式テーブル化されず属人的メモが多い</td>
+    </tr>
+    <tr>
+      <td class="entity-cell">変更履歴</td>
+      <td class="type-cell type-log">ログ</td>
+      <td>対象エンティティ、対象キー、変更項目、変更前値、変更後値、変更者、変更日時、変更理由</td>
+      <td>監査・トレーサビリティ用。現状はCSシステムのみで限定的</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ============ 第2部：DFD ============ -->
+<h2>第2部：データフロー図（DFD）</h2>
+<p>外部実体（顧客・倉庫・生産現場）／プロセス（業務ステップ）／データストア（エンティティ）の関係を可視化。</p>
+
+<div class="dfd-wrapper">
+  <div class="dfd-grid">
+    <!-- Left: External -->
+    <div class="dfd-zone">
+      <div class="external-box">顧客<br>（半導体基盤メーカー）</div>
+      <div class="external-box">生産現場<br>（生産部・MES）</div>
+      <div class="external-box">倉庫<br>（WMS）</div>
+    </div>
+    <!-- Middle: Processes -->
+    <div class="dfd-zone">
+      <div class="process-box"><span class="pnum">①</span>PO受領・登録</div>
+      <div class="process-box"><span class="pnum">②</span>在庫引き当て①</div>
+      <div class="process-box"><span class="pnum">③</span>生産依頼入力</div>
+      <div class="process-box"><span class="pnum">④</span>納期一次回答</div>
+      <div class="process-box"><span class="pnum">⑤</span>生産計画策定</div>
+      <div class="process-box"><span class="pnum">⑥</span>需給調整会議</div>
+      <div class="process-box"><span class="pnum">⑦</span>納期二次回答</div>
+      <div class="process-box"><span class="pnum">⑧</span>出荷依頼受領</div>
+      <div class="process-box"><span class="pnum">⑨</span>引当②／引き剥がし／出荷</div>
+    </div>
+    <!-- Right: Data Stores -->
+    <div class="dfd-zone">
+      <div class="store-box">D1. 顧客マスタ</div>
+      <div class="store-box">D2. 品目マスタ</div>
+      <div class="store-box">D3. ラインマスタ</div>
+      <div class="store-box">D4. POデータ</div>
+      <div class="store-box">D5. 在庫データ</div>
+      <div class="store-box">D6. 引当データ</div>
+      <div class="store-box">D7. 生産依頼データ</div>
+      <div class="store-box">D8. 生産計画データ</div>
+      <div class="store-box">D9. 歩留まり実績</div>
+      <div class="store-box">D10. 納期回答データ</div>
+      <div class="store-box">D11. 需給調整議事録</div>
+      <div class="store-box">D12. 出荷依頼データ</div>
+      <div class="store-box">D13. 引き剥がし履歴</div>
+      <div class="store-box">D14. 出荷指示／実績</div>
+    </div>
+  </div>
+</div>
+
+<h3>主要データフロー（外部実体 ⇔ プロセス ⇔ データストア）</h3>
+<table>
+  <thead>
+    <tr><th style="width:80px;">フローID</th><th style="width:25%;">送信元</th><th style="width:25%;">送信先</th><th>データ内容</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="text-align:center;">F1</td><td>顧客</td><td>プロセス①</td><td>PO（FAX／メール／EDI）</td></tr>
+    <tr><td style="text-align:center;">F2</td><td>D1 顧客マスタ／D2 品目マスタ</td><td>プロセス①</td><td>顧客情報・品目情報（参照）</td></tr>
+    <tr><td style="text-align:center;">F3</td><td>プロセス①</td><td>D4 POデータ</td><td>POヘッダ・PO明細レコード生成</td></tr>
+    <tr><td style="text-align:center;">F4</td><td>D4 POデータ／D5 在庫データ</td><td>プロセス②</td><td>引当対象PO・余剰在庫情報</td></tr>
+    <tr><td style="text-align:center;">F5</td><td>プロセス②</td><td>D5 在庫データ／D6 引当データ</td><td>引当ステータス更新／引当レコード生成</td></tr>
+    <tr><td style="text-align:center;">F6</td><td>プロセス②</td><td>プロセス③</td><td>引当後不足数</td></tr>
+    <tr><td style="text-align:center;">F7</td><td>プロセス③</td><td>D7 生産依頼データ</td><td>生産依頼レコード生成</td></tr>
+    <tr><td style="text-align:center;">F8</td><td>D4 PO／標準LTマスタ</td><td>プロセス④</td><td>納期算出情報</td></tr>
+    <tr><td style="text-align:center;">F9</td><td>プロセス④</td><td>D10 納期回答データ</td><td>一次回答レコード生成</td></tr>
+    <tr><td style="text-align:center;">F10</td><td>プロセス④</td><td>顧客</td><td>一次納期通知</td></tr>
+    <tr><td style="text-align:center;">F11</td><td>D7 生産依頼／D3 ラインマスタ／D5 在庫／D9 歩留まり実績</td><td>プロセス⑤</td><td>計画立案用集計データ</td></tr>
+    <tr><td style="text-align:center;">F12</td><td>生産現場</td><td>プロセス⑤</td><td>ライン能力・段取り情報・歩留まり実績</td></tr>
+    <tr><td style="text-align:center;">F13</td><td>プロセス⑤</td><td>D8 生産計画データ</td><td>計画レコード生成（版管理）</td></tr>
+    <tr><td style="text-align:center;">F14</td><td>D4/D5/D6/D7/D8/D9</td><td>プロセス⑥</td><td>需給ギャップ集計データ（Excel手集計）</td></tr>
+    <tr><td style="text-align:center;">F15</td><td>プロセス⑥</td><td>D8 生産計画／D6 引当データ／D11 議事録</td><td>計画修正・引当優先度調整・議事録</td></tr>
+    <tr><td style="text-align:center;">F16</td><td>プロセス⑦</td><td>D10 納期回答データ／顧客</td><td>二次回答レコード／顧客通知</td></tr>
+    <tr><td style="text-align:center;">F17</td><td>顧客</td><td>プロセス⑧</td><td>出荷依頼（PO紐付）</td></tr>
+    <tr><td style="text-align:center;">F18</td><td>プロセス⑧</td><td>D12 出荷依頼データ</td><td>出荷依頼レコード生成</td></tr>
+    <tr><td style="text-align:center;">F19</td><td>D5 在庫／D6 引当／D12 出荷依頼</td><td>プロセス⑨</td><td>引き剥がし判断用データ</td></tr>
+    <tr><td style="text-align:center;">F20</td><td>プロセス⑨</td><td>D5 在庫／D6 引当／D13 引き剥がし履歴／D14 出荷指示</td><td>引当更新・引き剥がし記録・出荷指示生成</td></tr>
+    <tr><td style="text-align:center;">F21</td><td>プロセス⑨</td><td>D7 生産依頼（翌週計画への追加）</td><td>引き剥がし発生時の補填要求</td></tr>
+    <tr><td style="text-align:center;">F22</td><td>プロセス⑨</td><td>倉庫／生産現場</td><td>出荷指示・出荷実績登録</td></tr>
+    <tr><td style="text-align:center;">F23</td><td>生産現場</td><td>D9 歩留まり実績</td><td>製造ロット完了時の歩留まり実績登録</td></tr>
+  </tbody>
+</table>
+
+<!-- ============ 第3部：システム間 ============ -->
+<h2>第3部：システム間データフロー</h2>
+<p>外部実体・社内システム・データストア間のデータ授受を、システム単位で整理。現状は CSシステム と オーダー登録ツール が分離しており、両者間のデータ連携は手作業（営業による転記）で行われている。</p>
+
+<div class="sys-flow">
+  <div class="sys-grid">
+    <div class="sys-node external">顧客</div>
+    <div class="sys-arrow-label">PO／出荷依頼 →<br>← 納期回答</div>
+    <div class="sys-node system">CSシステム<br>（受注・引当・回答）</div>
+    <div class="sys-arrow-label"><span style="color:#dc2626;">⚠手作業転記</span><br>不足数 →</div>
+    <div class="sys-node system">オーダー登録ツール<br>（生産依頼）</div>
+    <div class="sys-arrow-label">参照／更新 ⇔</div>
+  </div>
+  <div class="sys-grid" style="margin-top:12px;">
+    <div class="sys-node store">D1顧客M／D2品目M／D4PO／D5在庫／D6引当／D10納期回答／D12出荷依頼／D13引剥がし／D14出荷指示</div>
+    <div></div>
+    <div class="sys-node">CSシステムDB</div>
+    <div></div>
+    <div class="sys-node">オーダー登録ツールDB</div>
+    <div class="sys-node store">D3ラインM／D7生産依頼／D8生産計画</div>
+  </div>
+  <div class="sys-grid" style="margin-top:24px;">
+    <div class="sys-node external">倉庫<br>（WMS）</div>
+    <div class="sys-arrow-label">在庫実数 ⇔<br>出荷指示</div>
+    <div class="sys-node system">CSシステム</div>
+    <div class="sys-arrow-label">計画指示 →<br>← 歩留まり実績</div>
+    <div class="sys-node system">オーダー登録ツール</div>
+    <div class="sys-arrow-label">⇔<br>製造実績</div>
+  </div>
+  <div class="sys-grid" style="margin-top:12px;">
+    <div></div><div></div><div></div><div></div>
+    <div class="sys-node external">生産現場<br>（MES／Excel）</div>
+    <div class="sys-node store">D9 歩留まり実績</div>
+  </div>
+</div>
+
+<h3>システム間データ連携の現状課題</h3>
+<table>
+  <thead>
+    <tr><th style="width:25%;">連携区間</th><th style="width:20%;">連携方式</th><th style="width:25%;">対象データ</th><th>課題</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>顧客 → CSシステム</td><td>FAX／メール／一部EDI</td><td>PO・出荷依頼</td><td>フォーマット差・手入力・登録遅延</td></tr>
+    <tr><td>CSシステム → オーダー登録ツール</td><td><span style="color:#dc2626;">人手転記</span></td><td>引当後不足数 → 生産依頼</td><td>二重入力・整合性管理コスト・転記ミス</td></tr>
+    <tr><td>オーダー登録ツール → SCM Excel</td><td>抽出・Excel貼付</td><td>生産依頼の集計</td><td>計画策定の前処理に膨大な工数</td></tr>
+    <tr><td>SCM Excel → CSシステム</td><td>結果のみ口頭／メール</td><td>確定生産計画</td><td>計画情報が CSシステムに戻ってこない</td></tr>
+    <tr><td>CSシステム → 顧客</td><td>メール／EDI</td><td>納期回答</td><td>一次／二次の二段階通知で顧客側も二度受信</td></tr>
+    <tr><td>倉庫 ⇔ CSシステム</td><td>WMS連携（一部リアルタイム）</td><td>在庫数量・出荷指示</td><td>リアルタイム性が品目・拠点でばらつく</td></tr>
+    <tr><td>生産現場 → オーダー登録ツール</td><td>MES連携／Excel</td><td>歩留まり実績・製造実績</td><td>歩留まりデータの紐付精度（原料ロット連携）が弱い</td></tr>
+  </tbody>
+</table>
+
+<!-- ============ 第4部：ER ============ -->
+<h2>第4部：主要エンティティ関係図（ER）</h2>
+<p>主キー（<span style="color:#b45309;">PK</span>）・外部キー（<span style="color:#1e40af;">FK</span>）で結ばれる主要エンティティの関係を可視化。</p>
+
+<div class="er-wrapper">
+  <div class="er-entity">
+    <div class="er-head">顧客マスタ</div>
+    <div class="er-body">
+      <div><span class="pk">PK 顧客コード</span></div>
+      <div>顧客名／業種</div>
+      <div>優先度ランク</div>
+      <div>引取義務条項</div>
+    </div>
+  </div>
+  <div class="er-entity">
+    <div class="er-head">品目マスタ</div>
+    <div class="er-body">
+      <div><span class="pk">PK 品目コード</span></div>
+      <div>品目名／規格</div>
+      <div>保管温度／有効期限日数</div>
+    </div>
+  </div>
+  <div class="er-entity">
+    <div class="er-head">ラインマスタ</div>
+    <div class="er-body">
+      <div><span class="pk">PK ラインコード</span></div>
+      <div>生産可能品目</div>
+      <div>品目別生産速度</div>
+    </div>
+  </div>
+  <div class="er-entity">
+    <div class="er-head">POヘッダ</div>
+    <div class="er-body">
+      <div><span class="pk">PK PO番号</span></div>
+      <div><span class="fk">FK 顧客コード</span></div>
+      <div>希望納期／PO状態</div>
+    </div>
+  </div>
+  <div class="er-entity">
+    <div class="er-head">PO明細</div>
+    <div class="er-body">
+      <div><span class="pk">PK (PO番号, 明細番号)</span></div>
+      <div><span class="fk">FK 品目コード</span></div>
+      <div>数量／希望納入日</div>
+    </div>
+  </div>
+  <div class="er-entity">
+    <div class="er-head">在庫データ</div>
+    <div class="er-body">
+      <div><span class="pk">PK 在庫ID</span></div>
+      <div><span class="fk">FK 品目コード</span></div>
+      <div><span class="fk">FK ロット番号</span></div>
+      <div><span class="fk">FK 確保顧客コード</span></div>
+      <div>余剰在庫フラグ</div>
+    </div>
+  </div>
+  <div class="er-entity">
+    <div class="er-head">引当データ</div>
+    <div class="er-body">
+      <div><span class="pk">PK 引当ID</span></div>
+      <div><span class="fk">FK PO番号</span></div>
+      <div><span class="fk">FK 在庫ID</span></div>
+      <div>引当区分／数量</div>
+    </div>
+  </div>
+  <div class="er-entity">
+    <div class="er-head">生産依頼</div>
+    <div class="er-body">
+      <div><span class="pk">PK 依頼番号</span></div>
+      <div><span class="fk">FK PO番号</span></div>
+      <div><span class="fk">FK 品目コード</span></div>
+      <div>依頼数量／希望生産完了日</div>
+    </div>
+  </div>
+  <div class="er-entity">
+    <div class="er-head">生産計画</div>
+    <div class="er-body">
+      <div><span class="pk">PK 計画番号</span></div>
+      <div><span class="fk">FK 品目コード</span></div>
+      <div><span class="fk">FK ラインコード</span></div>
+      <div>計画数量／期間／版数</div>
+    </div>
+  </div>
+  <div class="er-entity">
+    <div class="er-head">歩留まり実績</div>
+    <div class="er-body">
+      <div><span class="pk">PK ロット番号</span></div>
+      <div><span class="fk">FK 品目コード</span></div>
+      <div><span class="fk">FK 計画番号</span></div>
+      <div>歩留まり率／製造条件</div>
+    </div>
+  </div>
+  <div class="er-entity">
+    <div class="er-head">納期回答</div>
+    <div class="er-body">
+      <div><span class="pk">PK 回答ID</span></div>
+      <div><span class="fk">FK PO番号</span></div>
+      <div>区分（一次／二次）</div>
+      <div>回答納期</div>
+    </div>
+  </div>
+  <div class="er-entity">
+    <div class="er-head">出荷依頼</div>
+    <div class="er-body">
+      <div><span class="pk">PK 出荷依頼番号</span></div>
+      <div><span class="fk">FK PO番号</span></div>
+      <div>出荷数量／希望出荷日</div>
+    </div>
+  </div>
+  <div class="er-entity">
+    <div class="er-head">出荷指示／実績</div>
+    <div class="er-body">
+      <div><span class="pk">PK 指示番号</span></div>
+      <div><span class="fk">FK 出荷依頼番号</span></div>
+      <div><span class="fk">FK ロット番号</span></div>
+      <div>出荷数量／実出荷日</div>
+    </div>
+  </div>
+  <div class="er-entity">
+    <div class="er-head">引き剥がし履歴</div>
+    <div class="er-body">
+      <div><span class="pk">PK 履歴ID</span></div>
+      <div><span class="fk">FK 出荷依頼番号</span></div>
+      <div>元顧客／先顧客</div>
+      <div>補填予定日</div>
+    </div>
+  </div>
+  <div class="er-entity">
+    <div class="er-head">需給調整議事録</div>
+    <div class="er-body">
+      <div><span class="pk">PK 議事録ID</span></div>
+      <div>会議日時</div>
+      <div>調整事項／決定内容</div>
+      <div>影響顧客／品目</div>
+    </div>
+  </div>
+</div>
+
+<h3>主要なエンティティ間関係</h3>
+<div class="er-relation"><strong>顧客マスタ 1 — N POヘッダ</strong>：1顧客は複数POを発行する。</div>
+<div class="er-relation"><strong>POヘッダ 1 — N PO明細</strong>：1POは複数品目明細を持つ。</div>
+<div class="er-relation"><strong>PO明細 1 — N 引当データ N — 1 在庫データ</strong>：PO明細と在庫は引当データを介してM:N。1PO明細が複数ロットから引き当てられる場合も、1ロットが複数POに分配される場合もある。</div>
+<div class="er-relation"><strong>POヘッダ 1 — N 生産依頼</strong>：1POの不足分が複数の生産依頼に分割される場合あり。</div>
+<div class="er-relation"><strong>生産依頼 N — 1 生産計画</strong>：複数の生産依頼が1計画ロットに集約される。</div>
+<div class="er-relation"><strong>生産計画 1 — N 歩留まり実績（ロット）</strong>：1計画から複数製造ロットが生まれ、各ロットの歩留まり実績が紐付く。</div>
+<div class="er-relation"><strong>POヘッダ 1 — N 出荷依頼</strong>：1POが複数回に分けて出荷される（分納）。</div>
+<div class="er-relation"><strong>出荷依頼 1 — N 出荷指示</strong>：1出荷依頼が複数ロットから出荷される。</div>
+<div class="er-relation"><strong>引き剥がし履歴 N — 1 顧客（元）／N — 1 顧客（先）</strong>：引き剥がし関係を双方向に追跡。</div>
+<div class="er-relation"><strong>需給調整議事録 N — N PO／品目／顧客</strong>：1議事録が複数のPO・品目・顧客に影響を与え、1POも複数議事録で議論される。</div>
+
+<!-- ============ 第5部：データ視点の課題 ============ -->
+<h2>第5部：データ視点で見た現状課題</h2>
+
+<div class="summary-box">
+  <strong>課題1：データの分断（CSシステム × オーダー登録ツール）</strong>
+  <ul class="compact">
+    <li>PO関連データ（D1〜D6, D10, D12〜D14）はCSシステムに、生産関連データ（D3, D7, D8）はオーダー登録ツールに分散。</li>
+    <li>両システム間のデータ連携が人手転記であるため、データ整合性が常に揺らぐ。</li>
+    <li>同一品目・同一顧客の情報を見るのに2システムを往復する必要があり、需給調整会議の準備工数を膨らませている。</li>
+  </ul>
+</div>
+
+<div class="summary-box">
+  <strong>課題2：意思決定ロジックがマスタ化されていない</strong>
+  <ul class="compact">
+    <li>顧客優先度ランク（A/B/C）、引き剥がし閾値、品目間調整の段取り替えコスト評価などが<strong>マスタテーブル化されていない</strong>。</li>
+    <li>結果、②⑥⑨の判断が属人的になり、トレース可能性も失われる。</li>
+    <li>あるべき姿：「顧客優先度マスタ」「引き剥がしポリシーマスタ」「段取り替えコストマスタ」をデータとして整備し、判断ロジックをデータドリブン化する。</li>
+  </ul>
+</div>
+
+<div class="summary-box">
+  <strong>課題3：歩留まりデータの活用不全</strong>
+  <ul class="compact">
+    <li>歩留まり実績（D9）は蓄積されているが、原料ロットマスタ・製造条件との紐付が弱く、予測モデル化の素材として使えていない。</li>
+    <li>結果、生産計画策定（⑤）と納期一次回答（④）が経験則ベースとなり、二次回答との乖離が常態化。</li>
+    <li>あるべき姿：歩留まり実績データに製造条件・原料ロット・季節性を構造化して紐付け、予測AIの学習基盤とする。</li>
+  </ul>
+</div>
+
+<div class="summary-box">
+  <strong>課題4：ログ系データ（議事録・引き剥がし履歴）の構造化不足</strong>
+  <ul class="compact">
+    <li>需給調整議事録（D11）と引き剥がし履歴（D13）は<strong>本来は最重要の意思決定ログ</strong>だが、フリーテキストもしくは属人的メモにとどまる。</li>
+    <li>過去の引き剥がし発生パターン・特定顧客への連続引き剥がし・調整判断の妥当性検証が事後的にできない。</li>
+    <li>あるべき姿：構造化スキーマ（影響顧客・品目・数量・連鎖影響・補填結果）でログを取得し、後続のAI学習・意思決定支援に活用する。</li>
+  </ul>
+</div>
+
+<div class="summary-box">
+  <strong>課題5：リアルタイム性の欠如</strong>
+  <ul class="compact">
+    <li>在庫データ（D5）の更新タイミングが拠点・品目によりばらつき、PO受領時引き当て（②）と出荷時引き当て（⑨）でズレが発生 → 引き剥がしの根本原因の一部。</li>
+    <li>生産計画データ（D8）はExcel運用のため、版管理・変更履歴・他システムへの伝播がリアルタイムでない。</li>
+    <li>あるべき姿：在庫・計画・引当・歩留まり予測を単一のSSOT（Single Source of Truth）に集約し、イベント駆動でリアルタイム伝播させる。</li>
+  </ul>
+</div>
+
+<div class="summary-box">
+  <strong>課題6：トレーサビリティ・データ系譜の欠落</strong>
+  <ul class="compact">
+    <li>「PO → 引当 → 生産依頼 → 生産計画 → 製造ロット → 歩留まり → 出荷指示 → 出荷実績」という<strong>サプライチェーン全体のデータ系譜（Lineage）</strong>が分断されている。</li>
+    <li>顧客から「この出荷品はいつ・どの計画・どの原料ロットから生まれたか」を即答できない。</li>
+    <li>あるべき姿：マスタID・トランザクションIDの一貫性を担保し、End-to-Endトレーサビリティを実現する。これは半導体業界の品質要求（不具合トレース）への対応としても必須。</li>
+  </ul>
+</div>
+
+</body>
+</html>

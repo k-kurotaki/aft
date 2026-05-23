@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>【中期TOBE】業務一覧表｜半導体材料メーカー</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: "Yu Gothic", "Meiryo", sans-serif; margin: 0; padding: 24px 32px; background: #f5f6f8; color: #1f2937; font-size: 13px; line-height: 1.6; }
+  h1 { font-size: 24px; border-bottom: 4px solid #6d28d9; padding-bottom: 8px; color: #6d28d9; }
+  h2 { font-size: 18px; border-left: 6px solid #6d28d9; padding: 6px 12px; background: #ede9fe; color: #6d28d9; margin-top: 32px; }
+  .meta { color: #64748b; font-size: 12px; margin-bottom: 16px; }
+  .badge { display: inline-block; background: #6d28d9; color: white; padding: 4px 12px; border-radius: 4px; font-weight: bold; margin-right: 8px; }
+  .premise { background: #f5f3ff; border: 1px solid #6d28d9; padding: 14px 18px; border-radius: 6px; margin: 12px 0; }
+  table { width: 100%; border-collapse: collapse; background: white; margin-top: 12px; font-size: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+  th, td { border: 1px solid #cbd5e1; padding: 9px 11px; vertical-align: top; text-align: left; }
+  th { background: #6d28d9; color: white; font-weight: bold; text-align: center; }
+  tbody tr:nth-child(even) { background: #f8fafc; }
+  td.step-cell { background: #ede9fe; font-weight: bold; text-align: center; width: 110px; color: #6d28d9; vertical-align: middle; }
+  ul.compact { margin: 2px 0 2px 18px; padding: 0; } ul.compact li { margin: 2px 0; }
+  .agent-role { color: #6d28d9; font-weight: bold; }
+  .human-role { color: #1e3a8a; font-weight: bold; }
+  .gate-mark { background: #fef9c3; color: #854d0e; padding: 1px 5px; border-radius: 3px; font-size: 11px; font-weight: bold; border: 1px solid #ca8a04; }
+  .a2a-mark { background: #fce7f3; color: #9f1239; padding: 1px 5px; border-radius: 3px; font-size: 11px; font-weight: bold; border: 1px solid #be185d; }
+  .summary-box { background: #f5f3ff; border: 1px solid #6d28d9; padding: 14px 18px; border-radius: 6px; margin: 16px 0; }
+  .compare-table th { background: #475569; }
+  .compare-table td.col-short { background: #ecfeff; }
+  .compare-table td.col-mid { background: #f5f3ff; }
+</style>
+</head>
+<body>
+
+<h1><span class="badge">中期TOBE</span>業務一覧表｜業務ステップ別TOBE詳細</h1>
+<div class="meta">作成日：2026-05-14 ／ バージョン：中期（社内Agentic AI 導入完了状態）</div>
+
+<div class="premise">
+  <strong>本一覧表の見方：</strong>各業務ステップに対し「TOBE業務内容」「主管エージェント」「エージェント間連携（A2A）」「人間の役割」「期待効果」「長期に向けた残課題」を整理。
+  業務間接続が<span class="a2a-mark">A2A</span>でエージェント間自律連携に置換され、人間は<span class="gate-mark">承認ゲート</span>で例外時のみ介入する構造に変化。
+</div>
+
+<h2>業務ステップ別 TOBE詳細</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width:110px;">業務ステップ</th>
+      <th style="width:22%;">TOBE業務内容</th>
+      <th style="width:13%;">主管エージェント</th>
+      <th style="width:18%;">エージェント間連携（A2A）</th>
+      <th style="width:14%;">人間の役割</th>
+      <th>期待効果・残課題</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <tr>
+      <td class="step-cell">①PO受領</td>
+      <td>顧客のPO（任意フォーマット）を受注エージェントが自律受領・解釈・SSOTへ登録。フォーマット差異はLLM能力で吸収。異常検知時のみ営業担当へ通知。</td>
+      <td><span class="agent-role">受注Agent</span></td>
+      <td>登録後、<span class="a2a-mark">A2A</span>で在庫Agent・計画Agentへ自動通知</td>
+      <td><span class="human-role">人：</span>異常通知時の確認（数十件/日 → 0〜数件/日）</td>
+      <td><strong>効果：</strong>取込工数▲95%以上、登録LT 数分以内<br><strong>残：</strong>顧客側もエージェント化されれば構造化データ直接交換が可能（長期）</td>
+    </tr>
+
+    <tr>
+      <td class="step-cell">②在庫引き当て①</td>
+      <td>受注Agentからの依頼を受け、在庫Agentが余剰在庫を自律引き当て。複数顧客競合時は需給最適化Agent（Orchestrator）が顧客優先度ポリシーに基づき判定。閾値超過時のみ営業ゲート。</td>
+      <td><span class="agent-role">在庫Agent</span><br><span class="agent-role">需給最適化Agent</span></td>
+      <td><span class="a2a-mark">A2A</span>受注Agent⇔在庫Agent⇔需給最適化Agent</td>
+      <td><span class="human-role">人：</span>顧客優先度ポリシー設定、戦略顧客への大規模影響時のみ承認</td>
+      <td><strong>効果：</strong>引き当てLT 秒単位、24/7自律実行、判断トレーサビリティ確保<br><strong>残：</strong>ポリシー自体の見直し頻度・倫理ガードレール設計の継続課題</td>
+    </tr>
+
+    <tr>
+      <td class="step-cell">③生産依頼</td>
+      <td>在庫Agentが算出した不足数をA2Aで計画Agentへ自動連携。CSシステム×オーダー登録ツールはSSOTに統合済みのため、転送・整合性管理プロセス自体が消滅。</td>
+      <td><span class="agent-role">在庫Agent</span><br><span class="agent-role">計画Agent</span></td>
+      <td><span class="a2a-mark">A2A</span>在庫Agent → 計画Agent</td>
+      <td><span class="human-role">人：</span>なし（業務ステップとして消滅に近い）</td>
+      <td><strong>効果：</strong>2システム並存の運用負荷消滅、データ整合性100%<br><strong>残：</strong>システム統合の継続的なバージョン管理・SLO監視</td>
+    </tr>
+
+    <tr>
+      <td class="step-cell">④納期回答</td>
+      <td>計画Agent＋歩留まり予測Agentがリアルタイム生産能力・歩留まり信頼区間を加味した確定納期を即時算出。受注Agentが顧客へ一発回答。<strong>一次／二次の区別は消滅</strong>。</td>
+      <td><span class="agent-role">計画Agent</span><br><span class="agent-role">歩留まり予測Agent</span><br><span class="agent-role">受注Agent</span></td>
+      <td><span class="a2a-mark">A2A</span>計画Agent⇔歩留まり予測Agent→受注Agent</td>
+      <td><span class="human-role">人：</span>なし（自律実行）</td>
+      <td><strong>効果：</strong>回答LT 分単位、顧客満足度向上、二度回答工数ゼロ<br><strong>残：</strong>顧客側AIへの構造化納期データ提供（長期で機械可読化）</td>
+    </tr>
+
+    <tr>
+      <td class="step-cell">⑤生産計画策定</td>
+      <td>計画Agentが APS＋強化学習＋歩留まり予測 を統合した自律最適化を継続実行。需要・歩留まり・段取り条件の変動を観測し、必要時に計画を自動更新。SCM担当は方針設定と例外承認のみ。</td>
+      <td><span class="agent-role">計画Agent</span><br><span class="agent-role">歩留まり予測Agent</span></td>
+      <td><span class="a2a-mark">A2A</span>需給最適化Agentからの調整指示、生産部システムへの指示</td>
+      <td><span class="human-role">人：</span><span class="gate-mark">承認ゲート</span> 大規模計画変更時の承認、現場制約フィードバック、月次戦略レビュー</td>
+      <td><strong>効果：</strong>計画立案工数▲95%、計画見直し頻度=連続最適化<br><strong>残：</strong>現場制約の暗黙知をどこまでエージェントに学習させきれるか</td>
+    </tr>
+
+    <tr>
+      <td class="step-cell">⑥需給調整<br>（旧会議）</td>
+      <td>需給最適化Agent（Orchestrator）が顧客間・品目間トレードオフを常時定量化し、自律調整。<strong>定例会議は廃止</strong>し、月次戦略レビュー（顧客ポートフォリオ・能力投資方針）のみ存続。連鎖影響（引き剥がし→翌週しわ寄せ→他顧客波及）はOrchestratorが事前回避。</td>
+      <td><span class="agent-role">需給最適化Agent<br>（Orchestrator）</span></td>
+      <td><span class="a2a-mark">A2A</span>全エージェントの調停役。在庫・計画・受注・出荷の各Agentと常時連携</td>
+      <td><span class="human-role">人：</span><span class="gate-mark">月次戦略レビューのみ</span>＋閾値超過時の例外承認</td>
+      <td><strong>効果：</strong>会議準備・実施工数 ▲90%以上、調整リードタイム 週単位→分単位、連鎖影響の事前回避<br><strong>残：</strong>顧客側との合意プロセスは人介在（長期で交渉エージェント化）</td>
+    </tr>
+
+    <tr>
+      <td class="step-cell">⑦納期変更通知</td>
+      <td>顧客対話Agentが計画変更を検知し、影響顧客に自動通知。顧客の反応をモニタリングし、必要に応じて代替案を提示。</td>
+      <td><span class="agent-role">顧客対話Agent</span><br><span class="agent-role">受注Agent</span></td>
+      <td><span class="a2a-mark">A2A</span>計画Agentから変更検知 → 顧客対話Agentが通知</td>
+      <td><span class="human-role">人：</span>戦略顧客への重大変更のみ営業がフォロー</td>
+      <td><strong>効果：</strong>説明工数ほぼゼロ、即時通知で顧客対応LT短縮<br><strong>残：</strong>顧客側の受信・了解確認は人依存（長期で双方向エージェント化）</td>
+    </tr>
+
+    <tr>
+      <td class="step-cell">⑧出荷依頼受領</td>
+      <td>出荷Agentが顧客からの出荷依頼を自動受領・PO自動紐付け・在庫Agentと連動。①と同じく構造化吸収はLLMが担当。</td>
+      <td><span class="agent-role">出荷Agent</span></td>
+      <td><span class="a2a-mark">A2A</span>出荷Agent⇔在庫Agent</td>
+      <td><span class="human-role">人：</span>例外時の確認のみ</td>
+      <td><strong>効果：</strong>受領工数▲95%、24/7自律受領<br><strong>残：</strong>顧客側エージェント化で完全機械化（長期）</td>
+    </tr>
+
+    <tr>
+      <td class="step-cell">⑨在庫引き当て②／<br>引き剥がし／出荷</td>
+      <td>在庫Agent＋需給最適化Agentが連携し、出荷依頼時の在庫不足を予兆検知。引き剥がしのトレードオフ（影響顧客・補填可能性・連続発生履歴・離反リスク・連鎖しわ寄せ）を自動定量化し、最適解を自律実行。営業は閾値超過時のみ承認。Orchestratorは引き剥がし発生前に代替策（段取り替え調整・前倒し生産・代替品目提案）を自律試行し、引き剥がし自体の発生頻度を低減。</td>
+      <td><span class="agent-role">在庫Agent</span><br><span class="agent-role">需給最適化Agent</span><br><span class="agent-role">出荷Agent</span></td>
+      <td><span class="a2a-mark">A2A</span>3エージェント連動、顧客対話Agentが影響顧客に自動連絡</td>
+      <td><span class="human-role">人：</span><span class="gate-mark">承認ゲート</span> 戦略顧客への引き剥がし発生時のみ承認</td>
+      <td><strong>効果：</strong>引き剥がし発生率 ▲50〜70%（事前回避）、判断品質・公平性の自動担保、連鎖しわ寄せの最小化<br><strong>残：</strong>顧客への引き剥がし交渉は人介在（長期で交渉エージェント化）</td>
+    </tr>
+
+  </tbody>
+</table>
+
+<h2>短期TOBE vs 中期TOBE 比較</h2>
+<table class="compare-table">
+  <thead>
+    <tr>
+      <th style="width:18%;">観点</th>
+      <th style="width:41%;">短期TOBE（個別業務AI）</th>
+      <th style="width:41%;">中期TOBE（社内Agentic AI）</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>AI の単位</strong></td>
+      <td class="col-short">業務ステップ内に閉じた単機能AI（OCR・予測AI・推奨AI・最適化AI）</td>
+      <td class="col-mid">業務横断で自律連携する目的指向エージェント（受注／在庫／計画／歩留まり予測／需給最適化／出荷／顧客対話）</td>
+    </tr>
+    <tr>
+      <td><strong>業務間接続</strong></td>
+      <td class="col-short">人間（承認・確認・転送）が担う。ハンドオフ箇所がリードタイムの滞留点</td>
+      <td class="col-mid">エージェント間A2A連携で自律実行。滞留点が消滅</td>
+    </tr>
+    <tr>
+      <td><strong>需給調整会議</strong></td>
+      <td class="col-short">残存（ダッシュボード活用で準備工数▲80%だが会議体自体は存続）</td>
+      <td class="col-mid">原則廃止。Orchestratorが常時実行。月次戦略レビューのみ存続</td>
+    </tr>
+    <tr>
+      <td><strong>納期回答プロセス</strong></td>
+      <td class="col-short">一次／二次の二段階構造は残存（計画承認待ちのため）</td>
+      <td class="col-mid">一発回答（一次／二次の区別が消滅）</td>
+    </tr>
+    <tr>
+      <td><strong>人間の役割</strong></td>
+      <td class="col-short">作業者＋判断者＋承認者（多重）</td>
+      <td class="col-mid">方針設定者＋例外承認者＋戦略レビュアーに縮退</td>
+    </tr>
+    <tr>
+      <td><strong>稼働時間</strong></td>
+      <td class="col-short">業務時間内中心、夜間休日は人依存</td>
+      <td class="col-mid">24/7自律稼働、人ゲートは閾値超過時のみ</td>
+    </tr>
+    <tr>
+      <td><strong>引き剥がし対応</strong></td>
+      <td class="col-short">AI推奨案を人が判断（事後対応中心）</td>
+      <td class="col-mid">事前予兆検知＋代替策自律試行（事前回避中心）</td>
+    </tr>
+    <tr>
+      <td><strong>システム構成</strong></td>
+      <td class="col-short">CS×オーダー登録ツールはAPI連携（並存）</td>
+      <td class="col-mid">SSOTへ統合済み（並存解消）</td>
+    </tr>
+    <tr>
+      <td><strong>主な定量効果（対AS-IS）</strong></td>
+      <td class="col-short">作業工数▲40〜70%、会議準備工数▲80%</td>
+      <td class="col-mid">作業工数▲90%以上、会議自体が消滅、引き剥がし発生率▲50〜70%</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>中期TOBE の効果総括と長期に向けた橋渡し</h2>
+<div class="summary-box">
+  <strong>変革の本質的価値：</strong>
+  <ul class="compact">
+    <li>SCM部門の業務は「立案・調整・転記・会議」から「<strong>方針設計・例外監督・戦略判断</strong>」へ完全に転換。</li>
+    <li>連鎖反応（引き剥がし→翌週しわ寄せ→他顧客波及）が事前回避され、需給調整の見通しが構造的に改善。</li>
+    <li>化学反応の歩留まりばらつきという物理的不確実性に対し、エージェントが連続最適化することで顧客満足度と生産効率を両立。</li>
+    <li>Gartner SCM成熟度モデルでいう「Orchestrate（指揮型）」段階への到達。</li>
+  </ul>
+  <strong>長期TOBE（社外Agentic AI 導入後）への進化方向：</strong>
+  <ul class="compact">
+    <li><strong>顧客エージェントとの双方向連携：</strong>需要シグナルがPO発行前にエージェント間で共有され、需要予測の精度が抜本的に向上。</li>
+    <li><strong>納期・出荷依頼・引き剥がし交渉の自律化：</strong>顧客側エージェントが受け答え可能になり、人介在ゼロの交渉が成立。</li>
+    <li><strong>サプライチェーン全体最適化：</strong>顧客の顧客（半導体エンドユーザー）まで遡る需要連鎖の可視化と最適化。</li>
+    <li><strong>引き取り義務契約のスマートコントラクト化：</strong>引き取り・補填・代替条件をブロックチェーン＋エージェント契約で自動執行する可能性。</li>
+  </ul>
+</div>
+
+</body>
+</html>

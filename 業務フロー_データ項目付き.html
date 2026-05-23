@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>業務フロー（データ項目付き）｜半導体材料メーカー</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: "Yu Gothic", "Meiryo", sans-serif; margin: 0; padding: 24px 32px; background: #f5f6f8; color: #1f2937; font-size: 13px; line-height: 1.65; }
+  h1 { font-size: 24px; border-bottom: 4px solid #1e3a8a; padding-bottom: 8px; color: #1e3a8a; }
+  h2 { font-size: 18px; border-left: 6px solid #1e3a8a; padding: 6px 12px; background: #e0e7ff; color: #1e3a8a; margin-top: 32px; }
+  h3 { font-size: 15px; color: #1e3a8a; margin-top: 20px; }
+  .meta { color: #64748b; font-size: 12px; margin-bottom: 16px; }
+  .premise { background: #eff6ff; border: 1px solid #1e3a8a; padding: 14px 18px; border-radius: 6px; margin: 12px 0; }
+  ul.compact { margin: 4px 0 4px 18px; padding: 0; } ul.compact li { margin: 2px 0; }
+
+  /* Swim lane */
+  .lane-wrapper { overflow-x: auto; background: white; border: 1px solid #cbd5e1; border-radius: 6px; padding: 16px; }
+  .lane-grid { display: grid; grid-template-columns: 56px repeat(5, 1fr); gap: 0; min-width: 1200px; }
+  .lane-head { background: #1e3a8a; color: white; font-weight: bold; padding: 10px 8px; text-align: center; border: 1px solid #1e3a8a; }
+  .step-col-head { background: #475569; }
+  .lane-cell { border: 1px solid #e2e8f0; min-height: 100px; padding: 6px; display: flex; align-items: center; justify-content: center; position: relative; background: #fafafa; }
+  .step-num { background: #475569; color: white; font-weight: bold; text-align: center; border: 1px solid #475569; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+  .box { background: #dbeafe; border: 2px solid #1e3a8a; border-radius: 6px; padding: 6px 8px; font-size: 11px; text-align: left; width: 100%; line-height: 1.4; }
+  .box .title { font-weight: bold; font-size: 11.5px; text-align: center; margin-bottom: 3px; }
+  .box.system { background: #fef3c7; border-color: #d97706; }
+  .box.customer { background: #dcfce7; border-color: #15803d; }
+  .box.meeting { background: #fce7f3; border-color: #be185d; }
+  .data-in { background: #e0f2fe; color: #075985; font-size: 10px; padding: 1px 4px; border-radius: 3px; display: block; margin: 2px 0; border-left: 3px solid #0284c7; }
+  .data-out { background: #fef3c7; color: #92400e; font-size: 10px; padding: 1px 4px; border-radius: 3px; display: block; margin: 2px 0; border-left: 3px solid #d97706; }
+  .arrow-down::after { content: "▼"; position: absolute; bottom: -14px; left: 50%; transform: translateX(-50%); color: #1e3a8a; font-size: 14px; z-index: 2; }
+
+  /* Data card */
+  .step-card { background: white; border: 1px solid #cbd5e1; border-left: 6px solid #1e3a8a; border-radius: 4px; padding: 14px 18px; margin: 12px 0; }
+  .step-card h3 { margin: 0 0 8px; color: #1e3a8a; font-size: 15px; }
+  .step-card .step-meta { font-size: 11px; color: #64748b; margin-bottom: 8px; }
+  .data-block { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 6px; }
+  .data-section { background: #f8fafc; border-radius: 4px; padding: 8px 12px; }
+  .data-section.in { border-left: 4px solid #0284c7; }
+  .data-section.out { border-left: 4px solid #d97706; }
+  .data-section h4 { margin: 0 0 4px; font-size: 12px; color: #334155; }
+  .data-section ul { margin: 0 0 0 18px; padding: 0; font-size: 11.5px; }
+  .data-section li { margin: 2px 0; }
+  .entity-name { font-weight: bold; color: #1e3a8a; }
+  .fields { color: #475569; font-size: 11px; }
+
+  table { width: 100%; border-collapse: collapse; background: white; margin-top: 12px; font-size: 11.5px; }
+  th, td { border: 1px solid #cbd5e1; padding: 8px 10px; vertical-align: top; text-align: left; }
+  th { background: #1e3a8a; color: white; font-weight: bold; text-align: center; }
+  tbody tr:nth-child(even) { background: #f8fafc; }
+  td.step-cell { background: #e0e7ff; font-weight: bold; text-align: center; color: #1e3a8a; vertical-align: middle; width: 100px; }
+</style>
+</head>
+<body>
+
+<h1>業務フロー（データ項目付き版）｜半導体材料メーカー AS-IS</h1>
+<div class="meta">作成日：2026-05-14 ／ 縦スイムレーン＋業務ステップ別データカード＋ステップ×データ項目マトリクス</div>
+
+<div class="premise">
+  <strong>本資料の構成：</strong>
+  <ul class="compact">
+    <li><strong>第1部：スイムレーン業務フロー</strong>（コンパクト版）に各ステップで扱う主要データを併記</li>
+    <li><strong>第2部：業務ステップ別データカード</strong>で入力データ・処理・出力データ・関与システムを詳細記載</li>
+    <li><strong>第3部：ステップ×データエンティティ マトリクス</strong>でCRUD関係を一覧化</li>
+  </ul>
+  <strong>データ表記凡例：</strong>
+  <span class="data-in">入力データ</span>
+  <span class="data-out">出力データ</span>
+</div>
+
+<!-- ============ 第1部：スイムレーン ============ -->
+<h2>第1部：スイムレーン業務フロー（データ項目付き）</h2>
+
+<div class="lane-wrapper">
+  <div class="lane-grid">
+    <div class="lane-head step-col-head">No.</div>
+    <div class="lane-head">顧客</div>
+    <div class="lane-head">営業部</div>
+    <div class="lane-head">SCM部</div>
+    <div class="lane-head">生産部</div>
+    <div class="lane-head">システム</div>
+
+    <!-- ① -->
+    <div class="step-num">①</div>
+    <div class="lane-cell"><div class="box customer arrow-down">
+      <div class="title">PO発行</div>
+      <span class="data-out">PO（顧客コード/品目/数量/希望納期）</span>
+    </div></div>
+    <div class="lane-cell"><div class="box arrow-down">
+      <div class="title">PO受領・確認・登録</div>
+      <span class="data-in">受領PO</span>
+      <span class="data-in">顧客マスタ</span>
+      <span class="data-in">品目マスタ</span>
+      <span class="data-out">登録済PO（PO番号採番）</span>
+    </div></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"><div class="box system arrow-down">
+      <div class="title">CSシステム</div>
+      <span class="data-out">POヘッダ/明細データ</span>
+    </div></div>
+
+    <!-- ② -->
+    <div class="step-num">②</div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"><div class="box arrow-down">
+      <div class="title">在庫引き当て①</div>
+      <span class="data-in">POデータ</span>
+      <span class="data-in">在庫データ（余剰在庫）</span>
+      <span class="data-in">顧客優先度（属人）</span>
+      <span class="data-out">引当データ（PO×ロット×数量）</span>
+    </div></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"><div class="box system arrow-down">
+      <div class="title">在庫照会・引当処理</div>
+      <span class="data-in">在庫マスタ</span>
+      <span class="data-out">引当ステータス更新</span>
+    </div></div>
+
+    <!-- ③ -->
+    <div class="step-num">③</div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"><div class="box arrow-down">
+      <div class="title">生産依頼数入力</div>
+      <span class="data-in">引当後不足数（=PO数量-引当数量）</span>
+      <span class="data-out">生産依頼データ</span>
+    </div></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"><div class="box system arrow-down">
+      <div class="title">オーダー登録ツール</div>
+      <span class="data-out">生産依頼レコード</span>
+    </div></div>
+
+    <!-- ④ -->
+    <div class="step-num">④</div>
+    <div class="lane-cell"><div class="box customer arrow-down">
+      <div class="title">納期一次回答受領</div>
+      <span class="data-in">回答納期（標準LT）</span>
+    </div></div>
+    <div class="lane-cell"><div class="box arrow-down">
+      <div class="title">納期一次回答</div>
+      <span class="data-in">標準LTマスタ</span>
+      <span class="data-out">納期回答（一次）</span>
+    </div></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"><div class="box system arrow-down">
+      <div class="title">CSシステム自動回答</div>
+      <span class="data-out">納期回答データ（区分=一次）</span>
+    </div></div>
+
+    <!-- ⑤ -->
+    <div class="step-num">⑤</div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"><div class="box arrow-down">
+      <div class="title">生産計画策定</div>
+      <span class="data-in">生産依頼データ</span>
+      <span class="data-in">ライン能力マスタ</span>
+      <span class="data-in">歩留まり実績</span>
+      <span class="data-in">在庫データ</span>
+      <span class="data-out">生産計画データ</span>
+    </div></div>
+    <div class="lane-cell"><div class="box arrow-down">
+      <div class="title">能力情報提供</div>
+      <span class="data-out">ライン稼働状況/段取り情報</span>
+    </div></div>
+    <div class="lane-cell"><div class="box system arrow-down">
+      <div class="title">Excel／オーダー登録ツール</div>
+      <span class="data-out">生産計画ファイル（版管理）</span>
+    </div></div>
+
+    <!-- ⑥ -->
+    <div class="step-num">⑥</div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"><div class="box meeting arrow-down">
+      <div class="title">需給調整会議（営業）</div>
+      <span class="data-in">PO需要集計</span>
+      <span class="data-in">顧客重要度情報</span>
+      <span class="data-out">調整議事録</span>
+    </div></div>
+    <div class="lane-cell"><div class="box meeting arrow-down">
+      <div class="title">需給調整会議（SCM）</div>
+      <span class="data-in">生産計画</span>
+      <span class="data-in">在庫見込み</span>
+      <span class="data-out">調整結果（計画修正・優先度）</span>
+    </div></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"><div class="box system arrow-down">
+      <div class="title">手集計Excel</div>
+    </div></div>
+
+    <!-- ⑦ -->
+    <div class="step-num">⑦</div>
+    <div class="lane-cell"><div class="box customer arrow-down">
+      <div class="title">納期二次回答受領</div>
+      <span class="data-in">確定納期</span>
+    </div></div>
+    <div class="lane-cell"><div class="box arrow-down">
+      <div class="title">納期二次回答</div>
+      <span class="data-in">確定生産計画</span>
+      <span class="data-out">納期回答（二次/変更通知）</span>
+    </div></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"><div class="box system arrow-down">
+      <div class="title">CSシステム二次回答登録</div>
+      <span class="data-out">納期回答データ（区分=二次）</span>
+    </div></div>
+
+    <!-- ⑧ -->
+    <div class="step-num">⑧</div>
+    <div class="lane-cell"><div class="box customer arrow-down">
+      <div class="title">出荷依頼発行</div>
+      <span class="data-out">出荷依頼（PO番号紐付）</span>
+    </div></div>
+    <div class="lane-cell"><div class="box arrow-down">
+      <div class="title">出荷依頼受領・PO紐付</div>
+      <span class="data-in">出荷依頼</span>
+      <span class="data-in">POデータ</span>
+      <span class="data-out">登録済出荷依頼</span>
+    </div></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"><div class="box system arrow-down">
+      <div class="title">CSシステム出荷依頼登録</div>
+      <span class="data-out">出荷依頼データ</span>
+    </div></div>
+
+    <!-- ⑨ -->
+    <div class="step-num">⑨</div>
+    <div class="lane-cell"><div class="box customer">
+      <div class="title">出荷品受領</div>
+      <span class="data-in">出荷品＋伝票</span>
+    </div></div>
+    <div class="lane-cell"><div class="box">
+      <div class="title">在庫引き当て②／引き剥がし</div>
+      <span class="data-in">出荷依頼</span>
+      <span class="data-in">リアルタイム在庫</span>
+      <span class="data-in">既存引当データ</span>
+      <span class="data-out">引き剥がし履歴</span>
+      <span class="data-out">出荷指示</span>
+    </div></div>
+    <div class="lane-cell"><div class="box">
+      <div class="title">需給再調整</div>
+      <span class="data-out">翌週計画への追加</span>
+    </div></div>
+    <div class="lane-cell"><div class="box">
+      <div class="title">出荷準備</div>
+      <span class="data-in">出荷指示</span>
+      <span class="data-out">出荷実績</span>
+    </div></div>
+    <div class="lane-cell"><div class="box system">
+      <div class="title">引当処理／出荷指示</div>
+      <span class="data-out">在庫更新／出荷伝票</span>
+    </div></div>
+  </div>
+</div>
+
+<!-- ============ 第2部：データカード ============ -->
+<h2>第2部：業務ステップ別データカード</h2>
+<p>各業務ステップで扱う入出力データ・データエンティティ・属性レベルでの詳細を整理。</p>
+
+<!-- ① -->
+<div class="step-card">
+  <h3>① PO受領（CSシステム登録）</h3>
+  <div class="step-meta">主管：営業部 ／ 利用システム：CSシステム ／ トリガ：顧客からのPO受領</div>
+  <div class="data-block">
+    <div class="data-section in">
+      <h4>入力データ</h4>
+      <ul>
+        <li><span class="entity-name">受領PO（外部入力）</span><br><span class="fields">PO番号（顧客発番）、顧客発行日、品目コード、品目名、数量、単価、希望納入日、納入先住所、特記事項</span></li>
+        <li><span class="entity-name">顧客マスタ</span><br><span class="fields">顧客コード、顧客名、業種、優先度ランク、契約条件、最低保証数量、引取義務条項、与信限度額</span></li>
+        <li><span class="entity-name">品目マスタ</span><br><span class="fields">品目コード、品目名、化学組成、規格、単位、保管温度、有効期限日数、QC基準</span></li>
+      </ul>
+    </div>
+    <div class="data-section out">
+      <h4>出力データ</h4>
+      <ul>
+        <li><span class="entity-name">POヘッダ</span><br><span class="fields">自社PO番号（採番）、顧客コード、顧客PO番号、PO発行日、希望納期、納入先、PO状態=受領、登録ユーザ、登録日時</span></li>
+        <li><span class="entity-name">PO明細</span><br><span class="fields">PO番号、明細番号、品目コード、数量、単価、希望納入日、明細状態</span></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ② -->
+<div class="step-card">
+  <h3>② 在庫引き当て①（PO受領時点）</h3>
+  <div class="step-meta">主管：営業部 ／ 利用システム：CSシステム ／ トリガ：PO登録完了</div>
+  <div class="data-block">
+    <div class="data-section in">
+      <h4>入力データ</h4>
+      <ul>
+        <li><span class="entity-name">POヘッダ／明細</span></li>
+        <li><span class="entity-name">在庫データ（余剰在庫）</span><br><span class="fields">在庫ID、品目コード、ロット番号、保管場所、製造日、有効期限、入庫数量、現在数量、引当ステータス、確保顧客コード、余剰在庫フラグ</span></li>
+        <li><span class="entity-name">顧客優先度（属人判断）</span><br><span class="fields">顧客重要度、契約条件、納期緊急度、過去引き剥がし履歴</span></li>
+      </ul>
+    </div>
+    <div class="data-section out">
+      <h4>出力データ</h4>
+      <ul>
+        <li><span class="entity-name">引当データ</span><br><span class="fields">引当ID、PO番号、PO明細番号、品目コード、ロット番号、引当数量、引当日時、引当区分=PO受領時、優先度判定根拠（フリーテキスト）</span></li>
+        <li><span class="entity-name">在庫データ（更新）</span><br><span class="fields">引当ステータス更新、確保顧客コード更新</span></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ③ -->
+<div class="step-card">
+  <h3>③ 生産依頼数入力（オーダー登録ツール）</h3>
+  <div class="step-meta">主管：営業部 ／ 利用システム：オーダー登録ツール ／ トリガ：引き当て後の不足数確定</div>
+  <div class="data-block">
+    <div class="data-section in">
+      <h4>入力データ</h4>
+      <ul>
+        <li><span class="entity-name">引当後不足数</span><br><span class="fields">=PO数量 − 引当数量（PO番号・品目別）</span></li>
+        <li><span class="entity-name">品目マスタ</span></li>
+      </ul>
+    </div>
+    <div class="data-section out">
+      <h4>出力データ</h4>
+      <ul>
+        <li><span class="entity-name">生産依頼データ</span><br><span class="fields">依頼番号（採番）、紐付PO番号、品目コード、依頼数量、希望生産完了日、優先度、依頼ステータス、登録日時、登録ユーザ</span></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ④ -->
+<div class="step-card">
+  <h3>④ 納期一次回答（標準LT通知）</h3>
+  <div class="step-meta">主管：CSシステム自動 ／ 利用システム：CSシステム ／ トリガ：生産依頼登録</div>
+  <div class="data-block">
+    <div class="data-section in">
+      <h4>入力データ</h4>
+      <ul>
+        <li><span class="entity-name">標準LTマスタ</span><br><span class="fields">品目コード、標準リードタイム日数、適用顧客区分</span></li>
+        <li><span class="entity-name">PO明細</span></li>
+      </ul>
+    </div>
+    <div class="data-section out">
+      <h4>出力データ</h4>
+      <ul>
+        <li><span class="entity-name">納期回答データ</span><br><span class="fields">回答ID、PO番号、明細番号、回答区分=一次、回答納期（=PO登録日+標準LT）、回答日時、回答方法</span></li>
+        <li>顧客への通知（メール/EDI）</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ⑤ -->
+<div class="step-card">
+  <h3>⑤ 生産計画策定（SCM部）</h3>
+  <div class="step-meta">主管：SCM部 ／ 利用システム：Excel／オーダー登録ツール ／ トリガ：生産依頼蓄積（週次バッチ）</div>
+  <div class="data-block">
+    <div class="data-section in">
+      <h4>入力データ</h4>
+      <ul>
+        <li><span class="entity-name">生産依頼データ</span>（複数POを集約）</li>
+        <li><span class="entity-name">ラインマスタ</span><br><span class="fields">ラインコード、生産可能品目、品目別生産速度、品目別段取り時間、段取り替えコスト、稼働時間</span></li>
+        <li><span class="entity-name">在庫データ</span></li>
+        <li><span class="entity-name">歩留まり実績データ</span><br><span class="fields">ロット番号、品目、計画数量、実績数量、歩留まり率、製造条件（温度・反応時間・原料ロット）</span></li>
+      </ul>
+    </div>
+    <div class="data-section out">
+      <h4>出力データ</h4>
+      <ul>
+        <li><span class="entity-name">生産計画データ</span><br><span class="fields">計画番号、計画期間、品目コード、ラインコード、計画数量、計画開始日、計画完了日、段取り情報、計画版数、計画ステータス、策定者</span></li>
+        <li>歩留まり予測値（属人的・経験則ベース）</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ⑥ -->
+<div class="step-card">
+  <h3>⑥ 需給調整会議（SCM部×営業部合同）</h3>
+  <div class="step-meta">主管：SCM部＋営業部 ／ 利用システム：Excel（手集計） ／ トリガ：週次定例</div>
+  <div class="data-block">
+    <div class="data-section in">
+      <h4>入力データ</h4>
+      <ul>
+        <li><span class="entity-name">需給ギャップ集計</span><br><span class="fields">品目別需要（PO集計）vs 供給（在庫+計画）、顧客別充足率</span></li>
+        <li><span class="entity-name">生産計画案</span></li>
+        <li><span class="entity-name">顧客重要度／契約条件</span></li>
+        <li><span class="entity-name">過去引き剥がし履歴（属人メモ）</span></li>
+        <li><span class="entity-name">ライン稼働状況</span></li>
+      </ul>
+    </div>
+    <div class="data-section out">
+      <h4>出力データ</h4>
+      <ul>
+        <li><span class="entity-name">需給調整議事録</span><br><span class="fields">議事録ID、日時、参加者、調整事項、決定内容、影響顧客、影響品目、責任者</span></li>
+        <li><span class="entity-name">生産計画（修正版）</span></li>
+        <li><span class="entity-name">引当優先度の合意結果</span>（属人的メモに残ることが多い）</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ⑦ -->
+<div class="step-card">
+  <h3>⑦ 営業確認＆納期二次回答</h3>
+  <div class="step-meta">主管：営業部 ／ 利用システム：CSシステム ／ トリガ：需給調整会議終了</div>
+  <div class="data-block">
+    <div class="data-section in">
+      <h4>入力データ</h4>
+      <ul>
+        <li><span class="entity-name">確定生産計画</span></li>
+        <li><span class="entity-name">納期回答（一次）</span></li>
+      </ul>
+    </div>
+    <div class="data-section out">
+      <h4>出力データ</h4>
+      <ul>
+        <li><span class="entity-name">納期回答データ</span><br><span class="fields">回答区分=二次、確定納期、回答日時、変更理由、影響度</span></li>
+        <li>顧客への通知</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ⑧ -->
+<div class="step-card">
+  <h3>⑧ 出荷依頼受領</h3>
+  <div class="step-meta">主管：営業部 ／ 利用システム：CSシステム ／ トリガ：顧客からの出荷依頼</div>
+  <div class="data-block">
+    <div class="data-section in">
+      <h4>入力データ</h4>
+      <ul>
+        <li><span class="entity-name">出荷依頼（外部入力）</span><br><span class="fields">顧客発行出荷依頼番号、紐付PO番号、品目コード、出荷数量、希望出荷日、配送先住所、特記事項</span></li>
+        <li><span class="entity-name">POデータ</span>（紐付確認用）</li>
+      </ul>
+    </div>
+    <div class="data-section out">
+      <h4>出力データ</h4>
+      <ul>
+        <li><span class="entity-name">出荷依頼データ</span><br><span class="fields">自社出荷依頼番号、顧客依頼番号、紐付PO番号、品目、出荷数量、希望出荷日、配送先、状態、登録日時</span></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ⑨ -->
+<div class="step-card">
+  <h3>⑨ 在庫引き当て②／引き剥がし／出荷</h3>
+  <div class="step-meta">主管：営業部＋SCM部 ／ 利用システム：CSシステム ／ トリガ：出荷依頼登録</div>
+  <div class="data-block">
+    <div class="data-section in">
+      <h4>入力データ</h4>
+      <ul>
+        <li><span class="entity-name">出荷依頼データ</span></li>
+        <li><span class="entity-name">リアルタイム在庫データ</span><br><span class="fields">在庫ID、品目、ロット、現在数量、引当ステータス、確保顧客</span></li>
+        <li><span class="entity-name">既存引当データ</span>（PO受領時引当）</li>
+        <li><span class="entity-name">引き剥がし候補顧客の次回出荷予定</span></li>
+        <li><span class="entity-name">過去引き剥がし履歴</span>（属人的メモ）</li>
+      </ul>
+    </div>
+    <div class="data-section out">
+      <h4>出力データ</h4>
+      <ul>
+        <li><span class="entity-name">引当データ（更新）</span><br><span class="fields">出荷依頼への引当確定 or 引き剥がし実行</span></li>
+        <li><span class="entity-name">引き剥がし履歴</span><br><span class="fields">履歴ID、対象出荷依頼、引き剥がし元顧客、引き剥がし先顧客、品目、数量、補填予定日、発生日時、理由、承認者</span></li>
+        <li><span class="entity-name">出荷指示データ</span><br><span class="fields">指示番号、出荷依頼番号、ロット番号、出荷数量、出荷予定日</span></li>
+        <li><span class="entity-name">出荷実績データ</span><br><span class="fields">指示番号、実出荷数量、実出荷日、伝票番号、配送業者、追跡番号</span></li>
+        <li><span class="entity-name">翌週生産計画への追加要求</span>（引き剥がし発生時）</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 第3部：マトリクス ============ -->
+<h2>第3部：ステップ × データエンティティ CRUDマトリクス</h2>
+<p>各業務ステップが主要データエンティティに対して行う操作（C=作成／R=参照／U=更新／D=削除）を一覧化。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width:80px;">ステップ</th>
+      <th>顧客<br>マスタ</th>
+      <th>品目<br>マスタ</th>
+      <th>ライン<br>マスタ</th>
+      <th>標準LT<br>マスタ</th>
+      <th>POデータ</th>
+      <th>在庫<br>データ</th>
+      <th>引当<br>データ</th>
+      <th>生産依頼<br>データ</th>
+      <th>生産計画<br>データ</th>
+      <th>歩留まり<br>実績</th>
+      <th>納期回答<br>データ</th>
+      <th>需給調整<br>議事録</th>
+      <th>出荷依頼<br>データ</th>
+      <th>引き剥がし<br>履歴</th>
+      <th>出荷指示／<br>実績</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td class="step-cell">①PO受領</td><td>R</td><td>R</td><td></td><td></td><td><strong>C</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td class="step-cell">②引当①</td><td>R</td><td>R</td><td></td><td></td><td>R/U</td><td>R/U</td><td><strong>C</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td class="step-cell">③生産依頼</td><td></td><td>R</td><td></td><td></td><td>R</td><td></td><td>R</td><td><strong>C</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td class="step-cell">④納期一次</td><td>R</td><td>R</td><td></td><td>R</td><td>R</td><td></td><td></td><td>R</td><td></td><td></td><td><strong>C</strong></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td class="step-cell">⑤生産計画</td><td></td><td>R</td><td>R</td><td></td><td>R</td><td>R</td><td>R</td><td>R</td><td><strong>C</strong></td><td>R</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td class="step-cell">⑥需給調整</td><td>R</td><td>R</td><td>R</td><td></td><td>R</td><td>R</td><td>R/U</td><td>R</td><td>R/U</td><td>R</td><td></td><td><strong>C</strong></td><td></td><td>R</td><td></td></tr>
+    <tr><td class="step-cell">⑦納期二次</td><td>R</td><td></td><td></td><td></td><td>R/U</td><td></td><td></td><td></td><td>R</td><td></td><td>U</td><td>R</td><td></td><td></td><td></td></tr>
+    <tr><td class="step-cell">⑧出荷依頼</td><td>R</td><td>R</td><td></td><td></td><td>R</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><strong>C</strong></td><td></td><td></td></tr>
+    <tr><td class="step-cell">⑨引当②／<br>引き剥がし／出荷</td><td>R</td><td>R</td><td></td><td></td><td>R/U</td><td>R/U</td><td>U</td><td>U</td><td>U</td><td><strong>C</strong></td><td></td><td></td><td>R/U</td><td><strong>C</strong></td><td><strong>C</strong></td></tr>
+  </tbody>
+</table>
+
+<div class="premise" style="margin-top:24px;">
+  <strong>マトリクスから読み取れる構造的論点：</strong>
+  <ul class="compact">
+    <li><strong>引当データへの書き込みが分散：</strong>②（PO受領時）と⑨（出荷依頼時）で重複した引当処理が行われ、整合性管理コストが高い。</li>
+    <li><strong>顧客優先度ロジックがマスタ化されていない：</strong>②⑥⑨で属人的に判断され、データとして可視化・履歴化されていない。</li>
+    <li><strong>歩留まり実績は⑨で書き込まれるが、⑤での参照が経験則ベース：</strong>データはあるが、活用が属人化。</li>
+    <li><strong>引き剥がし履歴の蓄積場所が曖昧：</strong>正式テーブル化されておらず、属人的メモが多い。</li>
+    <li><strong>需給調整議事録が⑥でのみ生成され、その意思決定の根拠データが断片的：</strong>後から検証・学習する基盤になっていない。</li>
+  </ul>
+</div>
+
+</body>
+</html>

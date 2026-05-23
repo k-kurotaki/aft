@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>需給調整発生箇所整理｜半導体材料メーカー</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Yu Gothic", "Meiryo", "Hiragino Sans", sans-serif;
+    margin: 0; padding: 0; background: #f5f6f8; color: #1f2937;
+    font-size: 13px; line-height: 1.6;
+  }
+  header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #6d28d9 100%);
+    color: white; padding: 32px 40px;
+  }
+  header h1 { margin: 0 0 6px; font-size: 26px; }
+  header .subtitle { font-size: 13px; opacity: 0.9; }
+  header .meta { font-size: 11.5px; opacity: 0.75; margin-top: 8px; }
+
+  main { max-width: 1400px; margin: 0 auto; padding: 24px 28px; }
+
+  h2 {
+    font-size: 19px; color: #1e3a8a; border-left: 6px solid #1e3a8a;
+    padding: 6px 12px; background: #e0e7ff; margin: 28px 0 12px;
+  }
+  h3 {
+    font-size: 15px; color: #0e7490; margin: 18px 0 8px;
+    border-bottom: 2px solid #cffafe; padding-bottom: 4px;
+  }
+  p { margin: 6px 0; }
+
+  /* ============ Legend / Intro ============ */
+  .legend-box {
+    background: white; border: 1px solid #cbd5e1; border-radius: 8px;
+    padding: 14px 20px; margin: 10px 0 20px;
+  }
+  .legend-box strong { color: #1e3a8a; }
+  .legend-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px; margin-top: 10px;
+  }
+  .legend-item {
+    border-left: 4px solid; padding: 6px 10px; background: #f8fafc;
+    font-size: 12px;
+  }
+  .lg-event { border-left-color: #b45309; }
+  .lg-struct { border-left-color: #1e40af; }
+  .lg-verify { border-left-color: #be185d; }
+  .lg-demand { border-left-color: #ea580c; }
+  .lg-supply { border-left-color: #0e7490; }
+
+  /* ============ Badges ============ */
+  .badge {
+    display: inline-block; padding: 2px 8px; border-radius: 10px;
+    font-size: 10.5px; font-weight: bold; margin: 1px 3px 1px 0;
+    white-space: nowrap;
+  }
+  .b-event { background: #fed7aa; color: #b45309; }
+  .b-struct { background: #dbeafe; color: #1e40af; }
+  .b-verify { background: #fce7f3; color: #be185d; }
+  .b-demand { background: #ffedd5; color: #ea580c; }
+  .b-supply { background: #cffafe; color: #0e7490; }
+  .b-short { background: #cffafe; color: #0e7490; }
+  .b-mid { background: #ede9fe; color: #6d28d9; }
+  .b-new { background: #fef3c7; color: #92400e; }
+
+  /* ============ Issue Summary Cards ============ */
+  .issue-summary {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 12px; margin: 12px 0;
+  }
+  .issue-group {
+    background: white; border: 1px solid #cbd5e1; border-radius: 8px;
+    padding: 14px 16px; border-top: 5px solid;
+  }
+  .issue-group h4 {
+    margin: 0 0 8px; font-size: 14px; color: #1e3a8a;
+  }
+  .issue-group.g-a { border-top-color: #b45309; }
+  .issue-group.g-b { border-top-color: #ea580c; }
+  .issue-group.g-c { border-top-color: #1e40af; }
+  .issue-group.g-d { border-top-color: #6d28d9; }
+  .issue-list { margin: 4px 0 0 0; padding-left: 18px; }
+  .issue-list li { margin: 4px 0; font-size: 12.5px; }
+  .issue-code {
+    display: inline-block; background: #1e3a8a; color: white;
+    padding: 1px 6px; border-radius: 3px; font-size: 10.5px;
+    font-weight: bold; margin-right: 4px; min-width: 22px; text-align: center;
+  }
+
+  /* ============ Tabs ============ */
+  .tab-nav {
+    display: flex; flex-wrap: wrap; gap: 4px;
+    border-bottom: 3px solid #1e3a8a; margin: 16px 0 0;
+  }
+  .tab-button {
+    background: #e2e8f0; border: none; padding: 10px 16px;
+    cursor: pointer; font-size: 13px; font-weight: bold;
+    color: #475569; border-radius: 6px 6px 0 0;
+    transition: background 0.15s;
+  }
+  .tab-button:hover { background: #cbd5e1; }
+  .tab-button.active {
+    background: #1e3a8a; color: white;
+  }
+  .tab-content {
+    display: none; background: white;
+    border: 1px solid #1e3a8a; border-top: none;
+    padding: 20px 22px; border-radius: 0 0 8px 8px;
+  }
+  .tab-content.active { display: block; }
+  .tab-intro {
+    background: #f0f9ff; border-left: 4px solid #0284c7;
+    padding: 10px 14px; margin-bottom: 14px; font-size: 12.5px;
+  }
+  .tab-intro strong { color: #0284c7; }
+
+  /* ============ Matrix table ============ */
+  table.matrix {
+    width: 100%; border-collapse: collapse; background: white;
+    font-size: 11.5px; margin-top: 8px;
+  }
+  table.matrix th, table.matrix td {
+    border: 1px solid #cbd5e1; padding: 6px 8px; vertical-align: top;
+  }
+  table.matrix th {
+    background: #1e3a8a; color: white; text-align: center;
+    font-weight: bold; font-size: 12px;
+  }
+  table.matrix th.demand-h { background: #ea580c; }
+  table.matrix th.supply-h { background: #0e7490; }
+  table.matrix th.subcol { background: #475569; font-size: 11px; font-weight: normal; }
+  table.matrix td.process-cell {
+    background: #e0e7ff; font-weight: bold; color: #1e3a8a;
+    text-align: center; width: 130px; vertical-align: middle;
+    font-size: 11.5px;
+  }
+  table.matrix td.process-cell .pcode {
+    display: block; font-size: 10px; color: #64748b; margin-bottom: 2px;
+  }
+  table.matrix td.no-event {
+    background: #f8fafc; color: #94a3b8; text-align: center;
+    font-style: italic; font-size: 10.5px;
+  }
+  table.matrix td.demand-col { border-right: 1px solid #cbd5e1; }
+  table.matrix td.supply-col { border-left: 2px solid #1e3a8a; }
+  table.matrix td.col-divider-left { border-left: 3px solid #1e40af; }
+
+  /* Issue chips in cells */
+  .issue-chip {
+    display: inline-block; padding: 3px 7px; margin: 2px 3px 2px 0;
+    border-radius: 4px; font-size: 10.5px; font-weight: bold;
+    border: 1px solid;
+  }
+  .ic-event { background: #fef3c7; border-color: #b45309; color: #92400e; }
+  .ic-struct { background: #dbeafe; border-color: #1e40af; color: #1e3a8a; }
+  .ic-verify-event { background: #fef3c7; border-color: #be185d; color: #92400e; }
+  .ic-verify-struct { background: #fce7f3; border-color: #be185d; color: #be185d; }
+  .issue-chip .verify-mark { font-weight: bold; color: #be185d; margin-left: 2px; }
+
+  /* Quantity flow */
+  .qty-add { color: #047857; font-weight: bold; }
+  .qty-sub { color: #b91c1c; font-weight: bold; }
+  .qty-neutral { color: #475569; }
+  .qty-cell { font-size: 11px; line-height: 1.5; }
+
+  /* Hybrid 2-layer cells */
+  .hybrid-cell { padding: 0 !important; }
+  .hybrid-cell .qty-layer {
+    background: #f0fdf4; padding: 5px 7px; border-bottom: 1px dashed #cbd5e1;
+    font-size: 11px;
+  }
+  .hybrid-cell .issue-layer {
+    padding: 5px 7px; font-size: 10.5px;
+  }
+  .hybrid-cell .no-flow { color: #94a3b8; font-style: italic; }
+
+  /* ============ Swimlane (Tab4) ============ */
+  .swimlane-wrap { overflow-x: auto; }
+  .swimlane {
+    display: grid;
+    grid-template-columns: 80px repeat(11, minmax(95px, 1fr));
+    background: white; border: 1px solid #cbd5e1; border-radius: 6px;
+    min-width: 1200px;
+  }
+  .sl-header, .sl-lane {
+    display: contents;
+  }
+  .sl-axis-label {
+    background: #1e3a8a; color: white; font-weight: bold;
+    padding: 8px 6px; font-size: 11px; text-align: center;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .sl-axis-label.demand { background: #ea580c; }
+  .sl-axis-label.supply { background: #0e7490; }
+  .sl-process-header {
+    background: #475569; color: white;
+    padding: 6px 4px; font-size: 10.5px; text-align: center;
+    font-weight: bold; border-left: 1px solid #cbd5e1;
+  }
+  .sl-cell {
+    border-left: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;
+    padding: 6px 4px; min-height: 60px; position: relative;
+    font-size: 10.5px;
+  }
+  .sl-cell.demand-cell { background: #fff7ed; }
+  .sl-cell.supply-cell { background: #f0fdfa; }
+  .sl-bar {
+    display: block; padding: 2px 4px; margin: 2px 0;
+    border-radius: 3px; font-size: 10px; font-weight: bold;
+  }
+  .sl-bar-demand { background: #fed7aa; color: #9a3412; }
+  .sl-bar-supply { background: #99f6e4; color: #115e59; }
+  .sl-bar-plan { background: #ede9fe; color: #6d28d9; }
+  .sl-bar-yield { background: #d1fae5; color: #047857; }
+  .sl-issue-tag {
+    display: inline-block; background: #fce7f3; color: #be185d;
+    padding: 1px 4px; border-radius: 3px; font-size: 9.5px;
+    font-weight: bold; margin-top: 3px; border: 1px solid #be185d;
+  }
+  .sl-issue-tag.struct { background: #dbeafe; color: #1e3a8a; border-color: #1e3a8a; }
+  .sl-issue-tag.event { background: #fef3c7; color: #92400e; border-color: #b45309; }
+  .sl-divider-row {
+    grid-column: 1 / -1; background: #1e3a8a; height: 3px;
+  }
+
+  /* ============ Heatmap (Tab5) ============ */
+  .heatmap-grid {
+    display: grid;
+    grid-template-columns: 130px repeat(5, 1fr);
+    border: 1px solid #cbd5e1; background: white;
+  }
+  .heatmap-grid > div {
+    padding: 8px 6px; border-bottom: 1px solid #e2e8f0;
+    border-right: 1px solid #e2e8f0; font-size: 11.5px;
+    min-height: 38px; display: flex; align-items: center;
+    justify-content: center; text-align: center;
+  }
+  .heatmap-grid .hm-h {
+    background: #1e3a8a; color: white; font-weight: bold;
+  }
+  .heatmap-grid .hm-h.demand { background: #ea580c; }
+  .heatmap-grid .hm-h.supply { background: #0e7490; }
+  .heatmap-grid .hm-row-label {
+    background: #e0e7ff; color: #1e3a8a; font-weight: bold;
+    text-align: left; justify-content: flex-start; padding-left: 10px;
+    font-size: 11px;
+  }
+  .hm-cell-0 { background: #f8fafc; color: #cbd5e1; }
+  .hm-cell-1 { background: #fef3c7; color: #92400e; }
+  .hm-cell-2 { background: #fde68a; color: #78350f; }
+  .hm-cell-3 { background: #fb923c; color: white; }
+  .hm-cell-4 { background: #dc2626; color: white; font-weight: bold; }
+  .hm-codes { font-size: 10px; font-weight: bold; line-height: 1.2; }
+
+  .heatmap-legend {
+    display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap;
+    font-size: 11px; align-items: center;
+  }
+  .heatmap-legend .hl-swatch {
+    display: inline-block; width: 16px; height: 16px;
+    border: 1px solid #cbd5e1; margin-right: 4px;
+    vertical-align: middle;
+  }
+
+  .prescription-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 12px; margin-top: 14px;
+  }
+  .rx-card {
+    background: white; border: 1px solid #cbd5e1; border-radius: 8px;
+    padding: 12px 14px; border-top: 5px solid;
+  }
+  .rx-card.rx-event { border-top-color: #b45309; }
+  .rx-card.rx-struct { border-top-color: #1e40af; }
+  .rx-card.rx-verify-event { border-top-color: #b45309; border-left: 3px solid #be185d; }
+  .rx-card.rx-verify-struct { border-top-color: #1e40af; border-left: 3px solid #be185d; }
+  .rx-card h4 {
+    margin: 0 0 6px; font-size: 13px; color: #1e3a8a;
+  }
+  .rx-card h4 .rx-code {
+    display: inline-block; background: #1e3a8a; color: white;
+    padding: 1px 6px; border-radius: 3px; font-size: 10.5px;
+    margin-right: 5px;
+  }
+  .rx-card .rx-row {
+    margin: 5px 0; font-size: 11.5px;
+  }
+  .rx-card .rx-label {
+    display: inline-block; font-weight: bold; min-width: 78px;
+    font-size: 10.5px; padding: 1px 6px; border-radius: 3px;
+    margin-right: 5px;
+  }
+  .rx-card .rx-label.short { background: #cffafe; color: #0e7490; }
+  .rx-card .rx-label.mid { background: #ede9fe; color: #6d28d9; }
+  .rx-card .rx-label.new { background: #fef3c7; color: #92400e; }
+  .rx-card .rx-label.effect { background: #d1fae5; color: #047857; }
+  .rx-card .rx-na { color: #94a3b8; font-style: italic; }
+
+  /* ============ AI Solution Matrix ============ */
+  table.ai-matrix {
+    width: 100%; border-collapse: collapse; background: white;
+    font-size: 11px; margin-top: 8px;
+  }
+  table.ai-matrix th, table.ai-matrix td {
+    border: 1px solid #cbd5e1; padding: 6px 8px; vertical-align: top;
+  }
+  table.ai-matrix th { background: #6d28d9; color: white; text-align: center; }
+  table.ai-matrix th.demand-h { background: #ea580c; }
+  table.ai-matrix th.supply-h { background: #0e7490; }
+  table.ai-matrix td.process-cell {
+    background: #ede9fe; color: #6d28d9; font-weight: bold; text-align: center;
+    vertical-align: middle; width: 130px;
+  }
+  table.ai-matrix .ai-block { font-size: 10.5px; }
+  table.ai-matrix .ai-block .ai-label {
+    display: inline-block; padding: 1px 5px; border-radius: 3px;
+    font-size: 9.5px; font-weight: bold; margin-right: 3px;
+  }
+  table.ai-matrix .ai-block .ai-label.s { background: #cffafe; color: #0e7490; }
+  table.ai-matrix .ai-block .ai-label.m { background: #ede9fe; color: #6d28d9; }
+  table.ai-matrix .ai-block .ai-label.n { background: #fef3c7; color: #92400e; }
+  table.ai-matrix td.no-event {
+    background: #f8fafc; color: #94a3b8; text-align: center;
+    font-style: italic; font-size: 10.5px;
+  }
+
+  /* ============ Discussion section ============ */
+  .discussion-card {
+    background: white; border: 1px solid #cbd5e1; border-radius: 8px;
+    padding: 14px 18px; margin: 10px 0; border-left: 5px solid #be185d;
+  }
+  .discussion-card h4 {
+    margin: 0 0 6px; font-size: 14px; color: #be185d;
+  }
+  .discussion-card .talk-points {
+    margin: 6px 0 0 18px; padding: 0; font-size: 12px;
+  }
+  .discussion-card .talk-points li { margin: 4px 0; }
+  .discussion-card .context {
+    background: #fdf2f8; padding: 8px 10px; border-radius: 4px;
+    margin: 6px 0; font-size: 11.5px;
+  }
+
+  /* ============ Mgmt judgement badge ============ */
+  .b-mgmt { background: #fee2e2; color: #991b1b; }
+  .ic-mgmt { background: #fee2e2; border-color: #991b1b; color: #991b1b; }
+  .lg-mgmt { border-left-color: #991b1b; }
+
+  /* ============ Self-review (Section 6) ============ */
+  .selfreview-intro {
+    background: #fff7ed; border-left: 4px solid #c2410c;
+    padding: 12px 16px; margin: 10px 0 16px; font-size: 12.5px;
+  }
+  .selfreview-intro strong { color: #c2410c; }
+  table.review-table {
+    width: 100%; border-collapse: collapse; background: white;
+    font-size: 12px; margin-top: 10px;
+  }
+  table.review-table th, table.review-table td {
+    border: 1px solid #cbd5e1; padding: 8px 10px; vertical-align: top;
+  }
+  table.review-table th {
+    background: #c2410c; color: white; text-align: center;
+  }
+  table.review-table td.review-code {
+    background: #ffedd5; color: #c2410c; font-weight: bold;
+    text-align: center; width: 60px;
+  }
+  table.review-table td.review-cat {
+    background: #fff7ed; font-weight: bold; color: #9a3412;
+    width: 110px;
+  }
+  table.review-table td.severity {
+    text-align: center; width: 80px; font-size: 14px; color: #b91c1c;
+  }
+  table.review-table td.response {
+    background: #f0fdf4; border-left: 4px solid #047857;
+  }
+
+  /* ============ Strategy section (Section 7) ============ */
+  .strategy-card {
+    background: white; border: 1px solid #cbd5e1; border-radius: 8px;
+    padding: 16px 20px; margin: 12px 0;
+    border-left: 6px solid #1e3a8a;
+  }
+  .strategy-card.k-major { border-left-color: #6d28d9; background: linear-gradient(to right, #faf5ff 0%, white 5%); }
+  .strategy-card h4 {
+    margin: 0 0 8px; font-size: 15px; color: #1e3a8a;
+    display: flex; align-items: baseline; gap: 8px;
+  }
+  .strategy-card.k-major h4 { color: #6d28d9; }
+  .strategy-card .k-code {
+    display: inline-block; padding: 3px 10px; border-radius: 4px;
+    font-size: 12px; font-weight: bold; color: white; background: #1e3a8a;
+  }
+  .strategy-card.k-major .k-code { background: #6d28d9; }
+  .strategy-card .strategy-section {
+    margin: 8px 0; font-size: 12.5px;
+  }
+  .strategy-card .strategy-label {
+    display: inline-block; font-weight: bold; padding: 2px 8px;
+    background: #e0e7ff; color: #1e3a8a; border-radius: 3px;
+    font-size: 11px; margin-right: 6px;
+  }
+  .strategy-card.k-major .strategy-label {
+    background: #ede9fe; color: #6d28d9;
+  }
+  .strategy-card .strategy-table {
+    width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 11.5px;
+  }
+  .strategy-card .strategy-table th,
+  .strategy-card .strategy-table td {
+    border: 1px solid #cbd5e1; padding: 5px 8px; vertical-align: top;
+  }
+  .strategy-card .strategy-table th {
+    background: #475569; color: white;
+  }
+  .strategy-card .reframe-quote {
+    background: #fef3c7; border-left: 4px solid #c2410c;
+    padding: 8px 12px; margin: 8px 0; font-size: 12px;
+    font-style: italic;
+  }
+
+  .supplement-list {
+    background: white; border: 1px solid #cbd5e1; border-radius: 8px;
+    padding: 14px 18px; margin: 12px 0;
+  }
+  .supplement-list h4 {
+    margin: 0 0 8px; font-size: 14px; color: #1e3a8a;
+  }
+  .supplement-list ul { margin: 4px 0 0 18px; padding: 0; font-size: 12px; }
+  .supplement-list li { margin: 5px 0; }
+  .supplement-list .l-code {
+    display: inline-block; background: #475569; color: white;
+    padding: 1px 6px; border-radius: 3px; font-size: 10.5px;
+    margin-right: 5px; font-weight: bold;
+  }
+
+  /* ============ Client view section (Section 8) ============ */
+  .reaction-card {
+    background: white; border: 1px solid #cbd5e1; border-radius: 8px;
+    padding: 12px 16px; margin: 10px 0;
+    border-left: 5px solid;
+  }
+  .reaction-card.r-defense { border-left-color: #b91c1c; }
+  .reaction-card.r-painful { border-left-color: #be185d; }
+  .reaction-card.r-want { border-left-color: #047857; }
+  .reaction-card.r-debate { border-left-color: #6d28d9; }
+  .reaction-card h5 {
+    margin: 0 0 6px; font-size: 13px;
+  }
+  .reaction-card.r-defense h5 { color: #b91c1c; }
+  .reaction-card.r-painful h5 { color: #be185d; }
+  .reaction-card.r-want h5 { color: #047857; }
+  .reaction-card.r-debate h5 { color: #6d28d9; }
+  .reaction-card .client-voice {
+    background: #f1f5f9; padding: 8px 12px; border-radius: 4px;
+    font-style: italic; font-size: 12px; margin: 6px 0;
+    border-left: 3px solid #94a3b8;
+  }
+  .reaction-card .client-voice::before {
+    content: '"'; font-size: 18px; color: #94a3b8; margin-right: 4px;
+  }
+  .reaction-card .client-voice::after {
+    content: '"'; font-size: 18px; color: #94a3b8; margin-left: 4px;
+  }
+  .reaction-card .response-plan {
+    font-size: 12px; color: #1f2937;
+  }
+  .reaction-card .response-plan strong { color: #1e3a8a; }
+
+  .conversation-design {
+    background: #f0f9ff; border: 1px solid #0284c7;
+    border-radius: 8px; padding: 14px 18px; margin: 14px 0;
+  }
+  .conversation-design h4 {
+    margin: 0 0 8px; font-size: 14px; color: #0284c7;
+  }
+  .conversation-design .phase {
+    display: grid; grid-template-columns: 90px 1fr;
+    gap: 10px; margin: 8px 0; align-items: start;
+  }
+  .conversation-design .phase-tag {
+    background: #0284c7; color: white; padding: 4px 8px;
+    border-radius: 4px; font-size: 11px; font-weight: bold;
+    text-align: center;
+  }
+  .conversation-design .phase-content { font-size: 12px; }
+  .conversation-design .phase-content strong { color: #0284c7; }
+
+  .opening-statement {
+    background: #ecfeff; border: 2px solid #0e7490;
+    border-radius: 8px; padding: 16px 20px; margin: 14px 0;
+    font-size: 13px;
+  }
+  .opening-statement h4 {
+    margin: 0 0 8px; font-size: 14px; color: #0e7490;
+  }
+  .opening-statement .quote {
+    background: white; padding: 10px 14px; border-radius: 4px;
+    border-left: 4px solid #0e7490; font-style: italic;
+    margin: 8px 0; line-height: 1.7;
+  }
+
+  /* Priority badges */
+  .b-pri-h { background: #b91c1c; color: white; }
+  .b-pri-m { background: #d97706; color: white; }
+  .b-pri-l { background: #475569; color: white; }
+
+  /* ============ ★要確認 (todo) / 目的KPI badge ============ */
+  .badge.b-todo { background: #fde68a; color: #92400e; border: 1px dashed #b45309; }
+  .num-todo { color: #b45309; font-weight: bold; font-size: 0.85em; }
+  .badge.b-kpi { background: #d1fae5; color: #047857; }
+  .todo-banner {
+    background: #fffbeb; border: 2px dashed #b45309; border-radius: 8px;
+    padding: 14px 18px; margin: 14px 0; font-size: 12.5px;
+  }
+  .todo-banner strong { color: #b45309; }
+
+  /* ============ Hierarchy map (Section 0) ============ */
+  .hierarchy-map {
+    background: white; border: 1px solid #cbd5e1; border-radius: 8px;
+    padding: 18px 20px; margin: 12px 0; overflow-x: auto;
+  }
+  .h-layer {
+    display: grid; grid-template-columns: 150px 1fr 230px;
+    gap: 12px; align-items: center; margin: 0; min-width: 760px;
+  }
+  .h-arrow-row { color: #94a3b8; font-size: 18px; font-weight: bold; margin: 2px 0; padding-left: 65px; }
+  .h-label {
+    padding: 12px 10px; border-radius: 6px; font-weight: bold;
+    font-size: 12.5px; text-align: center; color: white;
+  }
+  .h-strategic { background: #6d28d9; }
+  .h-scm { background: #1e3a8a; }
+  .h-process { background: #0e7490; }
+  .h-system { background: #047857; }
+  .h-content {
+    padding: 8px 12px; font-size: 12px; background: #f8fafc;
+    border-radius: 6px; border: 1px solid #e2e8f0;
+  }
+  .h-kpi {
+    padding: 8px 10px; font-size: 11px; background: #ecfdf5;
+    border-radius: 6px; border: 1px solid #a7f3d0; color: #047857;
+  }
+  .h-kpi strong { color: #065f46; }
+
+  /* ============ Template / 横展開型 (Section 9) ============ */
+  .template-card {
+    background: white; border: 1px solid #cbd5e1; border-radius: 8px;
+    padding: 16px 20px; margin: 12px 0; border-left: 6px solid #6d28d9;
+  }
+  .template-card h4 { margin: 0 0 8px; font-size: 15px; color: #6d28d9; }
+  .template-card .t-frame {
+    display: inline-block; background: #ede9fe; color: #6d28d9;
+    padding: 2px 10px; border-radius: 4px; font-size: 11.5px;
+    font-weight: bold; margin: 3px 4px 3px 0;
+  }
+  .template-card .t-row { margin: 6px 0; font-size: 12.5px; }
+  .template-card .t-label {
+    display: inline-block; font-weight: bold; min-width: 90px;
+    color: #6d28d9; font-size: 11.5px;
+  }
+
+  /* Reframe / question callout (問い返し強化) */
+  .question-callout {
+    background: #fef2f2; border-left: 5px solid #b91c1c;
+    padding: 10px 14px; margin: 8px 0; font-size: 12.5px;
+  }
+  .question-callout strong { color: #b91c1c; }
+  .question-callout .q-type {
+    display: inline-block; background: #b91c1c; color: white;
+    font-size: 10px; padding: 1px 7px; border-radius: 3px;
+    margin-right: 6px; font-weight: bold;
+  }
+
+  footer {
+    text-align: center; padding: 20px; color: #94a3b8;
+    font-size: 11px; border-top: 1px solid #e2e8f0; margin-top: 30px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>需給調整発生箇所整理｜<span style="font-size:15px;">社内作戦用（コンサル手の内）</span></h1>
+  <div class="subtitle">顧客提示用資料と対をなす、コンサル側の作戦メモ（自己点検・想定反応・プレゼン設計・横展開の型）</div>
+  <div class="meta">対象：5/13クライアント打ち合わせの作戦設計／作成：2026-05-22／※本資料はクライアントに直接見せない。文中の「顧客提示用 第N章」「KN」は対をなす顧客提示用資料の該当箇所を指す</div>
+</header>
+
+<main>
+
+<!-- ============ 1. 本資料の限界と自己点検 ============ -->
+<h2>1. 本資料の限界と自己点検（一流コンサル視点での自己批判）</h2>
+
+<div class="selfreview-intro">
+  <strong>なぜこの章を入れたか：</strong>本資料は需給調整の「発生箇所」の整理に成功しているが、これだけをクライアントに提示すると<strong>「現場改善コンサル」の枠で評価されてしまう</strong>。
+  一流コンサル視点で本資料を読み返したときに想定される指摘を10件先回りで列挙し、それぞれへの対応方針を明示する。顧客提示用資料の戦略論点（顧客提示用 第6章）、および本資料の第2〜3章が、この自己点検への直接的な回答である。
+</div>
+
+<div class="todo-banner" style="border-color:#6d28d9; background:#faf5ff;">
+  <strong style="color:#6d28d9;">v2での強化点（前版からの差分）：</strong>本版は、コンサルとしての判断軸・スタンスを反映して以下を強化した。
+  <ul style="margin:6px 0 0 18px; padding:0;">
+    <li><strong>CR-1（上位目的）：</strong>顧客提示用 第0章「戦略から実行への接続マップ」を新設。事業戦略→SCM戦略→業務改革→システムの一貫接続を明示（最も価値を出せるのは階層の接続）</li>
+    <li><strong>CR-2（ファクト不在）：</strong>冒頭に<span class="num-todo">★要確認</span>バナーを設置。全数値が仮置きであることを明示し、推定値と確定値を峻別</li>
+    <li><strong>CR-4・CR-5・CR-8：</strong>戦略論点にK6（E2E可視化・データ連携の切断面）／K7（競争優位でのFit to Standard判断）／K8（短期→中期の移行設計）を追加</li>
+    <li><strong>日本固有論点：</strong>補足論点にL8（サプライチェーンBCP）／L9（2025年の崖）を追加</li>
+    <li><strong>横展開：</strong>本資料 第3章で再利用可能な「型」として抽出（他SCM案件への展開）</li>
+    <li><strong>目的KPI接続：</strong>各戦略論点の効果を、手段KPIではなくDIO／CCC／納期遵守率／欠品率／引合量に置換</li>
+  </ul>
+</div>
+
+<table class="review-table">
+  <thead>
+    <tr>
+      <th style="width:60px;">#</th>
+      <th style="width:110px;">観点</th>
+      <th>想定指摘</th>
+      <th style="width:80px;">痛烈度</th>
+      <th style="width:30%;">本資料での対応</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="review-code">CR-1</td>
+      <td class="review-cat">上位目的</td>
+      <td>「需給調整改善」は目的か手段か。<strong>経営KPI（利益率／CCC／ROIC）への接続</strong>が描かれていない。改革のドライバーが見えない</td>
+      <td class="severity">★★★</td>
+      <td class="response">顧客提示用 第6章でK1〜K8の戦略論点を経営KPIに接続。利益率（K1・K4）、CCC（K2・K3）、ROIC（A3関連）に紐付け</td>
+    </tr>
+    <tr>
+      <td class="review-code">CR-2</td>
+      <td class="review-cat">ファクト不在</td>
+      <td>すべての課題が観察ベース。<strong>頻度・影響額・コスト試算がない</strong>。「どれが一番痛いか」が分からないため改革優先順位が立てられない</td>
+      <td class="severity">★★★</td>
+      <td class="response">本資料 第2-2章「ファクト確認リスト」として10項目の数値を5/13打ち合わせで聴取。優先順位付けは数値取得後に再構築</td>
+    </tr>
+    <tr>
+      <td class="review-code">CR-3</td>
+      <td class="review-cat">二分の限界</td>
+      <td>「事象／構造」二分の上に<strong>「経営判断不在」軸</strong>が抜けている。標準LT・ロット粒度・顧客優先度ルールは現場ではなく経営の意思決定マターのはず</td>
+      <td class="severity">★★★</td>
+      <td class="response">顧客提示用 第2章サマリに<span class="badge b-mgmt">経営判断</span>バッジを追加。A3・B1・B2・C1の4課題が経営判断軸に該当することを明示</td>
+    </tr>
+    <tr>
+      <td class="review-code">CR-4</td>
+      <td class="review-cat">AI万能視</td>
+      <td>AI以外の打ち手（<strong>契約変更／組織再設計／設備投資／顧客選別</strong>）が排除されている。「AIで解決」と言った時点でコンサルは負け。打ち手の選択肢を狭めている</td>
+      <td class="severity">★★★</td>
+      <td class="response">顧客提示用 第6章でAI以外の打ち手をK1〜K8として整理。顧客提示用 第4章の「AI解決策マトリクス」は<strong>あくまで1つの打ち手</strong>と位置付け</td>
+    </tr>
+    <tr>
+      <td class="review-code">CR-5</td>
+      <td class="review-cat">バイイングパワー欠落</td>
+      <td><strong>業界最大手という前提を活かしていない</strong>。受け身の最適化（顧客要求に従う前提でAIで効率化）に終始。最大手なら「断る／決める／業界標準を作る」選択肢がある</td>
+      <td class="severity">★★★</td>
+      <td class="response">顧客提示用 第6章K1で正面から扱う。B1（短納期）・B2（顧客独自ルール）の解決策を「システム化」から「<strong>交渉力の発動</strong>」に再定義</td>
+    </tr>
+    <tr>
+      <td class="review-code">CR-6</td>
+      <td class="review-cat">ロジック整合性</td>
+      <td>A1「歩留＝事象」と判定したが、歩留<strong>予測精度向上</strong>は構造改善。D1「乖離＝事象」も実はシステム実装の構造問題。バッジ判定にブレがある</td>
+      <td class="severity">★★</td>
+      <td class="response">顧客提示用 第2章でA1・A2は「事象＋構造」両面に再分類。D1は「構造」に再判定済</td>
+    </tr>
+    <tr>
+      <td class="review-code">CR-7</td>
+      <td class="review-cat">5案並列の弱点</td>
+      <td>5案並列は「<strong>絞れていないコンサル</strong>」に見える。最終提案は1案＋差別化説明であるべき。<strong>クライアントに選択を委ねるのは責任放棄</strong></td>
+      <td class="severity">★★</td>
+      <td class="response">本資料 第2-3章で「打ち合わせ時の推奨は<strong>Tab3ハイブリッド型を主軸、Tab5を補助</strong>」と明示。他3案は使い分けガイドとして残す</td>
+    </tr>
+    <tr>
+      <td class="review-code">CR-8</td>
+      <td class="review-cat">業界特殊性</td>
+      <td>化学反応の連続生産特性（<strong>バッチ／連続反応、品質期限、ロット粒度、洗浄コスト</strong>）が表現されていない。半導体材料の特性が活かされていない</td>
+      <td class="severity">★★</td>
+      <td class="response">顧客提示用 第6章K2でロット管理粒度の戦略選択として正面から扱う。バッチ反応・親ワニス・品目グループ・品質期限を統合的に検討</td>
+    </tr>
+    <tr>
+      <td class="review-code">CR-9</td>
+      <td class="review-cat">抜けた論点</td>
+      <td>安全在庫、需要予測（PO前段階）、ストック箇所（Push/Pullの境目）、廃棄コスト、組織インセンティブの諸論点が欠落</td>
+      <td class="severity">★★</td>
+      <td class="response">顧客提示用 第6章「補足論点L1〜L9」として明示。次フェーズの深掘り対象として位置付け</td>
+    </tr>
+    <tr>
+      <td class="review-code">CR-10</td>
+      <td class="review-cat">効果見積もりの根拠</td>
+      <td>「▲40-60%」等の数字の根拠が薄い。<strong>類似業界（化学、半導体材料、医薬中間体）のベンチマーク引用がない</strong></td>
+      <td class="severity">★</td>
+      <td class="response">本資料 第2-2章ファクト確認リストでベンチマーク調査を次フェーズタスクとして明示。打ち合わせ前にデスクトップリサーチで簡易ベンチを準備</td>
+    </tr>
+  </tbody>
+</table>
+
+
+<!-- ============ 2. 顧客視点での想定反応とプレゼン設計 ============ -->
+<h2>2. 顧客視点での想定反応とプレゼン設計</h2>
+
+<div class="selfreview-intro" style="background: #fdf2f8; border-left-color: #be185d;">
+  <strong style="color:#be185d;">本章の位置づけ：</strong>本資料をクライアント（AFT）に見せた時の<strong>4種類の反応</strong>を予想し、それぞれへの対処方針を整理する。
+  最後に5/13打ち合わせの会話設計（時間配分・推奨提示順序）を明示。
+</div>
+
+<h3>2-1. 想定される4つの反応タイプ</h3>
+
+<div class="reaction-card r-defense">
+  <h5>反応①【防衛反応】「分かっている課題を整理しただけ。で？」</h5>
+  <div class="client-voice">需給調整が難しいことは20年前から分かっている。整理してもらってもね…</div>
+  <div class="response-plan">
+    <strong>対処：</strong>顧客提示用 第3〜4章を「整理」ではなく「<strong>共通言語化</strong>」と位置付け、議論の起点として提示。本論は顧客提示用 第6章の戦略論点であることを冒頭で明示。
+  </div>
+</div>
+
+<div class="reaction-card r-defense">
+  <h5>反応②【防衛反応】「うちの業界特殊性・最大手の立場が考慮されていない」</h5>
+  <div class="client-voice">化学反応の歩留ばらつきは仕方ない。それを前提に皆頑張ってるんですよ。</div>
+  <div class="response-plan">
+    <strong>対処：</strong>冒頭オープニング（本資料2-3）で「<strong>業界最大手という前提と化学反応特性を理解した上で</strong>、それでも取り得る選択肢を提示する」ことを声明。顧客提示用 第6章K1・K2・K8で正面から扱う。
+  </div>
+</div>
+
+<div class="reaction-card r-defense">
+  <h5>反応③【防衛反応】「現場が頑張って回している実態を見ていない。机上の空論」</h5>
+  <div class="client-voice">理屈は分かりますが、現場の判断が回している部分が大きいんです。</div>
+  <div class="response-plan">
+    <strong>対処：</strong>「<strong>現場の勘・属人的判断の価値を否定しない</strong>」「むしろ勘の知識化が改革の本質」というメッセージを明示。C1・C2の言い回しも「属人化＝悪」ではなく「属人化の価値を全社共有財産化」に調整。
+  </div>
+</div>
+
+<div class="reaction-card r-painful">
+  <h5>反応④【痛いところ突かれた感覚】「うちの運用ガバナンス不足を責められている」</h5>
+  <div class="client-voice">（沈黙）洗い替え機能を使う／使わないで差が出ているのは事実なんですけど…</div>
+  <div class="response-plan">
+    <strong>対処：</strong>C2の言い回しを「<strong>担当者の問題</strong>」ではなく「<strong>機能設計／業務設計／意思決定権限の問題</strong>」として客観化。「使わない担当者にも合理性があるはず」という前提を示し、業務監査の結果を共有する形で提示。
+  </div>
+</div>
+
+<div class="reaction-card r-painful">
+  <h5>反応⑤【痛いところ突かれた感覚】「投資判断ができていないと言われている」</h5>
+  <div class="client-voice">キャパvs受注総量と言われても、経営の話なので。</div>
+  <div class="response-plan">
+    <strong>対処：</strong>A3を「投資判断の不足」ではなく「<strong>受け身の経営選択肢</strong>」として提示。バイイングパワー活用（K1）の選択肢が経営として取れることを示し、設備投資以外の道（断る・プレミアム化・標準化）を並列で見せる。
+  </div>
+</div>
+
+<div class="reaction-card r-want">
+  <h5>反応⑥【知りたい答え】「結局どこから手をつければいい？」</h5>
+  <div class="client-voice">10課題並べてもらってもね。優先順位を付けてくださいよ。</div>
+  <div class="response-plan">
+    <strong>対処：</strong>ファクト不在のため<strong>優先順位の確定はファクト取得後</strong>と明示。本資料2-2のファクト確認リストで5/13に聴取すべき10数字を提示。仮置きの優先順位案として「<strong>K5 組織インセンティブ統一 → K2 ロット粒度見直し → K1 バイイングパワー</strong>」を提示。
+  </div>
+</div>
+
+<div class="reaction-card r-want">
+  <h5>反応⑦【知りたい答え】「いくらかかって、いくら儲かる？」</h5>
+  <div class="client-voice">投資対効果が見えないと社内稟議が通らないんです。</div>
+  <div class="response-plan">
+    <strong>対処：</strong>本資料では<strong>定量効果は仮置き</strong>とし、本資料2-2ファクト確認リストで取得した数値から再算出することを明示。打ち合わせ前にデスクトップリサーチで類似業界ベンチマークを準備（タスク化）。
+  </div>
+</div>
+
+<div class="reaction-card r-debate">
+  <h5>反応⑧【議論呼ぶ】「需給調整会議は本当に廃止していいのか？」</h5>
+  <div class="client-voice">会議があるから部門間の合意ができている面もあって、廃止は怖い。</div>
+  <div class="response-plan">
+    <strong>対処：</strong>中期TOBEの「会議廃止」は<strong>慎重に二段階提示</strong>。短期は「会議準備工数▲80%」に留め、中期で「会議の機能を再定義（部門間政治の場→戦略議論の場）」と整理。K5と接続して、会議の存在意義そのものを問い直す形に。
+  </div>
+</div>
+
+<div class="reaction-card r-debate">
+  <h5>反応⑨【議論呼ぶ】「顧客選別＝断る、はうちの文化に合わない」</h5>
+  <div class="client-voice">うちは長く付き合ってきた顧客との関係を大事にしている。断るなんて。</div>
+  <div class="response-plan">
+    <strong>対処：</strong>K1で「<strong>断る／プレミアム化／業界標準化</strong>」を並列で提示し、断るは1つの選択肢に過ぎないことを示す。文化に合わせやすい「業界標準化」を主軸に提案。「<strong>長期関係を大事にするからこそ、無理な要求を受け続けてはいけない</strong>」と再フレーム。
+  </div>
+</div>
+
+<div class="reaction-card r-debate">
+  <h5>反応⑩【議論呼ぶ】「属人的な勘も価値がある」</h5>
+  <div class="client-voice">ベテランの勘で回している部分は、データ化できないものもある。</div>
+  <div class="response-plan">
+    <strong>対処：</strong><strong>勘の価値を否定せず、勘の知識化・伝承を改革の中核に</strong>位置付け。C1の「優先順位ポリシー学習AI」は属人判断を集約してルール化する設計であることを明示。「勘を消す」ではなく「勘を組織知に変える」というメッセージで貫く。
+  </div>
+</div>
+
+<h3>2-2. ファクト確認リスト（5/13打ち合わせで聴取すべき10数字）</h3>
+
+<table class="review-table">
+  <thead>
+    <tr>
+      <th style="width:50px;">#</th>
+      <th style="width:30%;">確認したい数字</th>
+      <th>聴取の意義（何が分かるか）</th>
+      <th style="width:80px;">関連課題</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td class="review-code">F-1</td><td>直近6か月の<strong>標準LT遵守率</strong></td><td>A3（キャパ）が構造問題か事象問題かの切り分け／K4契約見直しの必要度</td><td>A3 / K4</td></tr>
+    <tr><td class="review-code">F-2</td><td><strong>引き剥がし発生頻度</strong>（週次／月次）</td><td>C3（履歴体系化）の改革優先度／L4補填ルールの必要性</td><td>C3 / L4</td></tr>
+    <tr><td class="review-code">F-3</td><td><strong>歩留ばらつき幅</strong>（過去8週の計画vs実績の標準偏差）</td><td>A1の影響度／安全在庫設計（L5）の根拠</td><td>A1 / L5</td></tr>
+    <tr><td class="review-code">F-4</td><td><strong>余剰在庫の廃棄率／品質期限切れ発生件数</strong></td><td>L3廃棄コストの定量化／K2ロット粒度見直しの効果見積</td><td>L3 / K2</td></tr>
+    <tr><td class="review-code">F-5</td><td><strong>顧客独自ルールの種類数</strong>と<strong>記録媒体</strong></td><td>B2の規模感／K3引当単位見直しの可能性</td><td>B2 / K3</td></tr>
+    <tr><td class="review-code">F-6</td><td><strong>自動洗い替え機能の担当者別使用率</strong></td><td>C2の実態／C2の原因（仕様起因 or 運用起因）切り分け</td><td>C2</td></tr>
+    <tr><td class="review-code">F-7</td><td><strong>短納期要求の頻度</strong>と<strong>平均短縮日数</strong></td><td>B1の規模感／K1プレミアム化の収益試算根拠</td><td>B1 / K1</td></tr>
+    <tr><td class="review-code">F-8</td><td><strong>受注後変更（数量・納期）の発生率</strong></td><td>B3の規模感／K4変更デッドライン設定の必要度</td><td>B3 / K4</td></tr>
+    <tr><td class="review-code">F-9</td><td><strong>需給調整会議の年間時間</strong>と<strong>参加者人数</strong></td><td>会議廃止の経済効果／K5組織インセンティブ統一の前提情報</td><td>K5</td></tr>
+    <tr><td class="review-code">F-10</td><td><strong>顧客別売上構成</strong>（パレート分析）</td><td>K1バイイングパワー発動の対象顧客選定／戦略顧客vs通常顧客の区分基準</td><td>K1</td></tr>
+  </tbody>
+</table>
+
+<h3>2-3. 5/13打ち合わせの会話設計（推奨）</h3>
+
+<div class="opening-statement">
+  <h4>オープニング3分：先回りの声明（防衛反応への先回り）</h4>
+  <div class="quote">
+    本資料は「<strong>需給調整改善コンサル</strong>」の整理資料ではありません。<br>
+    御社が業界最大手であるという前提、化学反応の歩留ばらつきが構造的に発生するという前提、現場のベテランの勘が事業を支えているという前提――<strong>これらをすべて受け入れた上で、それでも経営として取り得る選択肢</strong>を整理しました。<br>
+    本論は顧客提示用 第6章の戦略論点8つ（K1〜K8）です。顧客提示用 第3〜5章はそのための共通言語化として位置付けています。<br>
+    本日のゴールは「合意」ではなく「<strong>5つの戦略論点のうち、御社として真剣に検討する価値があるものはどれかを選別する</strong>」ことです。
+  </div>
+</div>
+
+<div class="conversation-design">
+  <h4>時間配分（90分想定）</h4>
+  <div class="phase">
+    <div class="phase-tag">0-3分</div>
+    <div class="phase-content"><strong>オープニング：</strong>上記声明で防衛反応を先回り解除</div>
+  </div>
+  <div class="phase">
+    <div class="phase-tag">3-15分</div>
+    <div class="phase-content"><strong>共通言語化：</strong>顧客提示用 第2章10課題サマリ＋第3章Tab3ハイブリッド型のみで概観（他Tabは資料参照）</div>
+  </div>
+  <div class="phase">
+    <div class="phase-tag">15-50分</div>
+    <div class="phase-content"><strong>本論：</strong>顧客提示用 第6章K1〜K8を提示（時間配分は重点2〜3論点に厚く）。各論点の最後の<strong>「問い返し」</strong>で議論を呼ぶ</div>
+  </div>
+  <div class="phase">
+    <div class="phase-tag">50-70分</div>
+    <div class="phase-content"><strong>議論：</strong>反応①〜⑩のどれが出るかを想定済。本資料2-1で対処方針が用意されている</div>
+  </div>
+  <div class="phase">
+    <div class="phase-tag">70-85分</div>
+    <div class="phase-content"><strong>ファクト依頼：</strong>本資料2-2のF-1〜F-10を提示し、次回までの数字提供を依頼</div>
+  </div>
+  <div class="phase">
+    <div class="phase-tag">85-90分</div>
+    <div class="phase-content"><strong>クロージング：</strong>「5戦略論点のうち、御社として真剣に検討する価値があるのはどれですか？」で選別を求める</div>
+  </div>
+</div>
+
+<div style="background: #fef3c7; border: 1px solid #92400e; border-radius: 6px; padding: 14px 18px; margin-top: 16px; font-size: 12.5px;">
+  <strong style="color: #92400e;">推奨提示順序の根拠：</strong>
+  <ul style="margin: 6px 0 0 18px; padding: 0;">
+    <li>5案のうち<strong>Tab3ハイブリッド型を主軸</strong>とする（数量増減と課題が同時に見え、論点が立つため）</li>
+    <li>戦略論点の提示順は<strong>K5 → K2 → K1 → K3 → K4</strong>がやや有効（組織論で頭を温めてから、粒度・交渉力・契約の順で具体化）</li>
+    <li>クライアントが防衛反応を強く見せた場合は、<strong>K2（ロット粒度）から入る</strong>（業界特殊性を活かす論点なので受容性が高い）</li>
+  </ul>
+</div>
+
+
+<!-- ============ 3. 横展開可能な型 ============ -->
+<h2>3. 本資料の横展開可能な「型」（他SCM案件への再利用）</h2>
+
+<div class="selfreview-intro" style="background: #faf5ff; border-left-color: #6d28d9;">
+  <strong style="color:#6d28d9;">本章の位置づけ：</strong>本資料はAFT固有の整理であると同時に、<strong>他のSCM業務改革案件にも再利用できる思考の型</strong>でもある。
+  「機能導入」ではなく「組織のオペレーティングモデル書き換え」として提示し、3段階抽象化で経営論に引き上げるアプローチは、業種を問わず横展開できる。本章でその型を抽出する。
+</div>
+
+<div class="template-card">
+  <h4>型①：業務プロセス × 需給軸マトリクス（発生箇所の構造化）</h4>
+  <div class="t-row"><span class="t-label">汎用構造</span>「縦軸＝業務プロセスの時系列」×「横軸＝需要／供給の2分割」で、課題・数量・AI解決策を同一座標で照合する</div>
+  <div class="t-row"><span class="t-label">再利用条件</span>受注〜出荷／調達〜生産など、需要と供給のミスマッチを扱う全SCM案件で利用可能</div>
+  <div class="t-row"><span class="t-label">横展開先</span><span class="t-frame">東レ（PSI可視化）</span><span class="t-frame">他メーカーの受発注改革</span></div>
+</div>
+
+<div class="template-card">
+  <h4>型②：3段階抽象化＋「だとすると」（現場論→経営論への引き上げ）</h4>
+  <div class="t-row"><span class="t-label">汎用構造</span>表層（資料の記述）→ 構造の言い換え → パターン認識 → 組織論・経営論 へ抽象度を上げ、「だとすると」で含意を引き出す</div>
+  <div class="t-row"><span class="t-label">本資料での適用</span>「需給調整が難しい」（表層）→「データ連携の切断面」（構造）→「意思決定と実行の分離」（パターン）→「SCM部門のAIガバナンス組織化」（経営論）</div>
+  <div class="t-row"><span class="t-label">横展開先</span><span class="t-frame">全SCM業務改革案件</span><span class="t-frame">DX構想策定</span></div>
+</div>
+
+<div class="template-card">
+  <h4>型③：二層構造（短期TOBE＝業務内AI／業務間人　→　中期TOBE＝Orchestrator）</h4>
+  <div class="t-row"><span class="t-label">汎用構造</span>短期は「業務内＝AI／業務間＝人」の二層構造、中期は業務横断調整をOrchestratorエージェントに集約。<strong>短期は中期の通過点として設計（K8）</strong></div>
+  <div class="t-row"><span class="t-label">勘所</span>ROIは「AI性能」ではなく「承認フローをどこまで薄くできるか」で決まる。会議廃止＝暗黙のすり合わせ機能の承継設計が本丸</div>
+  <div class="t-row"><span class="t-label">横展開先</span><span class="t-frame">AIエージェント業務改革全般</span></div>
+</div>
+
+<div class="template-card">
+  <h4>型④：領域別アジャイル進化（一律でなく、領域ごとに進化速度を変える）</h4>
+  <div class="t-row"><span class="t-label">汎用構造</span>全業務一律に短期→中期へ移すのではなく、<strong>形式化しやすい業務（PO受領・出荷依頼）は中期へ先行、暗黙知が多い業務（需給調整）は短期で粘る</strong></div>
+  <div class="t-row"><span class="t-label">本資料での適用</span>顧客提示用 第6章K7のFit to Standard判断（競争優位の有無で線引き）と接続。優位領域は内製で磨き、非優位領域は標準化・先行Agent化</div>
+  <div class="t-row"><span class="t-label">横展開先</span><span class="t-frame">全SCM業務改革案件</span><span class="t-frame">ERP刷新</span></div>
+</div>
+
+<div class="question-callout" style="margin-top:14px;">
+  <span class="q-type">他業界アナロジーの問い</span>
+  <strong>「この需給調整の構造は、銀行（窓口→オンライン→APIエコノミー）やアマゾン物流（人手→自動倉庫→ロボット群自律連携）と同じ進化を辿るのではないか？だとすると、AFTのSCMエージェントは最終的に『誰のため』に動くべきか――自社最適か、顧客の顧客まで遡るサプライチェーン全体最適か？」</strong>
+</div>
+
+</main>
+
+<footer>
+  半導体材料メーカー 受注・出荷業務改革プロジェクト ／ 需給調整発生箇所整理 ／ 作成：2026-05-22
+</footer>
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-button').forEach(el => el.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelector('[data-tab="' + id + '"]').classList.add('active');
+}
+</script>
+
+</body>
+</html>

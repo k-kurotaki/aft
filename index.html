@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>半導体材料メーカー 受注・出荷業務改革｜成果物インデックス</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Yu Gothic", "Meiryo", "Hiragino Sans", sans-serif;
+    margin: 0; padding: 0; background: #f5f6f8; color: #1f2937;
+    line-height: 1.6; font-size: 14px;
+  }
+  header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #6d28d9 100%);
+    color: white; padding: 36px 40px;
+  }
+  header h1 { margin: 0 0 6px; font-size: 28px; }
+  header .subtitle { font-size: 14px; opacity: 0.9; }
+  header .meta { font-size: 12px; opacity: 0.75; margin-top: 8px; }
+  main { max-width: 1200px; margin: 0 auto; padding: 28px 32px; }
+  h2 {
+    font-size: 20px; color: #1e3a8a; border-left: 6px solid #1e3a8a;
+    padding: 6px 12px; background: #e0e7ff; margin: 32px 0 14px;
+  }
+  .intro {
+    background: white; border: 1px solid #cbd5e1; border-radius: 8px;
+    padding: 18px 24px; margin: 12px 0 20px;
+  }
+  .intro ul { margin: 8px 0 0 20px; padding: 0; }
+  .intro li { margin: 3px 0; }
+
+  /* Card grid */
+  .card-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 16px; margin-top: 12px;
+  }
+  .card {
+    background: white; border-radius: 8px; padding: 18px 22px;
+    border: 1px solid #cbd5e1; border-top: 6px solid;
+    text-decoration: none; color: inherit; display: flex; flex-direction: column;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+  .card:hover {
+    transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    border-color: #1e3a8a;
+  }
+  .card .card-tag {
+    display: inline-block; padding: 2px 10px; border-radius: 12px;
+    font-size: 11px; font-weight: bold; margin-bottom: 8px;
+    align-self: flex-start;
+  }
+  .card h3 { margin: 0 0 8px; font-size: 16px; color: #1e3a8a; }
+  .card .card-desc { font-size: 12.5px; color: #475569; flex: 1; }
+  .card .card-meta { margin-top: 10px; font-size: 11px; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 8px; }
+
+  /* Card color themes */
+  .c-asis { border-top-color: #1e3a8a; }
+  .c-asis .card-tag { background: #dbeafe; color: #1e3a8a; }
+  .c-tobe-short { border-top-color: #0e7490; }
+  .c-tobe-short .card-tag { background: #cffafe; color: #0e7490; }
+  .c-tobe-mid { border-top-color: #6d28d9; }
+  .c-tobe-mid .card-tag { background: #ede9fe; color: #6d28d9; }
+  .c-data { border-top-color: #047857; }
+  .c-data .card-tag { background: #d1fae5; color: #047857; }
+  .c-aicx { border-top-color: #0f766e; }
+  .c-aicx .card-tag { background: #ccfbf1; color: #0f766e; }
+  .c-aicx h3 { color: #0f766e; }
+  .c-demand { border-top-color: #b45309; }
+  .c-demand .card-tag { background: #fef3c7; color: #b45309; }
+  .c-demand h3 { color: #b45309; }
+
+  /* Workflow diagram */
+  .workflow {
+    background: white; border: 1px solid #cbd5e1; border-radius: 8px;
+    padding: 20px; margin-top: 12px; overflow-x: auto;
+  }
+  .workflow-grid {
+    display: grid; grid-template-columns: 1fr 50px 1fr 50px 1fr;
+    gap: 12px; align-items: center; min-width: 900px;
+  }
+  .wf-node {
+    border-radius: 8px; padding: 14px; text-align: center;
+    font-size: 12px; font-weight: bold; min-height: 80px;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .wf-asis { background: #dbeafe; border: 2px solid #1e3a8a; color: #1e3a8a; }
+  .wf-short { background: #cffafe; border: 2px solid #0e7490; color: #0e7490; }
+  .wf-mid { background: #ede9fe; border: 2px solid #6d28d9; color: #6d28d9; }
+  .wf-data { background: #d1fae5; border: 2px solid #047857; color: #047857; }
+  .wf-arrow { text-align: center; font-size: 24px; color: #94a3b8; font-weight: bold; }
+  .wf-node .wf-sub { font-size: 10.5px; font-weight: normal; margin-top: 4px; opacity: 0.85; }
+
+  footer {
+    text-align: center; padding: 24px; color: #94a3b8; font-size: 11.5px;
+    border-top: 1px solid #e2e8f0; margin-top: 40px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>半導体材料メーカー 受注・出荷業務改革</h1>
+  <div class="subtitle">成果物インデックス｜ AS-IS分析 → TOBE設計（短期・中期）→ データフロー分析</div>
+  <div class="meta">対象業務：受注～納期回答～出荷／作成：2026-05-14／ECRS＋Agentic AI 軸の業務改革</div>
+</header>
+
+<main>
+
+  <div class="intro">
+    <strong>本プロジェクトの全体像</strong>
+    <ul>
+      <li><strong>AS-IS分析：</strong>9ステップの業務フロー、需給調整4メカニズムの深掘り、数量関係グラフによる構造可視化</li>
+      <li><strong>需給調整 深掘り：</strong>業務プロセス×需給軸の10課題マップ、AI解決策マトリクス、顧客提示用＋社内作戦用の2バージョン</li>
+      <li><strong>TOBE設計：</strong>短期（個別業務AI／業務間接続は人間）と中期（社内Agentic AI完了）の2バージョン</li>
+      <li><strong>データフロー分析：</strong>18エンティティの目録・ER関係・データフロー図・データ視点の構造課題</li>
+    </ul>
+    各成果物カードをクリックすると個別HTMLが開きます。
+  </div>
+
+  <h2>成果物の関係マップ</h2>
+  <div class="workflow">
+    <div class="workflow-grid">
+      <div class="wf-node wf-asis">AS-IS 業務分析<br><span class="wf-sub">現状業務＋数量グラフ＋改善ポイント</span></div>
+      <div class="wf-arrow">→</div>
+      <div class="wf-node wf-short">短期 TOBE<br><span class="wf-sub">個別業務AI／業務間は人</span></div>
+      <div class="wf-arrow">→</div>
+      <div class="wf-node wf-mid">中期 TOBE<br><span class="wf-sub">社内 Agentic AI 完了</span></div>
+    </div>
+    <div style="margin-top:16px; text-align:center; color:#64748b; font-size:12px;">↓ 上記すべてを支えるデータ基盤 ↓</div>
+    <div class="workflow-grid" style="margin-top:8px; grid-template-columns: 1fr;">
+      <div class="wf-node wf-data" style="min-height: 60px;">データフロー分析（エンティティ目録・DFD・ER）／業務フロー × データ項目マトリクス</div>
+    </div>
+  </div>
+
+  <h2>AS-IS 現状分析</h2>
+  <div class="card-grid">
+    <a class="card c-asis" href="業務改革整理.html">
+      <span class="card-tag">AS-IS 総括</span>
+      <h3>業務改革整理（メイン成果物）</h3>
+      <div class="card-desc">
+        9ステップの業務フロー（シンプル版＋詳細版）、需給調整4メカニズムの深掘り分析（トレードオフ・連鎖影響）、業務改善ポイント整理表（ECRS×3施策列）を統合。<br>
+        <strong>追加：</strong>数量関係グラフ（受注／在庫／生産能力／歩留まりばらつき／顧客間引き当て分岐／品目間調整／引き剥がし発生）を多数収録。
+      </div>
+      <div class="card-meta">構成：1. 全体像／1.5 数量構造／2. シンプルフロー／3. 詳細フロー／4. メカニズム分析／5. 改善ポイント整理表／6. ECRSサマリー</div>
+    </a>
+  </div>
+
+  <h2>需給調整 深掘り分析</h2>
+  <div class="card-grid">
+    <a class="card c-demand" href="需給調整発生箇所整理_顧客提示用.html">
+      <span class="card-tag">需給調整｜顧客提示用</span>
+      <h3>需給調整発生箇所整理｜顧客提示用</h3>
+      <div class="card-desc">
+        業務プロセス×需給軸の課題マップ。戦略から実行への接続マップ、10課題サマリ（A〜D群）、課題発生箇所の5つの表現形式（業務フロー・需給軸・発生頻度・影響度・改善難度）、AI解決策マトリクス（業務プロセス×需給軸）、上位戦略論点（現場最適化→経営選択肢）を収録。クライアント提示を前提とした構成。
+      </div>
+      <div class="card-meta">構成：戦略接続マップ／10課題サマリ／5表現形式／AI解決策マトリクス／戦略論点</div>
+    </a>
+    <a class="card c-demand" href="需給調整発生箇所整理_社内作戦用.html">
+      <span class="card-tag">需給調整｜社内作戦用</span>
+      <h3>需給調整発生箇所整理｜社内作戦用</h3>
+      <div class="card-desc">
+        顧客提示用と対をなすコンサル側の作戦メモ。資料の限界と自己点検（一流コンサル視点での自己批判）、顧客視点での想定反応とプレゼン設計（シーン別対応）、本資料の横展開可能な「型」（他SCM案件への再利用フレーム）を収録。
+      </div>
+      <div class="card-meta">想定反応シミュレーション・プレゼン設計・横展開の型（社内限）</div>
+    </a>
+  </div>
+
+  <h2>TOBE 設計：短期バージョン（個別業務AI／業務間接続は人間）</h2>
+  <div class="card-grid">
+    <a class="card c-tobe-short" href="TOBE短期_業務フロー.html">
+      <span class="card-tag">短期 TOBE</span>
+      <h3>短期TOBE 業務フロー</h3>
+      <div class="card-desc">
+        9ステップの縦スイムレーン。各ステップ内で単機能AI（OCR・予測AI・推奨AI・最適化AI）が動作。業務間ハンドオフ箇所は「人」タグで明示し、6箇所のリードタイム滞留点を可視化。
+      </div>
+      <div class="card-meta">前提：Agentic AI未導入。需給調整会議は存続（ダッシュボード化で準備工数▲80%）</div>
+    </a>
+    <a class="card c-tobe-short" href="TOBE短期_業務一覧表.html">
+      <span class="card-tag">短期 TOBE</span>
+      <h3>短期TOBE 業務一覧表</h3>
+      <div class="card-desc">
+        9ステップ別「TOBE業務内容」「人の役割」「AIの役割」「業務間接続の担い手」「期待効果」「残課題」を一覧化。短期の本質的限界を明示。
+      </div>
+      <div class="card-meta">期待効果：営業作業▲40〜60%、SCM計画立案▲60〜70%</div>
+    </a>
+  </div>
+
+  <h2>TOBE 設計：中期バージョン（社内 Agentic AI 導入完了）</h2>
+  <div class="card-grid">
+    <a class="card c-tobe-mid" href="TOBE中期_業務フロー.html">
+      <span class="card-tag">中期 TOBE</span>
+      <h3>中期TOBE 業務フロー</h3>
+      <div class="card-desc">
+        7種のエージェント（受注／在庫／計画／歩留まり予測／需給最適化（Orchestrator）／出荷／顧客対話）が業務横断でA2A連携。需給調整会議は廃止、月次戦略レビューのみ。人は方針設定・例外承認に縮退。
+      </div>
+      <div class="card-meta">エージェント構成表＋スイムレーン＋特徴サマリ収録</div>
+    </a>
+    <a class="card c-tobe-mid" href="TOBE中期_業務一覧表.html">
+      <span class="card-tag">中期 TOBE</span>
+      <h3>中期TOBE 業務一覧表</h3>
+      <div class="card-desc">
+        9ステップ別の主管エージェント・A2A連携・人間の役割・期待効果を整理。さらに「短期 vs 中期 比較表」と「長期TOBE（社外エージェント連携）への進化方向」を収録。
+      </div>
+      <div class="card-meta">期待効果：作業工数▲90%以上、引き剥がし発生率▲50〜70%</div>
+    </a>
+  </div>
+
+  <h2>TOBE 補強：AICX観点フレームワーク適用</h2>
+  <div class="card-grid">
+    <a class="card c-aicx" href="TOBE補強_AICX観点.html">
+      <span class="card-tag">TOBE補強</span>
+      <h3>TOBE補強｜AICX観点フレームワーク適用</h3>
+      <div class="card-desc">
+        AICX認定（AIエージェント・ストラテジスト公式テキスト）の主要フレームワークを既存TOBEに適用。①自動化レベル(Lv.1-4)整合マップ、②ハイパーオートメーション、③デリゲーション/HITL設計（9ステップ別リスク×委譲範囲）、④成功の3層フレームワーク＋KPI、⑤5D実装ロードマップ、⑥チェンジマネジメント・ガバナンスを収録。
+      </div>
+      <div class="card-meta">既存TOBEは保持。「あるべき姿」を委譲設計・成果定義・実装手順を伴う実行計画へ具体化</div>
+    </a>
+  </div>
+
+  <h2>データ視点の分析</h2>
+  <div class="card-grid">
+    <a class="card c-data" href="業務フロー_データ項目付き.html">
+      <span class="card-tag">データ</span>
+      <h3>業務フロー（データ項目付き版）</h3>
+      <div class="card-desc">
+        AS-IS業務フロー（スイムレーン）に各ステップの入出力データを併記。さらに業務ステップ別データカードで属性レベルの詳細を記載。ステップ×データエンティティ CRUDマトリクス（15エンティティ×9ステップ）を収録。
+      </div>
+      <div class="card-meta">構成：スイムレーン＋データカード＋CRUDマトリクス</div>
+    </a>
+    <a class="card c-data" href="データフロー.html">
+      <span class="card-tag">データ</span>
+      <h3>データフロー</h3>
+      <div class="card-desc">
+        AS-IS データエンティティ目録（マスタ5・トランザクション9・ログ4＝18エンティティ）、データフロー図（DFD・主要23フロー）、システム間データフロー、エンティティ関係図（ER）、データ視点で見た6つの構造課題を網羅。
+      </div>
+      <div class="card-meta">構成：エンティティ目録／DFD／システム間フロー／ER／データ課題</div>
+    </a>
+  </div>
+
+  <h2>参考：成果物の活用シーン</h2>
+  <div class="intro">
+    <ul>
+      <li><strong>クライアント向け現状報告：</strong>「業務改革整理」のシンプルフロー＋数量関係グラフ＋メカニズム分析</li>
+      <li><strong>TOBE合意形成：</strong>「短期TOBE業務一覧表」と「中期TOBE業務一覧表」を並べて段階的なロードマップ合意に</li>
+      <li><strong>システム要件定義の入口：</strong>「業務フロー（データ項目付き）」と「データフロー」を要件定義ドキュメントの基礎資料に</li>
+      <li><strong>Agentic AI 導入企画：</strong>「中期TOBE業務フロー」のエージェント構成表を投資判断資料に</li>
+      <li><strong>役員報告：</strong>本インデックス＋「業務改革整理」の ECRSサマリーで一気通貫の説明可能</li>
+    </ul>
+  </div>
+
+</main>
+
+<footer>
+  半導体材料メーカー 受注・出荷業務改革プロジェクト ／ 作成：2026-05-14
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,2290 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>需給調整発生箇所整理｜半導体材料メーカー</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Yu Gothic", "Meiryo", "Hiragino Sans", sans-serif;
+    margin: 0; padding: 0; background: #f5f6f8; color: #1f2937;
+    font-size: 13px; line-height: 1.6;
+  }
+  header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #6d28d9 100%);
+    color: white; padding: 32px 40px;
+  }
+  header h1 { margin: 0 0 6px; font-size: 26px; }
+  header .subtitle { font-size: 13px; opacity: 0.9; }
+  header .meta { font-size: 11.5px; opacity: 0.75; margin-top: 8px; }
+
+  main { max-width: 1400px; margin: 0 auto; padding: 24px 28px; }
+
+  h2 {
+    font-size: 19px; color: #1e3a8a; border-left: 6px solid #1e3a8a;
+    padding: 6px 12px; background: #e0e7ff; margin: 28px 0 12px;
+  }
+  h3 {
+    font-size: 15px; color: #0e7490; margin: 18px 0 8px;
+    border-bottom: 2px solid #cffafe; padding-bottom: 4px;
+  }
+  p { margin: 6px 0; }
+
+  /* ============ Legend / Intro ============ */
+  .legend-box {
+    background: white; border: 1px solid #cbd5e1; border-radius: 8px;
+    padding: 14px 20px; margin: 10px 0 20px;
+  }
+  .legend-box strong { color: #1e3a8a; }
+  .legend-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px; margin-top: 10px;
+  }
+  .legend-item {
+    border-left: 4px solid; padding: 6px 10px; background: #f8fafc;
+    font-size: 12px;
+  }
+  .lg-event { border-left-color: #b45309; }
+  .lg-struct { border-left-color: #1e40af; }
+  .lg-verify { border-left-color: #be185d; }
+  .lg-demand { border-left-color: #ea580c; }
+  .lg-supply { border-left-color: #0e7490; }
+
+  /* ============ Badges ============ */
+  .badge {
+    display: inline-block; padding: 2px 8px; border-radius: 10px;
+    font-size: 10.5px; font-weight: bold; margin: 1px 3px 1px 0;
+    white-space: nowrap;
+  }
+  .b-event { background: #fed7aa; color: #b45309; }
+  .b-struct { background: #dbeafe; color: #1e40af; }
+  .b-verify { background: #fce7f3; color: #be185d; }
+  .b-demand { background: #ffedd5; color: #ea580c; }
+  .b-supply { background: #cffafe; color: #0e7490; }
+  .b-short { background: #cffafe; color: #0e7490; }
+  .b-mid { background: #ede9fe; color: #6d28d9; }
+  .b-new { background: #fef3c7; color: #92400e; }
+
+  /* ============ Issue Summary Cards ============ */
+  .issue-summary {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 12px; margin: 12px 0;
+  }
+  .issue-group {
+    background: white; border: 1px solid #cbd5e1; border-radius: 8px;
+    padding: 14px 16px; border-top: 5px solid;
+  }
+  .issue-group h4 {
+    margin: 0 0 8px; font-size: 14px; color: #1e3a8a;
+  }
+  .issue-group.g-a { border-top-color: #b45309; }
+  .issue-group.g-b { border-top-color: #ea580c; }
+  .issue-group.g-c { border-top-color: #1e40af; }
+  .issue-group.g-d { border-top-color: #6d28d9; }
+  .issue-list { margin: 4px 0 0 0; padding-left: 18px; }
+  .issue-list li { margin: 4px 0; font-size: 12.5px; }
+  .issue-code {
+    display: inline-block; background: #1e3a8a; color: white;
+    padding: 1px 6px; border-radius: 3px; font-size: 10.5px;
+    font-weight: bold; margin-right: 4px; min-width: 22px; text-align: center;
+  }
+
+  /* ============ Tabs ============ */
+  .tab-nav {
+    display: flex; flex-wrap: wrap; gap: 4px;
+    border-bottom: 3px solid #1e3a8a; margin: 16px 0 0;
+  }
+  .tab-button {
+    background: #e2e8f0; border: none; padding: 10px 16px;
+    cursor: pointer; font-size: 13px; font-weight: bold;
+    color: #475569; border-radius: 6px 6px 0 0;
+    transition: background 0.15s;
+  }
+  .tab-button:hover { background: #cbd5e1; }
+  .tab-button.active {
+    background: #1e3a8a; color: white;
+  }
+  .tab-content {
+    display: none; background: white;
+    border: 1px solid #1e3a8a; border-top: none;
+    padding: 20px 22px; border-radius: 0 0 8px 8px;
+  }
+  .tab-content.active { display: block; }
+  .tab-intro {
+    background: #f0f9ff; border-left: 4px solid #0284c7;
+    padding: 10px 14px; margin-bottom: 14px; font-size: 12.5px;
+  }
+  .tab-intro strong { color: #0284c7; }
+
+  /* ============ Matrix table ============ */
+  table.matrix {
+    width: 100%; border-collapse: collapse; background: white;
+    font-size: 11.5px; margin-top: 8px;
+  }
+  table.matrix th, table.matrix td {
+    border: 1px solid #cbd5e1; padding: 6px 8px; vertical-align: top;
+  }
+  table.matrix th {
+    background: #1e3a8a; color: white; text-align: center;
+    font-weight: bold; font-size: 12px;
+  }
+  table.matrix th.demand-h { background: #ea580c; }
+  table.matrix th.supply-h { background: #0e7490; }
+  table.matrix th.subcol { background: #475569; font-size: 11px; font-weight: normal; }
+  table.matrix td.process-cell {
+    background: #e0e7ff; font-weight: bold; color: #1e3a8a;
+    text-align: center; width: 130px; vertical-align: middle;
+    font-size: 11.5px;
+  }
+  table.matrix td.process-cell .pcode {
+    display: block; font-size: 10px; color: #64748b; margin-bottom: 2px;
+  }
+  table.matrix td.no-event {
+    background: #f8fafc; color: #94a3b8; text-align: center;
+    font-style: italic; font-size: 10.5px;
+  }
+  table.matrix td.demand-col { border-right: 1px solid #cbd5e1; }
+  table.matrix td.supply-col { border-left: 2px solid #1e3a8a; }
+  table.matrix td.col-divider-left { border-left: 3px solid #1e40af; }
+
+  /* Issue chips in cells */
+  .issue-chip {
+    display: inline-block; padding: 3px 7px; margin: 2px 3px 2px 0;
+    border-radius: 4px; font-size: 10.5px; font-weight: bold;
+    border: 1px solid;
+  }
+  .ic-event { background: #fef3c7; border-color: #b45309; color: #92400e; }
+  .ic-struct { background: #dbeafe; border-color: #1e40af; color: #1e3a8a; }
+  .ic-verify-event { background: #fef3c7; border-color: #be185d; color: #92400e; }
+  .ic-verify-struct { background: #fce7f3; border-color: #be185d; color: #be185d; }
+  .issue-chip .verify-mark { font-weight: bold; color: #be185d; margin-left: 2px; }
+
+  /* Quantity flow */
+  .qty-add { color: #047857; font-weight: bold; }
+  .qty-sub { color: #b91c1c; font-weight: bold; }
+  .qty-neutral { color: #475569; }
+  .qty-cell { font-size: 11px; line-height: 1.5; }
+
+  /* Hybrid 2-layer cells */
+  .hybrid-cell { padding: 0 !important; }
+  .hybrid-cell .qty-layer {
+    background: #f0fdf4; padding: 5px 7px; border-bottom: 1px dashed #cbd5e1;
+    font-size: 11px;
+  }
+  .hybrid-cell .issue-layer {
+    padding: 5px 7px; font-size: 10.5px;
+  }
+  .hybrid-cell .no-flow { color: #94a3b8; font-style: italic; }
+
+  /* ============ Swimlane (Tab4) ============ */
+  .swimlane-wrap { overflow-x: auto; }
+  .swimlane {
+    display: grid;
+    grid-template-columns: 80px repeat(11, minmax(95px, 1fr));
+    background: white; border: 1px solid #cbd5e1; border-radius: 6px;
+    min-width: 1200px;
+  }
+  .sl-header, .sl-lane {
+    display: contents;
+  }
+  .sl-axis-label {
+    background: #1e3a8a; color: white; font-weight: bold;
+    padding: 8px 6px; font-size: 11px; text-align: center;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .sl-axis-label.demand { background: #ea580c; }
+  .sl-axis-label.supply { background: #0e7490; }
+  .sl-process-header {
+    background: #475569; color: white;
+    padding: 6px 4px; font-size: 10.5px; text-align: center;
+    font-weight: bold; border-left: 1px solid #cbd5e1;
+  }
+  .sl-cell {
+    border-left: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;
+    padding: 6px 4px; min-height: 60px; position: relative;
+    font-size: 10.5px;
+  }
+  .sl-cell.demand-cell { background: #fff7ed; }
+  .sl-cell.supply-cell { background: #f0fdfa; }
+  .sl-bar {
+    display: block; padding: 2px 4px; margin: 2px 0;
+    border-radius: 3px; font-size: 10px; font-weight: bold;
+  }
+  .sl-bar-demand { background: #fed7aa; color: #9a3412; }
+  .sl-bar-supply { background: #99f6e4; color: #115e59; }
+  .sl-bar-plan { background: #ede9fe; color: #6d28d9; }
+  .sl-bar-yield { background: #d1fae5; color: #047857; }
+  .sl-issue-tag {
+    display: inline-block; background: #fce7f3; color: #be185d;
+    padding: 1px 4px; border-radius: 3px; font-size: 9.5px;
+    font-weight: bold; margin-top: 3px; border: 1px solid #be185d;
+  }
+  .sl-issue-tag.struct { background: #dbeafe; color: #1e3a8a; border-color: #1e3a8a; }
+  .sl-issue-tag.event { background: #fef3c7; color: #92400e; border-color: #b45309; }
+  .sl-divider-row {
+    grid-column: 1 / -1; background: #1e3a8a; height: 3px;
+  }
+
+  /* ============ Heatmap (Tab5) ============ */
+  .heatmap-grid {
+    display: grid;
+    grid-template-columns: 130px repeat(5, 1fr);
+    border: 1px solid #cbd5e1; background: white;
+  }
+  .heatmap-grid > div {
+    padding: 8px 6px; border-bottom: 1px solid #e2e8f0;
+    border-right: 1px solid #e2e8f0; font-size: 11.5px;
+    min-height: 38px; display: flex; align-items: center;
+    justify-content: center; text-align: center;
+  }
+  .heatmap-grid .hm-h {
+    background: #1e3a8a; color: white; font-weight: bold;
+  }
+  .heatmap-grid .hm-h.demand { background: #ea580c; }
+  .heatmap-grid .hm-h.supply { background: #0e7490; }
+  .heatmap-grid .hm-row-label {
+    background: #e0e7ff; color: #1e3a8a; font-weight: bold;
+    text-align: left; justify-content: flex-start; padding-left: 10px;
+    font-size: 11px;
+  }
+  .hm-cell-0 { background: #f8fafc; color: #cbd5e1; }
+  .hm-cell-1 { background: #fef3c7; color: #92400e; }
+  .hm-cell-2 { background: #fde68a; color: #78350f; }
+  .hm-cell-3 { background: #fb923c; color: white; }
+  .hm-cell-4 { background: #dc2626; color: white; font-weight: bold; }
+  .hm-codes { font-size: 10px; font-weight: bold; line-height: 1.2; }
+
+  .heatmap-legend {
+    display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap;
+    font-size: 11px; align-items: center;
+  }
+  .heatmap-legend .hl-swatch {
+    display: inline-block; width: 16px; height: 16px;
+    border: 1px solid #cbd5e1; margin-right: 4px;
+    vertical-align: middle;
+  }
+
+  .prescription-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 12px; margin-top: 14px;
+  }
+  .rx-card {
+    background: white; border: 1px solid #cbd5e1; border-radius: 8px;
+    padding: 12px 14px; border-top: 5px solid;
+  }
+  .rx-card.rx-event { border-top-color: #b45309; }
+  .rx-card.rx-struct { border-top-color: #1e40af; }
+  .rx-card.rx-verify-event { border-top-color: #b45309; border-left: 3px solid #be185d; }
+  .rx-card.rx-verify-struct { border-top-color: #1e40af; border-left: 3px solid #be185d; }
+  .rx-card h4 {
+    margin: 0 0 6px; font-size: 13px; color: #1e3a8a;
+  }
+  .rx-card h4 .rx-code {
+    display: inline-block; background: #1e3a8a; color: white;
+    padding: 1px 6px; border-radius: 3px; font-size: 10.5px;
+    margin-right: 5px;
+  }
+  .rx-card .rx-row {
+    margin: 5px 0; font-size: 11.5px;
+  }
+  .rx-card .rx-label {
+    display: inline-block; font-weight: bold; min-width: 78px;
+    font-size: 10.5px; padding: 1px 6px; border-radius: 3px;
+    margin-right: 5px;
+  }
+  .rx-card .rx-label.short { background: #cffafe; color: #0e7490; }
+  .rx-card .rx-label.mid { background: #ede9fe; color: #6d28d9; }
+  .rx-card .rx-label.new { background: #fef3c7; color: #92400e; }
+  .rx-card .rx-label.effect { background: #d1fae5; color: #047857; }
+  .rx-card .rx-na { color: #94a3b8; font-style: italic; }
+
+  /* ============ AI Solution Matrix ============ */
+  table.ai-matrix {
+    width: 100%; border-collapse: collapse; background: white;
+    font-size: 11px; margin-top: 8px;
+  }
+  table.ai-matrix th, table.ai-matrix td {
+    border: 1px solid #cbd5e1; padding: 6px 8px; vertical-align: top;
+  }
+  table.ai-matrix th { background: #6d28d9; color: white; text-align: center; }
+  table.ai-matrix th.demand-h { background: #ea580c; }
+  table.ai-matrix th.supply-h { background: #0e7490; }
+  table.ai-matrix td.process-cell {
+    background: #ede9fe; color: #6d28d9; font-weight: bold; text-align: center;
+    vertical-align: middle; width: 130px;
+  }
+  table.ai-matrix .ai-block { font-size: 10.5px; }
+  table.ai-matrix .ai-block .ai-label {
+    display: inline-block; padding: 1px 5px; border-radius: 3px;
+    font-size: 9.5px; font-weight: bold; margin-right: 3px;
+  }
+  table.ai-matrix .ai-block .ai-label.s { background: #cffafe; color: #0e7490; }
+  table.ai-matrix .ai-block .ai-label.m { background: #ede9fe; color: #6d28d9; }
+  table.ai-matrix .ai-block .ai-label.n { background: #fef3c7; color: #92400e; }
+  table.ai-matrix td.no-event {
+    background: #f8fafc; color: #94a3b8; text-align: center;
+    font-style: italic; font-size: 10.5px;
+  }
+
+  /* ============ Discussion section ============ */
+  .discussion-card {
+    background: white; border: 1px solid #cbd5e1; border-radius: 8px;
+    padding: 14px 18px; margin: 10px 0; border-left: 5px solid #be185d;
+  }
+  .discussion-card h4 {
+    margin: 0 0 6px; font-size: 14px; color: #be185d;
+  }
+  .discussion-card .talk-points {
+    margin: 6px 0 0 18px; padding: 0; font-size: 12px;
+  }
+  .discussion-card .talk-points li { margin: 4px 0; }
+  .discussion-card .context {
+    background: #fdf2f8; padding: 8px 10px; border-radius: 4px;
+    margin: 6px 0; font-size: 11.5px;
+  }
+
+  /* ============ Mgmt judgement badge ============ */
+  .b-mgmt { background: #fee2e2; color: #991b1b; }
+  .ic-mgmt { background: #fee2e2; border-color: #991b1b; color: #991b1b; }
+  .lg-mgmt { border-left-color: #991b1b; }
+
+  /* ============ Self-review (Section 6) ============ */
+  .selfreview-intro {
+    background: #fff7ed; border-left: 4px solid #c2410c;
+    padding: 12px 16px; margin: 10px 0 16px; font-size: 12.5px;
+  }
+  .selfreview-intro strong { color: #c2410c; }
+  table.review-table {
+    width: 100%; border-collapse: collapse; background: white;
+    font-size: 12px; margin-top: 10px;
+  }
+  table.review-table th, table.review-table td {
+    border: 1px solid #cbd5e1; padding: 8px 10px; vertical-align: top;
+  }
+  table.review-table th {
+    background: #c2410c; color: white; text-align: center;
+  }
+  table.review-table td.review-code {
+    background: #ffedd5; color: #c2410c; font-weight: bold;
+    text-align: center; width: 60px;
+  }
+  table.review-table td.review-cat {
+    background: #fff7ed; font-weight: bold; color: #9a3412;
+    width: 110px;
+  }
+  table.review-table td.severity {
+    text-align: center; width: 80px; font-size: 14px; color: #b91c1c;
+  }
+  table.review-table td.response {
+    background: #f0fdf4; border-left: 4px solid #047857;
+  }
+
+  /* ============ Strategy section (Section 7) ============ */
+  .strategy-card {
+    background: white; border: 1px solid #cbd5e1; border-radius: 8px;
+    padding: 16px 20px; margin: 12px 0;
+    border-left: 6px solid #1e3a8a;
+  }
+  .strategy-card.k-major { border-left-color: #6d28d9; background: linear-gradient(to right, #faf5ff 0%, white 5%); }
+  .strategy-card h4 {
+    margin: 0 0 8px; font-size: 15px; color: #1e3a8a;
+    display: flex; align-items: baseline; gap: 8px;
+  }
+  .strategy-card.k-major h4 { color: #6d28d9; }
+  .strategy-card .k-code {
+    display: inline-block; padding: 3px 10px; border-radius: 4px;
+    font-size: 12px; font-weight: bold; color: white; background: #1e3a8a;
+  }
+  .strategy-card.k-major .k-code { background: #6d28d9; }
+  .strategy-card .strategy-section {
+    margin: 8px 0; font-size: 12.5px;
+  }
+  .strategy-card .strategy-label {
+    display: inline-block; font-weight: bold; padding: 2px 8px;
+    background: #e0e7ff; color: #1e3a8a; border-radius: 3px;
+    font-size: 11px; margin-right: 6px;
+  }
+  .strategy-card.k-major .strategy-label {
+    background: #ede9fe; color: #6d28d9;
+  }
+  .strategy-card .strategy-table {
+    width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 11.5px;
+  }
+  .strategy-card .strategy-table th,
+  .strategy-card .strategy-table td {
+    border: 1px solid #cbd5e1; padding: 5px 8px; vertical-align: top;
+  }
+  .strategy-card .strategy-table th {
+    background: #475569; color: white;
+  }
+  .strategy-card .reframe-quote {
+    background: #fef3c7; border-left: 4px solid #c2410c;
+    padding: 8px 12px; margin: 8px 0; font-size: 12px;
+    font-style: italic;
+  }
+
+  .supplement-list {
+    background: white; border: 1px solid #cbd5e1; border-radius: 8px;
+    padding: 14px 18px; margin: 12px 0;
+  }
+  .supplement-list h4 {
+    margin: 0 0 8px; font-size: 14px; color: #1e3a8a;
+  }
+  .supplement-list ul { margin: 4px 0 0 18px; padding: 0; font-size: 12px; }
+  .supplement-list li { margin: 5px 0; }
+  .supplement-list .l-code {
+    display: inline-block; background: #475569; color: white;
+    padding: 1px 6px; border-radius: 3px; font-size: 10.5px;
+    margin-right: 5px; font-weight: bold;
+  }
+
+  /* ============ Client view section (Section 8) ============ */
+  .reaction-card {
+    background: white; border: 1px solid #cbd5e1; border-radius: 8px;
+    padding: 12px 16px; margin: 10px 0;
+    border-left: 5px solid;
+  }
+  .reaction-card.r-defense { border-left-color: #b91c1c; }
+  .reaction-card.r-painful { border-left-color: #be185d; }
+  .reaction-card.r-want { border-left-color: #047857; }
+  .reaction-card.r-debate { border-left-color: #6d28d9; }
+  .reaction-card h5 {
+    margin: 0 0 6px; font-size: 13px;
+  }
+  .reaction-card.r-defense h5 { color: #b91c1c; }
+  .reaction-card.r-painful h5 { color: #be185d; }
+  .reaction-card.r-want h5 { color: #047857; }
+  .reaction-card.r-debate h5 { color: #6d28d9; }
+  .reaction-card .client-voice {
+    background: #f1f5f9; padding: 8px 12px; border-radius: 4px;
+    font-style: italic; font-size: 12px; margin: 6px 0;
+    border-left: 3px solid #94a3b8;
+  }
+  .reaction-card .client-voice::before {
+    content: '"'; font-size: 18px; color: #94a3b8; margin-right: 4px;
+  }
+  .reaction-card .client-voice::after {
+    content: '"'; font-size: 18px; color: #94a3b8; margin-left: 4px;
+  }
+  .reaction-card .response-plan {
+    font-size: 12px; color: #1f2937;
+  }
+  .reaction-card .response-plan strong { color: #1e3a8a; }
+
+  .conversation-design {
+    background: #f0f9ff; border: 1px solid #0284c7;
+    border-radius: 8px; padding: 14px 18px; margin: 14px 0;
+  }
+  .conversation-design h4 {
+    margin: 0 0 8px; font-size: 14px; color: #0284c7;
+  }
+  .conversation-design .phase {
+    display: grid; grid-template-columns: 90px 1fr;
+    gap: 10px; margin: 8px 0; align-items: start;
+  }
+  .conversation-design .phase-tag {
+    background: #0284c7; color: white; padding: 4px 8px;
+    border-radius: 4px; font-size: 11px; font-weight: bold;
+    text-align: center;
+  }
+  .conversation-design .phase-content { font-size: 12px; }
+  .conversation-design .phase-content strong { color: #0284c7; }
+
+  .opening-statement {
+    background: #ecfeff; border: 2px solid #0e7490;
+    border-radius: 8px; padding: 16px 20px; margin: 14px 0;
+    font-size: 13px;
+  }
+  .opening-statement h4 {
+    margin: 0 0 8px; font-size: 14px; color: #0e7490;
+  }
+  .opening-statement .quote {
+    background: white; padding: 10px 14px; border-radius: 4px;
+    border-left: 4px solid #0e7490; font-style: italic;
+    margin: 8px 0; line-height: 1.7;
+  }
+
+  /* Priority badges */
+  .b-pri-h { background: #b91c1c; color: white; }
+  .b-pri-m { background: #d97706; color: white; }
+  .b-pri-l { background: #475569; color: white; }
+
+  /* ============ ★要確認 (todo) / 目的KPI badge ============ */
+  .badge.b-todo { background: #fde68a; color: #92400e; border: 1px dashed #b45309; }
+  .num-todo { color: #b45309; font-weight: bold; font-size: 0.85em; }
+  .badge.b-kpi { background: #d1fae5; color: #047857; }
+  .todo-banner {
+    background: #fffbeb; border: 2px dashed #b45309; border-radius: 8px;
+    padding: 14px 18px; margin: 14px 0; font-size: 12.5px;
+  }
+  .todo-banner strong { color: #b45309; }
+
+  /* ============ Hierarchy map (Section 0) ============ */
+  .hierarchy-map {
+    background: white; border: 1px solid #cbd5e1; border-radius: 8px;
+    padding: 18px 20px; margin: 12px 0; overflow-x: auto;
+  }
+  .h-layer {
+    display: grid; grid-template-columns: 150px 1fr 230px;
+    gap: 12px; align-items: center; margin: 0; min-width: 760px;
+  }
+  .h-arrow-row { color: #94a3b8; font-size: 18px; font-weight: bold; margin: 2px 0; padding-left: 65px; }
+  .h-label {
+    padding: 12px 10px; border-radius: 6px; font-weight: bold;
+    font-size: 12.5px; text-align: center; color: white;
+  }
+  .h-strategic { background: #6d28d9; }
+  .h-scm { background: #1e3a8a; }
+  .h-process { background: #0e7490; }
+  .h-system { background: #047857; }
+  .h-content {
+    padding: 8px 12px; font-size: 12px; background: #f8fafc;
+    border-radius: 6px; border: 1px solid #e2e8f0;
+  }
+  .h-kpi {
+    padding: 8px 10px; font-size: 11px; background: #ecfdf5;
+    border-radius: 6px; border: 1px solid #a7f3d0; color: #047857;
+  }
+  .h-kpi strong { color: #065f46; }
+
+  /* ============ Template / 横展開型 (Section 9) ============ */
+  .template-card {
+    background: white; border: 1px solid #cbd5e1; border-radius: 8px;
+    padding: 16px 20px; margin: 12px 0; border-left: 6px solid #6d28d9;
+  }
+  .template-card h4 { margin: 0 0 8px; font-size: 15px; color: #6d28d9; }
+  .template-card .t-frame {
+    display: inline-block; background: #ede9fe; color: #6d28d9;
+    padding: 2px 10px; border-radius: 4px; font-size: 11.5px;
+    font-weight: bold; margin: 3px 4px 3px 0;
+  }
+  .template-card .t-row { margin: 6px 0; font-size: 12.5px; }
+  .template-card .t-label {
+    display: inline-block; font-weight: bold; min-width: 90px;
+    color: #6d28d9; font-size: 11.5px;
+  }
+
+  /* Reframe / question callout (問い返し強化) */
+  .question-callout {
+    background: #fef2f2; border-left: 5px solid #b91c1c;
+    padding: 10px 14px; margin: 8px 0; font-size: 12.5px;
+  }
+  .question-callout strong { color: #b91c1c; }
+  .question-callout .q-type {
+    display: inline-block; background: #b91c1c; color: white;
+    font-size: 10px; padding: 1px 7px; border-radius: 3px;
+    margin-right: 6px; font-weight: bold;
+  }
+
+  footer {
+    text-align: center; padding: 20px; color: #94a3b8;
+    font-size: 11px; border-top: 1px solid #e2e8f0; margin-top: 30px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>需給調整発生箇所整理｜業務プロセス × 需給軸　<span style="font-size:14px; opacity:0.8;">（v2：戦略→実行 接続版）</span></h1>
+  <div class="subtitle">どの業務プロセスで需給調整が発生し、それが事業戦略・SCM戦略にどう接続するか・AI解決策の対応マップ</div>
+  <div class="meta">対象：受注～出荷の在庫引当・生産調整全般／作成：2026-05-22／用途：5/13クライアント打ち合わせ用検討資料／※本資料の数値はすべて代表例（★要確認）。実態値はF-1〜F-10取得後に差し替え</div>
+</header>
+
+<main>
+
+<!-- ============ 0. 階層接続マップ ============ -->
+<h2>0. 戦略から実行への接続マップ（本資料の位置づけ）</h2>
+<div class="todo-banner">
+  <strong>★この資料の数値はすべて「代表例（仮置き）」です。</strong>
+  数量例（200／1000／720 等）・効果見積もり（▲40〜60% 等）はロジックを示すための仮置きであり、<strong>実態値ではありません</strong>。
+  第8-2章のファクト確認リスト（F-1〜F-10）で実態値を取得後、すべて差し替えます。本文中の <span class="num-todo">★要確認</span> は実態値未取得の箇所を示します。
+  <br><span style="font-size:11.5px; color:#92400e;">（定量化できていない＝経営層に投資提案できない状態。手段の数値は必ず目的KPIに置換する、という前提で読んでください）</span>
+</div>
+
+<div class="legend-box">
+  <strong>本資料の本質：</strong>これは「需給調整を効率化する現場改善」の資料<strong>ではなく</strong>、<strong>事業戦略から実行までを一貫して繋ぎ直す</strong>ための資料です。
+  需給調整の難しさは、現場の頑張りの問題ではなく、<strong>戦略の意図が実行レベルまでブレずに降りていない</strong>ことの表れと捉えます。下図で、各レイヤがどう接続するかを示します。
+</div>
+
+<div class="hierarchy-map">
+  <div class="h-layer">
+    <div class="h-label h-strategic">事業戦略<br><span style="font-size:10px; font-weight:normal;">3-5年</span></div>
+    <div class="h-content">業界最大手としてのポジショニング維持・収益性向上。市況急変動下での供給責任と利益の両立</div>
+    <div class="h-kpi"><strong>目的KPI：</strong>ROIC／営業利益率／市場シェア</div>
+  </div>
+  <div class="h-arrow-row">↓ この戦略意図が降りているか？</div>
+  <div class="h-layer">
+    <div class="h-label h-scm">SCM戦略<br><span style="font-size:10px; font-weight:normal;">1-3年</span></div>
+    <div class="h-content">需給調整を「常時走り続ける消耗戦」から脱却。バイイングパワー活用・ロット粒度・契約条件の経営判断（第7章K1〜K5）</div>
+    <div class="h-kpi"><strong>目的KPI：</strong>DIO（在庫日数）／CCC／納期遵守率</div>
+  </div>
+  <div class="h-arrow-row">↓ SCM戦略が業務に翻訳されているか？</div>
+  <div class="h-layer">
+    <div class="h-label h-process">業務改革<br><span style="font-size:10px; font-weight:normal;">月次〜四半期</span></div>
+    <div class="h-content">受注〜出荷の11プロセスにおける需給調整の発生箇所と10課題（第2〜3章）。短期TOBE（業務内＝AI／業務間＝人）</div>
+    <div class="h-kpi"><strong>目的KPI：</strong>欠品率／引き剥がし発生率／計画-実績乖離</div>
+  </div>
+  <div class="h-arrow-row">↓ 業務がシステムで支えられているか？</div>
+  <div class="h-layer">
+    <div class="h-label h-system">システム化<br><span style="font-size:10px; font-weight:normal;">日次</span></div>
+    <div class="h-content">CSシステム／オーダー登録ツール／APS／AI解決策（第4章）。2システム並存＝<strong>2025年の崖</strong>リスク</div>
+    <div class="h-kpi"><strong>目的KPI：</strong>機能使用率／自動化率／手入力工数</div>
+  </div>
+</div>
+
+<div class="question-callout">
+  <span class="q-type">上位目的に引き上げる問い</span>
+  <strong>「需給調整の改善は手段です。これは最終的に、御社のどの経営KPI（ROIC／利益率／シェア）を動かすための話ですか？」</strong>
+  ―― この接続が描けないまま現場改善に着手すると、改革のドライブが社内で続きません。
+</div>
+
+<!-- ============ 1. 本資料の見方 ============ -->
+<h2>1. 本資料の見方</h2>
+<div class="legend-box">
+  <strong>構成：</strong>業務プロセス（縦軸11行）×需給軸（横軸5列：左=需要2列／右=供給3列）の課題マトリクスを<strong>5つの表現（タブ切替）</strong>で展開し、続けて<strong>AI解決策マトリクス</strong>を同構造で並列、最後に<strong>打ち合わせ論点</strong>を整理。
+  <div class="legend-grid">
+    <div class="legend-item lg-event"><strong>事象</strong><span class="badge b-event">事象</span> 現に発生している現象（観測可能）</div>
+    <div class="legend-item lg-struct"><strong>構造</strong><span class="badge b-struct">構造</span> ルール／システム／運用の不備（事象を再生産する）</div>
+    <div class="legend-item lg-verify"><strong>要検証</strong><span class="badge b-verify">要検証</span> ユーザー仮説（5/13打ち合わせで検証）</div>
+    <div class="legend-item lg-mgmt"><strong>経営判断</strong><span class="badge b-mgmt">経営判断</span> 現場改善ではなく経営の意思決定が必要（第7章で深掘り）</div>
+    <div class="legend-item lg-demand"><strong>需要側</strong><span class="badge b-demand">需要</span> 顧客からの注文／出荷依頼</div>
+    <div class="legend-item lg-supply"><strong>供給側</strong><span class="badge b-supply">供給</span> 在庫／生産出来高／生産計画</div>
+  </div>
+  <div style="margin-top: 10px; padding: 10px 14px; background: #ecfeff; border-left: 4px solid #0e7490; font-size: 12px;">
+    <strong style="color:#0e7490;">本資料の位置づけ：</strong>本資料は<strong>「需給調整の発生箇所と構造」を可視化するための検討資料</strong>であり、最終提案ではない。
+    AFTが業界最大手であるという前提を踏まえ、現場オペレーション論（第3〜4章）に加えて<strong>経営戦略論（第7章）</strong>と<strong>クライアント対話設計（第8章）</strong>を併記している。
+    本資料の限界と自己点検は<strong>第6章</strong>で明示。
+  </div>
+</div>
+
+<!-- ============ 2. 10課題サマリ ============ -->
+<h2>2. 10課題サマリ（A群 / B群 / C群 / D群）</h2>
+<div class="issue-summary">
+
+  <div class="issue-group g-a">
+    <h4>A群：生産側の不確実性</h4>
+    <ul class="issue-list">
+      <li><span class="issue-code">A1</span>化学反応の歩留まりばらつき<br><span class="badge b-event">事象</span><span class="badge b-struct">構造</span><span style="font-size:10.5px; color:#64748b;">（ばらつき自体は事象だが、予測精度／補正ロジックは構造）</span></li>
+      <li><span class="issue-code">A2</span>複数品目×共通ライン／段取り替え<br><span class="badge b-event">事象</span><span class="badge b-struct">構造</span><span style="font-size:10.5px; color:#64748b;">（段取りコスト未定量化は構造）</span></li>
+      <li><span class="issue-code">A3</span>中長期キャパ vs 受注総量のミスマッチ<br><span class="badge b-struct">構造</span><span class="badge b-mgmt">経営判断</span><span class="badge b-verify">要検証</span></li>
+    </ul>
+  </div>
+
+  <div class="issue-group g-b">
+    <h4>B群：需要側の変動</h4>
+    <ul class="issue-list">
+      <li><span class="issue-code">B1</span>標準LTを下回る短納期の出荷依頼（断れない構造として固着している疑い）<br><span class="badge b-struct">構造</span><span class="badge b-mgmt">経営判断</span><span class="badge b-verify">要検証</span></li>
+      <li><span class="issue-code">B2</span>顧客独自の納品ルール（A耳B耳、ロット指定）が引当に織り込めない<br><span class="badge b-struct">構造</span><span class="badge b-mgmt">経営判断</span><span class="badge b-verify">要検証</span></li>
+      <li><span class="issue-code">B3</span>受注後の数量変更・納期変更<br><span class="badge b-event">事象</span></li>
+    </ul>
+  </div>
+
+  <div class="issue-group g-c">
+    <h4>C群：引当ロジック／運用ルールの不備</h4>
+    <ul class="issue-list">
+      <li><span class="issue-code">C1</span>顧客間引当優先順位の属人化<br><span class="badge b-struct">構造</span><span class="badge b-mgmt">経営判断</span></li>
+      <li><span class="issue-code">C2</span>自動洗い替え機能の使用率まばら（運用ばらつき）<br><span class="badge b-struct">構造</span><span class="badge b-verify">要検証</span></li>
+      <li><span class="issue-code">C3</span>引き剥がし履歴の体系化不足<br><span class="badge b-struct">構造</span></li>
+    </ul>
+  </div>
+
+  <div class="issue-group g-d">
+    <h4>D群：時間的非同期</h4>
+    <ul class="issue-list">
+      <li><span class="issue-code">D1</span>仮引当（②）と本引当（⑨）の間の情報乖離<br><span class="badge b-struct">構造</span><span style="font-size:10.5px; color:#64748b;">（システム実装上の問題＝構造に再分類）</span></li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- ============ 3. 課題発生箇所の5表現（タブ切替） ============ -->
+<h2>3. 課題発生箇所の5つの表現</h2>
+
+<div class="tab-nav">
+  <button class="tab-button active" data-tab="tab1" onclick="showTab('tab1')">①課題マトリクス型</button>
+  <button class="tab-button" data-tab="tab2" onclick="showTab('tab2')">②数量増減（シーケンス）型</button>
+  <button class="tab-button" data-tab="tab3" onclick="showTab('tab3')">③ハイブリッド型</button>
+  <button class="tab-button" data-tab="tab4" onclick="showTab('tab4')">④スイムレーン×吹き出し型</button>
+  <button class="tab-button" data-tab="tab5" onclick="showTab('tab5')">⑤ヒートマップ＋処方箋型</button>
+</div>
+
+<!-- ===== Tab 1: 課題マトリクス ===== -->
+<div id="tab1" class="tab-content active">
+  <div class="tab-intro">
+    <strong>狙い：</strong>業務プロセス×需給軸の各セルに「どの課題が発生しているか」を箱として配置。
+    <strong>読み方：</strong>同じ課題が複数セルに現れる場合は、その課題が複数プロセスにまたがって発生していることを意味する。
+  </div>
+
+  <table class="matrix">
+    <thead>
+      <tr>
+        <th rowspan="2" style="width:130px;">業務プロセス</th>
+        <th colspan="2" class="demand-h">需要側</th>
+        <th colspan="3" class="supply-h">供給側</th>
+      </tr>
+      <tr>
+        <th class="subcol">注文(PO)</th>
+        <th class="subcol">出荷依頼</th>
+        <th class="subcol col-divider-left">在庫</th>
+        <th class="subcol">生産出来高</th>
+        <th class="subcol">生産計画</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <tr>
+        <td class="process-cell"><span class="pcode">0</span>前回引当時の余剰在庫</td>
+        <td class="demand-col no-event">―</td>
+        <td class="demand-col no-event">―</td>
+        <td class="supply-col"><span class="issue-chip ic-event">A1 歩留余剰</span></td>
+        <td class="supply-col no-event">―</td>
+        <td class="supply-col no-event">―</td>
+      </tr>
+
+      <tr>
+        <td class="process-cell"><span class="pcode">①</span>PO受領</td>
+        <td class="demand-col"><span class="issue-chip ic-verify-struct">A3 キャパ vs 受注総量<span class="verify-mark">★</span></span><span class="issue-chip ic-event">B3 受注後変更</span></td>
+        <td class="demand-col no-event">―</td>
+        <td class="supply-col no-event">―</td>
+        <td class="supply-col no-event">―</td>
+        <td class="supply-col no-event">―</td>
+      </tr>
+
+      <tr>
+        <td class="process-cell"><span class="pcode">②</span>在庫引当①（仮引当）</td>
+        <td class="demand-col no-event">―</td>
+        <td class="demand-col no-event">―</td>
+        <td class="supply-col"><span class="issue-chip ic-struct">C1 優先順位属人化</span><span class="issue-chip ic-verify-struct">C2 洗い替え使用ばら<span class="verify-mark">★</span></span><span class="issue-chip ic-verify-struct">B2 顧客ルール未織込<span class="verify-mark">★</span></span><span class="issue-chip ic-event">D1 情報乖離始点</span></td>
+        <td class="supply-col no-event">―</td>
+        <td class="supply-col no-event">―</td>
+      </tr>
+
+      <tr>
+        <td class="process-cell"><span class="pcode">③</span>生産依頼入力</td>
+        <td class="demand-col no-event">―</td>
+        <td class="demand-col no-event">―</td>
+        <td class="supply-col no-event">―</td>
+        <td class="supply-col no-event">―</td>
+        <td class="supply-col"><span class="issue-chip ic-event">A1 歩留補正必要</span></td>
+      </tr>
+
+      <tr>
+        <td class="process-cell"><span class="pcode">④</span>納期一次回答</td>
+        <td class="demand-col no-event">―</td>
+        <td class="demand-col no-event">―</td>
+        <td class="supply-col no-event">―</td>
+        <td class="supply-col no-event">―</td>
+        <td class="supply-col"><span class="issue-chip ic-verify-struct">A3 LT実現性<span class="verify-mark">★</span></span></td>
+      </tr>
+
+      <tr>
+        <td class="process-cell"><span class="pcode">⑤</span>生産計画策定</td>
+        <td class="demand-col no-event">―</td>
+        <td class="demand-col no-event">―</td>
+        <td class="supply-col no-event">―</td>
+        <td class="supply-col no-event">―</td>
+        <td class="supply-col"><span class="issue-chip ic-event">A1 歩留予測経験則</span><span class="issue-chip ic-event">A2 段取り替え調整</span><span class="issue-chip ic-verify-struct">A3 キャパ制約<span class="verify-mark">★</span></span></td>
+      </tr>
+
+      <tr>
+        <td class="process-cell"><span class="pcode">⑥</span>需給調整会議</td>
+        <td class="demand-col"><span class="issue-chip ic-event">B3 変更織込</span></td>
+        <td class="demand-col no-event">―</td>
+        <td class="supply-col"><span class="issue-chip ic-struct">C1 優先順位合議</span></td>
+        <td class="supply-col no-event">―</td>
+        <td class="supply-col"><span class="issue-chip ic-event">A2 品目間調整</span></td>
+      </tr>
+
+      <tr>
+        <td class="process-cell"><span class="pcode">★</span>生産実行・歩留まり実績</td>
+        <td class="demand-col no-event">―</td>
+        <td class="demand-col no-event">―</td>
+        <td class="supply-col"><span class="issue-chip ic-event">A1 余剰/不足発生</span></td>
+        <td class="supply-col"><span class="issue-chip ic-event">A1 計画≠実績</span></td>
+        <td class="supply-col no-event">―</td>
+      </tr>
+
+      <tr>
+        <td class="process-cell"><span class="pcode">⑦</span>納期二次回答</td>
+        <td class="demand-col"><span class="issue-chip ic-event">B3 変更反映</span></td>
+        <td class="demand-col no-event">―</td>
+        <td class="supply-col no-event">―</td>
+        <td class="supply-col no-event">―</td>
+        <td class="supply-col no-event">―</td>
+      </tr>
+
+      <tr>
+        <td class="process-cell"><span class="pcode">⑧</span>出荷依頼受領</td>
+        <td class="demand-col no-event">―</td>
+        <td class="demand-col"><span class="issue-chip ic-verify-struct">B1 短納期要求<span class="verify-mark">★</span></span></td>
+        <td class="supply-col no-event">―</td>
+        <td class="supply-col no-event">―</td>
+        <td class="supply-col no-event">―</td>
+      </tr>
+
+      <tr>
+        <td class="process-cell"><span class="pcode">⑨</span>在庫引当②／引き剥がし／出荷</td>
+        <td class="demand-col no-event">―</td>
+        <td class="demand-col"><span class="issue-chip ic-verify-struct">B1 緊急対応<span class="verify-mark">★</span></span></td>
+        <td class="supply-col"><span class="issue-chip ic-struct">C3 引剥履歴未体系化</span><span class="issue-chip ic-verify-struct">B2 顧客ルール照合<span class="verify-mark">★</span></span><span class="issue-chip ic-event">D1 情報乖離終点</span></td>
+        <td class="supply-col no-event">―</td>
+        <td class="supply-col no-event">―</td>
+      </tr>
+
+    </tbody>
+  </table>
+</div>
+
+<!-- ===== Tab 2: 数量増減（シーケンス）型 ===== -->
+<div id="tab2" class="tab-content">
+  <div class="tab-intro">
+    <strong>狙い：</strong>各プロセスで「需要」「供給」の量がどう増減するかを記号と数値で表現（1週・1品目の代表例）。
+    <strong>記号：</strong><span class="qty-add">＋N</span>＝計上／<span class="qty-sub">▲N</span>＝消費・引当・転送／<span class="qty-neutral">±</span>＝振替のみ。
+  </div>
+
+  <table class="matrix">
+    <thead>
+      <tr>
+        <th rowspan="2" style="width:130px;">業務プロセス</th>
+        <th colspan="2" class="demand-h">需要側</th>
+        <th colspan="3" class="supply-h">供給側</th>
+      </tr>
+      <tr>
+        <th class="subcol">注文(PO)</th>
+        <th class="subcol">出荷依頼</th>
+        <th class="subcol col-divider-left">在庫</th>
+        <th class="subcol">生産出来高</th>
+        <th class="subcol">生産計画</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <tr>
+        <td class="process-cell"><span class="pcode">0</span>前回引当時の余剰在庫</td>
+        <td class="demand-col qty-cell no-event">―</td>
+        <td class="demand-col qty-cell no-event">―</td>
+        <td class="supply-col qty-cell"><span class="qty-add">＋200</span><br><span style="font-size:10px; color:#64748b;">前週歩留余剰の繰越（引当可在庫）</span></td>
+        <td class="supply-col qty-cell no-event">―</td>
+        <td class="supply-col qty-cell no-event">―</td>
+      </tr>
+
+      <tr>
+        <td class="process-cell"><span class="pcode">①</span>PO受領</td>
+        <td class="demand-col qty-cell"><span class="qty-add">＋1000</span><br><span style="font-size:10px; color:#64748b;">新規PO受領</span></td>
+        <td class="demand-col qty-cell no-event">―</td>
+        <td class="supply-col qty-cell no-event">―</td>
+        <td class="supply-col qty-cell no-event">―</td>
+        <td class="supply-col qty-cell no-event">―</td>
+      </tr>
+
+      <tr>
+        <td class="process-cell"><span class="pcode">②</span>在庫引当①（仮引当）</td>
+        <td class="demand-col qty-cell no-event">―</td>
+        <td class="demand-col qty-cell no-event">―</td>
+        <td class="supply-col qty-cell"><span class="qty-sub">▲200</span> 引当可→<br><span class="qty-add">＋200</span> 引当済<br><span style="font-size:10px; color:#64748b;">余剰在庫を仮引当</span></td>
+        <td class="supply-col qty-cell no-event">―</td>
+        <td class="supply-col qty-cell no-event">―</td>
+      </tr>
+
+      <tr>
+        <td class="process-cell"><span class="pcode">③</span>生産依頼入力</td>
+        <td class="demand-col qty-cell no-event">―</td>
+        <td class="demand-col qty-cell no-event">―</td>
+        <td class="supply-col qty-cell no-event">―</td>
+        <td class="supply-col qty-cell no-event">―</td>
+        <td class="supply-col qty-cell"><span class="qty-add">＋800</span><br><span style="font-size:10px; color:#64748b;">不足分=PO-引当済を生産依頼</span></td>
+      </tr>
+
+      <tr>
+        <td class="process-cell"><span class="pcode">④</span>納期一次回答</td>
+        <td class="demand-col qty-cell"><span class="qty-neutral">±</span><br><span style="font-size:10px; color:#64748b;">標準LTで顧客へ回答</span></td>
+        <td class="demand-col qty-cell no-event">―</td>
+        <td class="supply-col qty-cell no-event">―</td>
+        <td class="supply-col qty-cell no-event">―</td>
+        <td class="supply-col qty-cell no-event">―</td>
+      </tr>
+
+      <tr>
+        <td class="process-cell"><span class="pcode">⑤</span>生産計画策定</td>
+        <td class="demand-col qty-cell no-event">―</td>
+        <td class="demand-col qty-cell no-event">―</td>
+        <td class="supply-col qty-cell no-event">―</td>
+        <td class="supply-col qty-cell no-event">―</td>
+        <td class="supply-col qty-cell"><span class="qty-neutral">±</span><br><span style="font-size:10px; color:#64748b;">800の計画＋歩留補正＋20%</span></td>
+      </tr>
+
+      <tr>
+        <td class="process-cell"><span class="pcode">⑥</span>需給調整会議</td>
+        <td class="demand-col qty-cell no-event">―</td>
+        <td class="demand-col qty-cell no-event">―</td>
+        <td class="supply-col qty-cell"><span class="qty-neutral">±</span><br><span style="font-size:10px; color:#64748b;">顧客間配分調整</span></td>
+        <td class="supply-col qty-cell no-event">―</td>
+        <td class="supply-col qty-cell"><span class="qty-neutral">±</span><br><span style="font-size:10px; color:#64748b;">品目間バランス調整</span></td>
+      </tr>
+
+      <tr>
+        <td class="process-cell"><span class="pcode">★</span>生産実行・歩留まり実績</td>
+        <td class="demand-col qty-cell no-event">―</td>
+        <td class="demand-col qty-cell no-event">―</td>
+        <td class="supply-col qty-cell no-event">―</td>
+        <td class="supply-col qty-cell"><span class="qty-add">＋720</span> 実績<br>（計画800/予測880）<br><span style="font-size:10px; color:#b91c1c;">歩留下振れ▲80</span></td>
+        <td class="supply-col qty-cell no-event">―</td>
+      </tr>
+
+      <tr>
+        <td class="process-cell"><span class="pcode">⑦</span>納期二次回答</td>
+        <td class="demand-col qty-cell"><span class="qty-neutral">±</span><br><span style="font-size:10px; color:#64748b;">変更時のみ通知</span></td>
+        <td class="demand-col qty-cell no-event">―</td>
+        <td class="supply-col qty-cell no-event">―</td>
+        <td class="supply-col qty-cell no-event">―</td>
+        <td class="supply-col qty-cell no-event">―</td>
+      </tr>
+
+      <tr>
+        <td class="process-cell"><span class="pcode">⑧</span>出荷依頼受領</td>
+        <td class="demand-col qty-cell no-event">―</td>
+        <td class="demand-col qty-cell"><span class="qty-add">＋500</span><br><span style="font-size:10px; color:#64748b;">分割出荷依頼</span></td>
+        <td class="supply-col qty-cell no-event">―</td>
+        <td class="supply-col qty-cell no-event">―</td>
+        <td class="supply-col qty-cell no-event">―</td>
+      </tr>
+
+      <tr>
+        <td class="process-cell"><span class="pcode">⑨</span>在庫引当②／引き剥がし／出荷</td>
+        <td class="demand-col qty-cell no-event">―</td>
+        <td class="demand-col qty-cell"><span class="qty-sub">▲500</span><br><span style="font-size:10px; color:#64748b;">出荷依頼消化</span></td>
+        <td class="supply-col qty-cell"><span class="qty-sub">▲500</span> 物理出庫<br><span style="color:#b91c1c; font-size:10px;">不足時 ▲X 他顧客引剥</span></td>
+        <td class="supply-col qty-cell no-event">―</td>
+        <td class="supply-col qty-cell no-event">―</td>
+      </tr>
+
+    </tbody>
+  </table>
+</div>
+
+<!-- ===== Tab 3: ハイブリッド型 ===== -->
+<div id="tab3" class="tab-content">
+  <div class="tab-intro">
+    <strong>狙い：</strong>各セルを2層構造に。<strong>上段=数量増減（Tab2）</strong>、<strong>下段=その時に発生する課題（Tab1）</strong>。
+    <strong>読み方：</strong>「どの数量変化のタイミングで、どの課題が連動して発生するか」が同時に見える。
+  </div>
+
+  <table class="matrix">
+    <thead>
+      <tr>
+        <th rowspan="2" style="width:130px;">業務プロセス</th>
+        <th colspan="2" class="demand-h">需要側</th>
+        <th colspan="3" class="supply-h">供給側</th>
+      </tr>
+      <tr>
+        <th class="subcol">注文(PO)</th>
+        <th class="subcol">出荷依頼</th>
+        <th class="subcol col-divider-left">在庫</th>
+        <th class="subcol">生産出来高</th>
+        <th class="subcol">生産計画</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <tr>
+        <td class="process-cell"><span class="pcode">0</span>前回引当時の余剰在庫</td>
+        <td class="demand-col hybrid-cell"><div class="qty-layer no-flow">―</div><div class="issue-layer">―</div></td>
+        <td class="demand-col hybrid-cell"><div class="qty-layer no-flow">―</div><div class="issue-layer">―</div></td>
+        <td class="supply-col hybrid-cell">
+          <div class="qty-layer"><span class="qty-add">＋200</span> 余剰繰越</div>
+          <div class="issue-layer"><span class="issue-chip ic-event">A1</span></div>
+        </td>
+        <td class="supply-col hybrid-cell"><div class="qty-layer no-flow">―</div><div class="issue-layer">―</div></td>
+        <td class="supply-col hybrid-cell"><div class="qty-layer no-flow">―</div><div class="issue-layer">―</div></td>
+      </tr>
+
+      <tr>
+        <td class="process-cell"><span class="pcode">①</span>PO受領</td>
+        <td class="demand-col hybrid-cell">
+          <div class="qty-layer"><span class="qty-add">＋1000</span> 新規PO</div>
+          <div class="issue-layer"><span class="issue-chip ic-verify-struct">A3<span class="verify-mark">★</span></span><span class="issue-chip ic-event">B3</span></div>
+        </td>
+        <td class="demand-col hybrid-cell"><div class="qty-layer no-flow">―</div><div class="issue-layer">―</div></td>
+        <td class="supply-col hybrid-cell"><div class="qty-layer no-flow">―</div><div class="issue-layer">―</div></td>
+        <td class="supply-col hybrid-cell"><div class="qty-layer no-flow">―</div><div class="issue-layer">―</div></td>
+        <td class="supply-col hybrid-cell"><div class="qty-layer no-flow">―</div><div class="issue-layer">―</div></td>
+      </tr>
+
+      <tr>
+        <td class="process-cell"><span class="pcode">②</span>在庫引当①（仮引当）</td>
+        <td class="demand-col hybrid-cell"><div class="qty-layer no-flow">―</div><div class="issue-layer">―</div></td>
+        <td class="demand-col hybrid-cell"><div class="qty-layer no-flow">―</div><div class="issue-layer">―</div></td>
+        <td class="supply-col hybrid-cell">
+          <div class="qty-layer"><span class="qty-sub">▲200</span> 引当可→<span class="qty-add">＋200</span> 引当済</div>
+          <div class="issue-layer"><span class="issue-chip ic-struct">C1</span><span class="issue-chip ic-verify-struct">C2<span class="verify-mark">★</span></span><span class="issue-chip ic-verify-struct">B2<span class="verify-mark">★</span></span><span class="issue-chip ic-event">D1</span></div>
+        </td>
+        <td class="supply-col hybrid-cell"><div class="qty-layer no-flow">―</div><div class="issue-layer">―</div></td>
+        <td class="supply-col hybrid-cell"><div class="qty-layer no-flow">―</div><div class="issue-layer">―</div></td>
+      </tr>
+
+      <tr>
+        <td class="process-cell"><span class="pcode">③</span>生産依頼入力</td>
+        <td class="demand-col hybrid-cell"><div class="qty-layer no-flow">―</div><div class="issue-layer">―</div></td>
+        <td class="demand-col hybrid-cell"><div class="qty-layer no-flow">―</div><div class="issue-layer">―</div></td>
+        <td class="supply-col hybrid-cell"><div class="qty-layer no-flow">―</div><div class="issue-layer">―</div></td>
+        <td class="supply-col hybrid-cell"><div class="qty-layer no-flow">―</div><div class="issue-layer">―</div></td>
+        <td class="supply-col hybrid-cell">
+          <div class="qty-layer"><span class="qty-add">＋800</span> 生産依頼</div>
+          <div class="issue-layer"><span class="issue-chip ic-event">A1</span></div>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="process-cell"><span class="pcode">④</span>納期一次回答</td>
+        <td class="demand-col hybrid-cell">
+          <div class="qty-layer"><span class="qty-neutral">±</span> 標準LT回答</div>
+          <div class="issue-layer">―</div>
+        </td>
+        <td class="demand-col hybrid-cell"><div class="qty-layer no-flow">―</div><div class="issue-layer">―</div></td>
+        <td class="supply-col hybrid-cell"><div class="qty-layer no-flow">―</div><div class="issue-layer">―</div></td>
+        <td class="supply-col hybrid-cell"><div class="qty-layer no-flow">―</div><div class="issue-layer">―</div></td>
+        <td class="supply-col hybrid-cell">
+          <div class="qty-layer"><span class="qty-neutral">±</span> LT実現性確認</div>
+          <div class="issue-layer"><span class="issue-chip ic-verify-struct">A3<span class="verify-mark">★</span></span></div>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="process-cell"><span class="pcode">⑤</span>生産計画策定</td>
+        <td class="demand-col hybrid-cell"><div class="qty-layer no-flow">―</div><div class="issue-layer">―</div></td>
+        <td class="demand-col hybrid-cell"><div class="qty-layer no-flow">―</div><div class="issue-layer">―</div></td>
+        <td class="supply-col hybrid-cell"><div class="qty-layer no-flow">―</div><div class="issue-layer">―</div></td>
+        <td class="supply-col hybrid-cell"><div class="qty-layer no-flow">―</div><div class="issue-layer">―</div></td>
+        <td class="supply-col hybrid-cell">
+          <div class="qty-layer"><span class="qty-neutral">±</span> 歩留補正＋20%</div>
+          <div class="issue-layer"><span class="issue-chip ic-event">A1</span><span class="issue-chip ic-event">A2</span><span class="issue-chip ic-verify-struct">A3<span class="verify-mark">★</span></span></div>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="process-cell"><span class="pcode">⑥</span>需給調整会議</td>
+        <td class="demand-col hybrid-cell">
+          <div class="qty-layer no-flow">―</div>
+          <div class="issue-layer"><span class="issue-chip ic-event">B3</span></div>
+        </td>
+        <td class="demand-col hybrid-cell"><div class="qty-layer no-flow">―</div><div class="issue-layer">―</div></td>
+        <td class="supply-col hybrid-cell">
+          <div class="qty-layer"><span class="qty-neutral">±</span> 顧客間配分</div>
+          <div class="issue-layer"><span class="issue-chip ic-struct">C1</span></div>
+        </td>
+        <td class="supply-col hybrid-cell"><div class="qty-layer no-flow">―</div><div class="issue-layer">―</div></td>
+        <td class="supply-col hybrid-cell">
+          <div class="qty-layer"><span class="qty-neutral">±</span> 品目間調整</div>
+          <div class="issue-layer"><span class="issue-chip ic-event">A2</span></div>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="process-cell"><span class="pcode">★</span>生産実行・歩留まり実績</td>
+        <td class="demand-col hybrid-cell"><div class="qty-layer no-flow">―</div><div class="issue-layer">―</div></td>
+        <td class="demand-col hybrid-cell"><div class="qty-layer no-flow">―</div><div class="issue-layer">―</div></td>
+        <td class="supply-col hybrid-cell">
+          <div class="qty-layer">歩留下振れで在庫不足化</div>
+          <div class="issue-layer"><span class="issue-chip ic-event">A1</span></div>
+        </td>
+        <td class="supply-col hybrid-cell">
+          <div class="qty-layer"><span class="qty-add">＋720</span>（計画800）</div>
+          <div class="issue-layer"><span class="issue-chip ic-event">A1</span></div>
+        </td>
+        <td class="supply-col hybrid-cell"><div class="qty-layer no-flow">―</div><div class="issue-layer">―</div></td>
+      </tr>
+
+      <tr>
+        <td class="process-cell"><span class="pcode">⑦</span>納期二次回答</td>
+        <td class="demand-col hybrid-cell">
+          <div class="qty-layer"><span class="qty-neutral">±</span> 変更時通知</div>
+          <div class="issue-layer"><span class="issue-chip ic-event">B3</span></div>
+        </td>
+        <td class="demand-col hybrid-cell"><div class="qty-layer no-flow">―</div><div class="issue-layer">―</div></td>
+        <td class="supply-col hybrid-cell"><div class="qty-layer no-flow">―</div><div class="issue-layer">―</div></td>
+        <td class="supply-col hybrid-cell"><div class="qty-layer no-flow">―</div><div class="issue-layer">―</div></td>
+        <td class="supply-col hybrid-cell"><div class="qty-layer no-flow">―</div><div class="issue-layer">―</div></td>
+      </tr>
+
+      <tr>
+        <td class="process-cell"><span class="pcode">⑧</span>出荷依頼受領</td>
+        <td class="demand-col hybrid-cell"><div class="qty-layer no-flow">―</div><div class="issue-layer">―</div></td>
+        <td class="demand-col hybrid-cell">
+          <div class="qty-layer"><span class="qty-add">＋500</span> 分割依頼</div>
+          <div class="issue-layer"><span class="issue-chip ic-verify-struct">B1<span class="verify-mark">★</span></span></div>
+        </td>
+        <td class="supply-col hybrid-cell"><div class="qty-layer no-flow">―</div><div class="issue-layer">―</div></td>
+        <td class="supply-col hybrid-cell"><div class="qty-layer no-flow">―</div><div class="issue-layer">―</div></td>
+        <td class="supply-col hybrid-cell"><div class="qty-layer no-flow">―</div><div class="issue-layer">―</div></td>
+      </tr>
+
+      <tr>
+        <td class="process-cell"><span class="pcode">⑨</span>在庫引当②／引き剥がし／出荷</td>
+        <td class="demand-col hybrid-cell"><div class="qty-layer no-flow">―</div><div class="issue-layer">―</div></td>
+        <td class="demand-col hybrid-cell">
+          <div class="qty-layer"><span class="qty-sub">▲500</span> 出荷消化</div>
+          <div class="issue-layer"><span class="issue-chip ic-verify-struct">B1<span class="verify-mark">★</span></span></div>
+        </td>
+        <td class="supply-col hybrid-cell">
+          <div class="qty-layer"><span class="qty-sub">▲500</span> 物理出庫<br>（不足時 ▲X 引剥）</div>
+          <div class="issue-layer"><span class="issue-chip ic-struct">C3</span><span class="issue-chip ic-verify-struct">B2<span class="verify-mark">★</span></span><span class="issue-chip ic-event">D1</span></div>
+        </td>
+        <td class="supply-col hybrid-cell"><div class="qty-layer no-flow">―</div><div class="issue-layer">―</div></td>
+        <td class="supply-col hybrid-cell"><div class="qty-layer no-flow">―</div><div class="issue-layer">―</div></td>
+      </tr>
+
+    </tbody>
+  </table>
+</div>
+
+<!-- ===== Tab 4: スイムレーン×吹き出し型 ===== -->
+<div id="tab4" class="tab-content">
+  <div class="tab-intro">
+    <strong>狙い：</strong>横軸=業務プロセス（時系列）、縦軸=需要レーン上段／供給レーン下段。各タイミングで需給量がどう積み上がる／消費されるかをバーで示し、課題発生箇所に吹き出しを配置。
+    <strong>読み方：</strong>需要と供給のギャップが視覚的に立ち上がる場所＝需給調整が必要な箇所。
+  </div>
+
+  <div class="swimlane-wrap">
+    <div class="swimlane">
+      <!-- Header row: process names -->
+      <div class="sl-axis-label" style="background: #475569;">プロセス→</div>
+      <div class="sl-process-header">0. 前回余剰</div>
+      <div class="sl-process-header">①PO受領</div>
+      <div class="sl-process-header">②仮引当</div>
+      <div class="sl-process-header">③生産依頼</div>
+      <div class="sl-process-header">④納期一次</div>
+      <div class="sl-process-header">⑤計画策定</div>
+      <div class="sl-process-header">⑥需給会議</div>
+      <div class="sl-process-header">★生産実行</div>
+      <div class="sl-process-header">⑦納期二次</div>
+      <div class="sl-process-header">⑧出荷依頼</div>
+      <div class="sl-process-header">⑨本引当・出荷</div>
+
+      <!-- Demand lane: 注文 -->
+      <div class="sl-axis-label demand">需要<br>注文</div>
+      <div class="sl-cell demand-cell"></div>
+      <div class="sl-cell demand-cell">
+        <span class="sl-bar sl-bar-demand">＋1000</span>
+        <span class="sl-issue-tag struct">A3★</span>
+        <span class="sl-issue-tag event">B3</span>
+      </div>
+      <div class="sl-cell demand-cell"></div>
+      <div class="sl-cell demand-cell"></div>
+      <div class="sl-cell demand-cell">
+        <span class="sl-bar sl-bar-demand">標準LT回答</span>
+      </div>
+      <div class="sl-cell demand-cell"></div>
+      <div class="sl-cell demand-cell">
+        <span class="sl-issue-tag event">B3</span>
+      </div>
+      <div class="sl-cell demand-cell"></div>
+      <div class="sl-cell demand-cell">
+        <span class="sl-bar sl-bar-demand">変更通知</span>
+        <span class="sl-issue-tag event">B3</span>
+      </div>
+      <div class="sl-cell demand-cell"></div>
+      <div class="sl-cell demand-cell"></div>
+
+      <!-- Demand lane: 出荷依頼 -->
+      <div class="sl-axis-label demand">需要<br>出荷依頼</div>
+      <div class="sl-cell demand-cell"></div>
+      <div class="sl-cell demand-cell"></div>
+      <div class="sl-cell demand-cell"></div>
+      <div class="sl-cell demand-cell"></div>
+      <div class="sl-cell demand-cell"></div>
+      <div class="sl-cell demand-cell"></div>
+      <div class="sl-cell demand-cell"></div>
+      <div class="sl-cell demand-cell"></div>
+      <div class="sl-cell demand-cell"></div>
+      <div class="sl-cell demand-cell">
+        <span class="sl-bar sl-bar-demand">＋500</span>
+        <span class="sl-issue-tag struct">B1★</span>
+      </div>
+      <div class="sl-cell demand-cell">
+        <span class="sl-bar sl-bar-demand">▲500</span>
+        <span class="sl-issue-tag struct">B1★</span>
+      </div>
+
+      <!-- Divider -->
+      <div class="sl-divider-row"></div>
+
+      <!-- Supply lane: 在庫 -->
+      <div class="sl-axis-label supply">供給<br>在庫</div>
+      <div class="sl-cell supply-cell">
+        <span class="sl-bar sl-bar-supply">＋200</span>
+        <span class="sl-issue-tag event">A1</span>
+      </div>
+      <div class="sl-cell supply-cell"></div>
+      <div class="sl-cell supply-cell">
+        <span class="sl-bar sl-bar-supply">▲200 引当可</span>
+        <span class="sl-bar sl-bar-supply">＋200 引当済</span>
+        <span class="sl-issue-tag struct">C1</span>
+        <span class="sl-issue-tag struct">C2★</span>
+        <span class="sl-issue-tag struct">B2★</span>
+        <span class="sl-issue-tag event">D1</span>
+      </div>
+      <div class="sl-cell supply-cell"></div>
+      <div class="sl-cell supply-cell"></div>
+      <div class="sl-cell supply-cell"></div>
+      <div class="sl-cell supply-cell">
+        <span class="sl-bar sl-bar-supply">±配分</span>
+        <span class="sl-issue-tag struct">C1</span>
+      </div>
+      <div class="sl-cell supply-cell">
+        <span class="sl-bar sl-bar-supply">在庫不足化</span>
+        <span class="sl-issue-tag event">A1</span>
+      </div>
+      <div class="sl-cell supply-cell"></div>
+      <div class="sl-cell supply-cell"></div>
+      <div class="sl-cell supply-cell">
+        <span class="sl-bar sl-bar-supply">▲500物理</span>
+        <span class="sl-bar sl-bar-supply">▲X 引剥</span>
+        <span class="sl-issue-tag struct">C3</span>
+        <span class="sl-issue-tag struct">B2★</span>
+        <span class="sl-issue-tag event">D1</span>
+      </div>
+
+      <!-- Supply lane: 生産出来高 -->
+      <div class="sl-axis-label supply">供給<br>生産<br>出来高</div>
+      <div class="sl-cell supply-cell"></div>
+      <div class="sl-cell supply-cell"></div>
+      <div class="sl-cell supply-cell"></div>
+      <div class="sl-cell supply-cell"></div>
+      <div class="sl-cell supply-cell"></div>
+      <div class="sl-cell supply-cell"></div>
+      <div class="sl-cell supply-cell"></div>
+      <div class="sl-cell supply-cell">
+        <span class="sl-bar sl-bar-yield">＋720</span>
+        <span style="font-size:9.5px; color:#b91c1c;">計画800/▲80</span>
+        <span class="sl-issue-tag event">A1</span>
+      </div>
+      <div class="sl-cell supply-cell"></div>
+      <div class="sl-cell supply-cell"></div>
+      <div class="sl-cell supply-cell"></div>
+
+      <!-- Supply lane: 生産計画 -->
+      <div class="sl-axis-label supply">供給<br>生産計画</div>
+      <div class="sl-cell supply-cell"></div>
+      <div class="sl-cell supply-cell"></div>
+      <div class="sl-cell supply-cell"></div>
+      <div class="sl-cell supply-cell">
+        <span class="sl-bar sl-bar-plan">＋800</span>
+        <span class="sl-issue-tag event">A1</span>
+      </div>
+      <div class="sl-cell supply-cell"></div>
+      <div class="sl-cell supply-cell">
+        <span class="sl-bar sl-bar-plan">±補正</span>
+        <span class="sl-issue-tag event">A1</span>
+        <span class="sl-issue-tag event">A2</span>
+        <span class="sl-issue-tag struct">A3★</span>
+      </div>
+      <div class="sl-cell supply-cell">
+        <span class="sl-bar sl-bar-plan">±品目間</span>
+        <span class="sl-issue-tag event">A2</span>
+      </div>
+      <div class="sl-cell supply-cell"></div>
+      <div class="sl-cell supply-cell"></div>
+      <div class="sl-cell supply-cell"></div>
+      <div class="sl-cell supply-cell"></div>
+
+    </div>
+  </div>
+
+  <div style="margin-top: 12px; padding: 10px 14px; background: #fef3c7; border-left: 4px solid #92400e; font-size: 12px;">
+    <strong>注目ポイント：</strong>
+    <ul style="margin: 6px 0 0 18px; padding: 0;">
+      <li>需要側は<strong>①PO受領で1000立つ</strong>のに、供給側の在庫は<strong>0時点200／②引当後の引当済200</strong>。残り800は生産計画＋出来高で埋める二段構造。</li>
+      <li><strong>★生産実行で歩留下振れ▲80</strong>が発生すると、⑨時点で在庫不足→引き剥がしへ。これがメカニズム①→④の連鎖。</li>
+      <li><strong>⑧短納期出荷依頼（B1★）</strong>は④納期一次回答よりも短い納期で入ってくる構造問題。</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ===== Tab 5: ヒートマップ＋AI処方箋 ===== -->
+<div id="tab5" class="tab-content">
+  <div class="tab-intro">
+    <strong>狙い：</strong>上段で<strong>業務プロセス×需給軸の課題発生強度</strong>を色濃度で俯瞰、下段で<strong>各課題に対するAI処方箋</strong>をカードで並列表示。
+    <strong>読み方：</strong>色が濃いセル＝課題が集中している場所。下のカードと突き合わせて読む。
+  </div>
+
+  <h3>5-1. 課題発生強度ヒートマップ</h3>
+  <div class="heatmap-grid">
+    <div class="hm-h">業務プロセス＼軸</div>
+    <div class="hm-h demand">注文(PO)</div>
+    <div class="hm-h demand">出荷依頼</div>
+    <div class="hm-h supply">在庫</div>
+    <div class="hm-h supply">生産出来高</div>
+    <div class="hm-h supply">生産計画</div>
+
+    <div class="hm-row-label">0. 前回余剰在庫</div>
+    <div class="hm-cell-0">―</div>
+    <div class="hm-cell-0">―</div>
+    <div class="hm-cell-1"><span class="hm-codes">A1</span></div>
+    <div class="hm-cell-0">―</div>
+    <div class="hm-cell-0">―</div>
+
+    <div class="hm-row-label">①PO受領</div>
+    <div class="hm-cell-2"><span class="hm-codes">A3★ B3</span></div>
+    <div class="hm-cell-0">―</div>
+    <div class="hm-cell-0">―</div>
+    <div class="hm-cell-0">―</div>
+    <div class="hm-cell-0">―</div>
+
+    <div class="hm-row-label">②仮引当</div>
+    <div class="hm-cell-0">―</div>
+    <div class="hm-cell-0">―</div>
+    <div class="hm-cell-4"><span class="hm-codes">C1 C2★<br>B2★ D1</span></div>
+    <div class="hm-cell-0">―</div>
+    <div class="hm-cell-0">―</div>
+
+    <div class="hm-row-label">③生産依頼入力</div>
+    <div class="hm-cell-0">―</div>
+    <div class="hm-cell-0">―</div>
+    <div class="hm-cell-0">―</div>
+    <div class="hm-cell-0">―</div>
+    <div class="hm-cell-1"><span class="hm-codes">A1</span></div>
+
+    <div class="hm-row-label">④納期一次回答</div>
+    <div class="hm-cell-0">―</div>
+    <div class="hm-cell-0">―</div>
+    <div class="hm-cell-0">―</div>
+    <div class="hm-cell-0">―</div>
+    <div class="hm-cell-1"><span class="hm-codes">A3★</span></div>
+
+    <div class="hm-row-label">⑤生産計画策定</div>
+    <div class="hm-cell-0">―</div>
+    <div class="hm-cell-0">―</div>
+    <div class="hm-cell-0">―</div>
+    <div class="hm-cell-0">―</div>
+    <div class="hm-cell-3"><span class="hm-codes">A1 A2 A3★</span></div>
+
+    <div class="hm-row-label">⑥需給調整会議</div>
+    <div class="hm-cell-1"><span class="hm-codes">B3</span></div>
+    <div class="hm-cell-0">―</div>
+    <div class="hm-cell-1"><span class="hm-codes">C1</span></div>
+    <div class="hm-cell-0">―</div>
+    <div class="hm-cell-1"><span class="hm-codes">A2</span></div>
+
+    <div class="hm-row-label">★生産実行・歩留実績</div>
+    <div class="hm-cell-0">―</div>
+    <div class="hm-cell-0">―</div>
+    <div class="hm-cell-1"><span class="hm-codes">A1</span></div>
+    <div class="hm-cell-1"><span class="hm-codes">A1</span></div>
+    <div class="hm-cell-0">―</div>
+
+    <div class="hm-row-label">⑦納期二次回答</div>
+    <div class="hm-cell-1"><span class="hm-codes">B3</span></div>
+    <div class="hm-cell-0">―</div>
+    <div class="hm-cell-0">―</div>
+    <div class="hm-cell-0">―</div>
+    <div class="hm-cell-0">―</div>
+
+    <div class="hm-row-label">⑧出荷依頼受領</div>
+    <div class="hm-cell-0">―</div>
+    <div class="hm-cell-2"><span class="hm-codes">B1★</span></div>
+    <div class="hm-cell-0">―</div>
+    <div class="hm-cell-0">―</div>
+    <div class="hm-cell-0">―</div>
+
+    <div class="hm-row-label">⑨本引当／引剥／出荷</div>
+    <div class="hm-cell-0">―</div>
+    <div class="hm-cell-2"><span class="hm-codes">B1★</span></div>
+    <div class="hm-cell-3"><span class="hm-codes">C3 B2★ D1</span></div>
+    <div class="hm-cell-0">―</div>
+    <div class="hm-cell-0">―</div>
+  </div>
+
+  <div class="heatmap-legend">
+    <strong>強度凡例：</strong>
+    <span><span class="hl-swatch hm-cell-0"></span>該当なし</span>
+    <span><span class="hl-swatch hm-cell-1"></span>1課題</span>
+    <span><span class="hl-swatch hm-cell-2"></span>2課題</span>
+    <span><span class="hl-swatch hm-cell-3"></span>3課題</span>
+    <span><span class="hl-swatch hm-cell-4"></span>4課題以上</span>
+    <span style="margin-left: auto;">★＝要検証</span>
+  </div>
+
+  <p style="margin-top: 12px; font-size: 12px; color: #475569;">
+    <strong>俯瞰での示唆：</strong>課題は <strong>②仮引当×在庫</strong>（4課題集中）と <strong>⑨本引当×在庫</strong>（3課題集中）の2点に強く集中。
+    <strong>引当ロジックそのもの</strong>と<strong>仮引当・本引当の整合</strong>が改革の最大論点。
+  </p>
+
+  <h3>5-2. AI処方箋カード（10課題分）</h3>
+  <div class="prescription-grid">
+
+    <div class="rx-card rx-event">
+      <h4><span class="rx-code">A1</span>歩留まりばらつき <span class="badge b-event">事象</span></h4>
+      <div class="rx-row"><span class="rx-label short">短期AI</span>歩留予測AI（信頼区間つき）／生産シミュレーションAI</div>
+      <div class="rx-row"><span class="rx-label mid">中期Agent</span>歩留予測Agent×Orchestratorで補正値自動反映</div>
+      <div class="rx-row"><span class="rx-label new">新規提案</span>化学反応条件×実績データの自己学習モデル（バッチ毎学習）</div>
+      <div class="rx-row"><span class="rx-label effect">期待効果</span>歩留予測精度向上で計画-実績乖離▲30〜50%</div>
+    </div>
+
+    <div class="rx-card rx-event">
+      <h4><span class="rx-code">A2</span>段取り替え／品目間調整 <span class="badge b-event">事象</span></h4>
+      <div class="rx-row"><span class="rx-label short">短期AI</span>生産最適化AI（多目的）／段取りコスト織込み</div>
+      <div class="rx-row"><span class="rx-label mid">中期Agent</span>計画Agentが段取りシーケンス連続最適化</div>
+      <div class="rx-row"><span class="rx-label new">新規提案</span>段取りシーケンス最適化AI（連続切替パターン学習）</div>
+      <div class="rx-row"><span class="rx-label effect">期待効果</span>段取り工数▲40%、ライン稼働率＋5pt</div>
+    </div>
+
+    <div class="rx-card rx-verify-struct">
+      <h4><span class="rx-code">A3</span>キャパ vs 受注総量 <span class="badge b-struct">構造</span><span class="badge b-verify">要検証</span></h4>
+      <div class="rx-row"><span class="rx-label short">短期AI</span>受注パイプラインAI（受注見込み先読み）／キャパシミュレーション</div>
+      <div class="rx-row"><span class="rx-label mid">中期Agent</span>需要予測Agent×キャパ計画Agentの連携</div>
+      <div class="rx-row"><span class="rx-label new">新規提案</span>受注承諾AI（標準LT保証可能範囲での選別・条件交渉提案）</div>
+      <div class="rx-row"><span class="rx-label effect">期待効果</span>標準LT超過受注▲50%／契約交渉力向上</div>
+    </div>
+
+    <div class="rx-card rx-verify-struct">
+      <h4><span class="rx-code">B1</span>短納期出荷依頼 <span class="badge b-struct">構造</span><span class="badge b-verify">要検証</span></h4>
+      <div class="rx-row"><span class="rx-label short">短期AI</span>出荷依頼受領時の納期実現性AI（即時判定）</div>
+      <div class="rx-row"><span class="rx-label mid">中期Agent</span>顧客対話Agentが事前交渉、標準LT外は自動再交渉</div>
+      <div class="rx-row"><span class="rx-label new">新規提案</span>標準LT外請求の経済性算定AI（プレミアム提示・収益化）</div>
+      <div class="rx-row"><span class="rx-label effect">期待効果</span>短納期要求の収益化／断れない緊急対応の経済可視化</div>
+    </div>
+
+    <div class="rx-card rx-verify-struct">
+      <h4><span class="rx-code">B2</span>顧客独自ルール（A耳B耳等） <span class="badge b-struct">構造</span><span class="badge b-verify">要検証</span></h4>
+      <div class="rx-row"><span class="rx-label short">短期AI</span>ルール定義DB＋ルールエンジン、AI推奨優先度に組込み</div>
+      <div class="rx-row"><span class="rx-label mid">中期Agent</span>引当Agentがルール込みで最適化（顧客毎ポリシーAgent化）</div>
+      <div class="rx-row"><span class="rx-label new">新規提案</span>自然言語からのルール抽出AI（顧客契約書／メール履歴から）</div>
+      <div class="rx-row"><span class="rx-label effect">期待効果</span>属人化排除／顧客ルール網羅率＋80%</div>
+    </div>
+
+    <div class="rx-card rx-event">
+      <h4><span class="rx-code">B3</span>受注後変更 <span class="badge b-event">事象</span></h4>
+      <div class="rx-row"><span class="rx-label short">短期AI</span>変更影響シミュレーションAI（在庫・計画への波及定量化）</div>
+      <div class="rx-row"><span class="rx-label mid">中期Agent</span>受注Agentが変更を自律吸収（再引当・再計画を連続実行）</div>
+      <div class="rx-row"><span class="rx-label new">新規提案</span>変更頻度顧客のクラスタリングAI（契約条件見直しトリガ）</div>
+      <div class="rx-row"><span class="rx-label effect">期待効果</span>変更対応工数▲60%／頻繁変更顧客の契約是正</div>
+    </div>
+
+    <div class="rx-card rx-struct">
+      <h4><span class="rx-code">C1</span>顧客間引当優先順位の属人化 <span class="badge b-struct">構造</span></h4>
+      <div class="rx-row"><span class="rx-label short">短期AI</span>顧客優先度推奨AI（過去履歴・売上・関係性）</div>
+      <div class="rx-row"><span class="rx-label mid">中期Agent</span>引当Agentが自律実行（合議不要）</div>
+      <div class="rx-row"><span class="rx-label new">新規提案</span>優先度ポリシー学習AI（属人判断を集約してルール化）</div>
+      <div class="rx-row"><span class="rx-label effect">期待効果</span>担当者間ばらつき解消／公平性可視化</div>
+    </div>
+
+    <div class="rx-card rx-verify-struct">
+      <h4><span class="rx-code">C2</span>自動洗い替え使用率まばら <span class="badge b-struct">構造</span><span class="badge b-verify">要検証</span></h4>
+      <div class="rx-row"><span class="rx-label short">短期AI</span>UI/UX改善＋使用状況モニタリングAI、AI推奨を強制適用</div>
+      <div class="rx-row"><span class="rx-label mid">中期Agent</span>洗い替えがAgent化されるため運用ばらつきが構造的に消滅</div>
+      <div class="rx-row"><span class="rx-label new">新規提案</span>使用ばらつき検知AI＋業務監査AI（担当者別レポート）</div>
+      <div class="rx-row"><span class="rx-label effect">期待効果</span>機能使用率100%／引当品質の均一化</div>
+    </div>
+
+    <div class="rx-card rx-struct">
+      <h4><span class="rx-code">C3</span>引き剥がし履歴の体系化不足 <span class="badge b-struct">構造</span></h4>
+      <div class="rx-row"><span class="rx-label short">短期AI</span>引き剥がしトレードオフ定量化AI／連鎖影響予測AI</div>
+      <div class="rx-row"><span class="rx-label mid">中期Agent</span>履歴DB化＋Agentが連続発生回避を自律判断</div>
+      <div class="rx-row"><span class="rx-label new">新規提案</span>顧客離反リスク予測AI（連続引剥との関連を定量化）</div>
+      <div class="rx-row"><span class="rx-label effect">期待効果</span>連続引剥▲70%／顧客信頼の中長期保全</div>
+    </div>
+
+    <div class="rx-card rx-event">
+      <h4><span class="rx-code">D1</span>仮引当と本引当の情報乖離 <span class="badge b-event">事象</span></h4>
+      <div class="rx-row"><span class="rx-label short">短期AI</span><span class="rx-na">該当なし（短期では業務間断絶のまま）</span></div>
+      <div class="rx-row"><span class="rx-label mid">中期Agent</span>Orchestrator Agentによる連続再引当（仮→本の差分を自動吸収）</div>
+      <div class="rx-row"><span class="rx-label new">新規提案</span>―（中期で構造的に解決）</div>
+      <div class="rx-row"><span class="rx-label effect">期待効果</span>引き剥がし発生率▲40〜60%（情報乖離が消えるため）</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============ 4. AI解決策マトリクス（業務×需給軸） ============ -->
+<h2>4. AI解決策マトリクス（業務プロセス × 需給軸）</h2>
+<p style="font-size: 12.5px; color: #475569;">
+  上記の課題マトリクス（Tab1）と<strong>同じ業務プロセス×需給軸構造</strong>で、各セルに短期AI / 中期Agent / 新規提案AIを配置。課題マトリクスとセル位置を1対1で照合可能。
+  <br><span style="font-size: 11.5px; color: #64748b;">※Tab5の処方箋カードが「課題軸」で整理したのに対し、本マトリクスは「業務プロセス×需給軸」でAI解決策を配置したもの。実装計画／プロジェクト計画の起点として使う。</span>
+</p>
+
+<div style="margin: 10px 0; font-size: 11.5px;">
+  <span class="badge b-short">短期</span>短期TOBE：個別業務AI／業務間は人
+  <span class="badge b-mid">中期</span>中期TOBE：Agentic AI連携／会議廃止
+  <span class="badge b-new">新規</span>今回新規提案（要検証含む）
+</div>
+
+<table class="ai-matrix">
+  <thead>
+    <tr>
+      <th rowspan="2" style="width:130px;">業務プロセス</th>
+      <th colspan="2" class="demand-h">需要側</th>
+      <th colspan="3" class="supply-h">供給側</th>
+    </tr>
+    <tr>
+      <th>注文(PO)</th>
+      <th>出荷依頼</th>
+      <th>在庫</th>
+      <th>生産出来高</th>
+      <th>生産計画</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <tr>
+      <td class="process-cell">0. 前回余剰在庫</td>
+      <td class="no-event">―</td>
+      <td class="no-event">―</td>
+      <td>
+        <div class="ai-block"><span class="ai-label s">短期</span>余剰在庫リスク可視化AI</div>
+        <div class="ai-block"><span class="ai-label m">中期</span>余剰自動転用Agent</div>
+        <div class="ai-block"><span class="ai-label n">新規</span>品質期限予測AI（廃棄回避）</div>
+      </td>
+      <td class="no-event">―</td>
+      <td class="no-event">―</td>
+    </tr>
+
+    <tr>
+      <td class="process-cell">①PO受領</td>
+      <td>
+        <div class="ai-block"><span class="ai-label s">短期</span>AI-OCR＋LLMパーサ、異常値検知</div>
+        <div class="ai-block"><span class="ai-label m">中期</span>受注Agentが自律処理</div>
+        <div class="ai-block"><span class="ai-label n">新規</span>受注承諾AI／変更頻度クラスタリングAI</div>
+      </td>
+      <td class="no-event">―</td>
+      <td class="no-event">―</td>
+      <td class="no-event">―</td>
+      <td class="no-event">―</td>
+    </tr>
+
+    <tr>
+      <td class="process-cell">②仮引当</td>
+      <td class="no-event">―</td>
+      <td class="no-event">―</td>
+      <td>
+        <div class="ai-block"><span class="ai-label s">短期</span>顧客優先度推奨AI／引当シミュレーションAI</div>
+        <div class="ai-block"><span class="ai-label s">短期</span>ルール定義DB＋ルールエンジン（B2向け）</div>
+        <div class="ai-block"><span class="ai-label s">短期</span>使用状況モニタリングAI（C2向け）</div>
+        <div class="ai-block"><span class="ai-label m">中期</span>引当Agent＋顧客毎ポリシーAgent</div>
+        <div class="ai-block"><span class="ai-label n">新規</span>自然言語ルール抽出AI／優先度ポリシー学習AI</div>
+      </td>
+      <td class="no-event">―</td>
+      <td class="no-event">―</td>
+    </tr>
+
+    <tr>
+      <td class="process-cell">③生産依頼入力</td>
+      <td class="no-event">―</td>
+      <td class="no-event">―</td>
+      <td class="no-event">―</td>
+      <td class="no-event">―</td>
+      <td>
+        <div class="ai-block"><span class="ai-label s">短期</span>生産依頼数妥当性チェック／歩留補正値提示</div>
+        <div class="ai-block"><span class="ai-label m">中期</span>計画AgentへAPI連携</div>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="process-cell">④納期一次回答</td>
+      <td class="no-event">―</td>
+      <td class="no-event">―</td>
+      <td class="no-event">―</td>
+      <td class="no-event">―</td>
+      <td>
+        <div class="ai-block"><span class="ai-label s">短期</span>納期予測AI（信頼区間つき）／生産シミュレーションAI</div>
+        <div class="ai-block"><span class="ai-label m">中期</span>計画Agent×顧客対話Agent</div>
+        <div class="ai-block"><span class="ai-label n">新規</span>受注承諾AIの納期実現性判定</div>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="process-cell">⑤生産計画策定</td>
+      <td class="no-event">―</td>
+      <td class="no-event">―</td>
+      <td class="no-event">―</td>
+      <td class="no-event">―</td>
+      <td>
+        <div class="ai-block"><span class="ai-label s">短期</span>歩留予測AI／生産最適化AI（多目的）／感応度分析AI</div>
+        <div class="ai-block"><span class="ai-label m">中期</span>計画Agent＋キャパ計画Agent</div>
+        <div class="ai-block"><span class="ai-label n">新規</span>段取りシーケンス最適化AI</div>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="process-cell">⑥需給調整会議</td>
+      <td>
+        <div class="ai-block"><span class="ai-label s">短期</span>変更影響シミュレーションAI</div>
+      </td>
+      <td class="no-event">―</td>
+      <td>
+        <div class="ai-block"><span class="ai-label s">短期</span>シナリオ比較AI／連鎖影響予測AI</div>
+        <div class="ai-block"><span class="ai-label m">中期</span>需給最適化Agent（会議廃止）</div>
+      </td>
+      <td class="no-event">―</td>
+      <td>
+        <div class="ai-block"><span class="ai-label s">短期</span>品目間トレードオフ定量化AI</div>
+        <div class="ai-block"><span class="ai-label m">中期</span>Orchestrator Agent</div>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="process-cell">★生産実行・歩留実績</td>
+      <td class="no-event">―</td>
+      <td class="no-event">―</td>
+      <td>
+        <div class="ai-block"><span class="ai-label m">中期</span>歩留Agentが実績を全Agentにブロードキャスト</div>
+      </td>
+      <td>
+        <div class="ai-block"><span class="ai-label s">短期</span>歩留実績収集AI</div>
+        <div class="ai-block"><span class="ai-label m">中期</span>歩留予測Agentが学習に自動反映</div>
+        <div class="ai-block"><span class="ai-label n">新規</span>化学反応条件×実績の自己学習モデル</div>
+      </td>
+      <td class="no-event">―</td>
+    </tr>
+
+    <tr>
+      <td class="process-cell">⑦納期二次回答</td>
+      <td>
+        <div class="ai-block"><span class="ai-label s">短期</span>顧客毎トーン最適化通知文生成／顧客感情分析</div>
+        <div class="ai-block"><span class="ai-label m">中期</span>顧客対話Agent</div>
+      </td>
+      <td class="no-event">―</td>
+      <td class="no-event">―</td>
+      <td class="no-event">―</td>
+      <td class="no-event">―</td>
+    </tr>
+
+    <tr>
+      <td class="process-cell">⑧出荷依頼受領</td>
+      <td class="no-event">―</td>
+      <td>
+        <div class="ai-block"><span class="ai-label s">短期</span>AI-OCR＋PO自動紐付け／納期実現性AI（B1向け）</div>
+        <div class="ai-block"><span class="ai-label m">中期</span>出荷Agentが事前交渉</div>
+        <div class="ai-block"><span class="ai-label n">新規</span>標準LT外請求の経済性算定AI</div>
+      </td>
+      <td class="no-event">―</td>
+      <td class="no-event">―</td>
+      <td class="no-event">―</td>
+    </tr>
+
+    <tr>
+      <td class="process-cell">⑨本引当・引剥・出荷</td>
+      <td class="no-event">―</td>
+      <td>
+        <div class="ai-block"><span class="ai-label s">短期</span>引き剥がしトレードオフ定量化AI</div>
+      </td>
+      <td>
+        <div class="ai-block"><span class="ai-label s">短期</span>連鎖影響予測AI／顧客離反リスク予測AI</div>
+        <div class="ai-block"><span class="ai-label s">短期</span>顧客ルール照合AI（B2向け）</div>
+        <div class="ai-block"><span class="ai-label m">中期</span>Orchestrator Agentによる連続再引当（D1解決）</div>
+        <div class="ai-block"><span class="ai-label n">新規</span>連続引剥パターンのLLM分析モデル（連鎖履歴の構造化）</div>
+      </td>
+      <td class="no-event">―</td>
+      <td class="no-event">―</td>
+    </tr>
+
+  </tbody>
+</table>
+
+<!-- ============ 5. 打ち合わせ論点 ============ -->
+<h2>5. 5/13打ち合わせ論点（要検証4項目）</h2>
+<p style="font-size: 12.5px; color: #475569;">
+  ユーザー仮説として整理した <strong>A3 / B1 / B2 / C2</strong> の4項目について、クライアントとの検証論点を整理。
+</p>
+
+<div class="discussion-card">
+  <h4><span class="badge b-verify" style="font-size: 11.5px;">A3 要検証</span>中長期キャパ vs 受注総量のミスマッチ</h4>
+  <div class="context"><strong>仮説：</strong>そもそも入ってくる受注総量に対し生産キャパが足りず、精緻な計画でしかコントロールできない構造になっている可能性。標準LT回答が「物理的に守れない約束」になっている疑い。</div>
+  <strong>トーク論点：</strong>
+  <ul class="talk-points">
+    <li><strong>「直近6か月で、標準LT通り出荷できた率は何%か？」</strong> — 数字を聞くと、構造問題か事象問題かの切り分けが進む</li>
+    <li><strong>「キャパ増強と受注選別、どちらの打ち手を取っているか？」</strong> — 取っていないなら標準LTは形骸化</li>
+    <li><strong>「受注承諾AIで断る／プレミアム化する選択は組織として現実的か？」</strong> — 営業vs SCMの組織論に踏み込む</li>
+  </ul>
+</div>
+
+<div class="discussion-card">
+  <h4><span class="badge b-verify" style="font-size: 11.5px;">B1 要検証</span>標準LTを下回る短納期の出荷依頼</h4>
+  <div class="context"><strong>仮説：</strong>標準LTで合意しているのに、出荷依頼ではそれより短い納期を要求され、飲まざるを得ない実態がある可能性。</div>
+  <strong>トーク論点：</strong>
+  <ul class="talk-points">
+    <li><strong>「出荷依頼が標準LTを下回る割合と、平均的な短縮日数は？」</strong> — 程度感の確認</li>
+    <li><strong>「短納期要求を断った場合、顧客との関係は本当に壊れるか？」</strong> — 思い込みかどうか</li>
+    <li><strong>「短納期対応にプレミアム価格を提示した経験はあるか？」</strong> — A3とセットで収益化可能性を探る</li>
+    <li><strong>「短納期要求が多い顧客は売上上位か下位か？」</strong> — パレート分析の動機づけ</li>
+  </ul>
+</div>
+
+<div class="discussion-card">
+  <h4><span class="badge b-verify" style="font-size: 11.5px;">B2 要検証</span>顧客独自の納品ルール（A耳B耳等）が引当に織り込めない</h4>
+  <div class="context"><strong>仮説：</strong>A耳B耳同数納品、ロット指定、納品単位など顧客毎の独自ルールがあり、自動引当ロジックに織り込めず属人対応になっている。</div>
+  <strong>トーク論点：</strong>
+  <ul class="talk-points">
+    <li><strong>「顧客独自ルールは何種類くらいあり、どこに記録されているか？」</strong> — そもそも形式知化されているか</li>
+    <li><strong>「現状CSシステムの自動引当機能は、このルールをどこまで反映できているか？」</strong> — 仕様の確認</li>
+    <li><strong>「ルールに違反した引当をしてしまった場合、誰がいつ気づくか？」</strong> — 品質確認プロセスの確認</li>
+    <li><strong>「ルールが形式知化されていないのは、意図してそうしているのか？それとも誰も整理していないだけか？」</strong> — 二択で迫り、改革受容性と組織意思を同時に確認</li>
+  </ul>
+</div>
+
+<div class="discussion-card">
+  <h4><span class="badge b-verify" style="font-size: 11.5px;">C2 要検証</span>自動洗い替え機能の使用率まばら（運用ばらつき）</h4>
+  <div class="context"><strong>仮説：</strong>CS業務支援システムには自動引当機能（洗い替え）が実装されているが、担当者によって使用／非使用が混在している。</div>
+  <strong>トーク論点：</strong>
+  <ul class="talk-points">
+    <li><strong>「自動洗い替え機能の使用率は、担当者別にどれくらい差があるか？」</strong> — 実態の数字確認</li>
+    <li><strong>「使わない担当者は、なぜ使わないのか？」</strong> — 機能不全 or 信頼不足 or 業務理解不足の切り分け</li>
+    <li><strong>「使う／使わないで引当品質に差は出ているか？」</strong> — 差がなければ機能の必要性自体を再考</li>
+    <li><strong>「機能を強制使用にする組織判断はできるか？」</strong> — 改革ガバナンスの確認</li>
+  </ul>
+</div>
+
+<div style="background: #ecfeff; border: 1px solid #0e7490; padding: 12px 16px; border-radius: 6px; margin-top: 16px; font-size: 12.5px;">
+  <strong>論点を統合的に問い返すとすれば：</strong>
+  <p style="margin: 6px 0 0;">「需給調整が常時走り続けているのは、A群（生産の不確実性）が原因なのか、B群（需要側変動）が原因なのか、C群（運用ルール不備）が原因なのか。御社の改革の優先順位は、この3つのどこから着手すべきと考えていますか？」</p>
+  <p style="margin: 6px 0 0; font-size: 11.5px; color: #64748b;">この問いで、クライアントの「需給調整＝難しい」という総論的な認識を、構造を持った論点に変換できる。</p>
+</div>
+
+<!-- ============ 6. 本資料の限界と自己点検 ============ -->
+<h2>6. 本資料の限界と自己点検（一流コンサル視点での自己批判）</h2>
+
+<div class="selfreview-intro">
+  <strong>なぜこの章を入れたか：</strong>本資料は需給調整の「発生箇所」の整理に成功しているが、これだけをクライアントに提示すると<strong>「現場改善コンサル」の枠で評価されてしまう</strong>。
+  一流コンサル視点で本資料を読み返したときに想定される指摘を10件先回りで列挙し、それぞれへの対応方針を明示する。第7章・第8章・第9章はこの自己点検への直接的な回答である。
+</div>
+
+<div class="todo-banner" style="border-color:#6d28d9; background:#faf5ff;">
+  <strong style="color:#6d28d9;">v2での強化点（前版からの差分）：</strong>本版は、コンサルとしての判断軸・スタンスを反映して以下を強化した。
+  <ul style="margin:6px 0 0 18px; padding:0;">
+    <li><strong>CR-1（上位目的）：</strong>第0章「戦略から実行への接続マップ」を新設。事業戦略→SCM戦略→業務改革→システムの一貫接続を明示（最も価値を出せるのは階層の接続）</li>
+    <li><strong>CR-2（ファクト不在）：</strong>冒頭に<span class="num-todo">★要確認</span>バナーを設置。全数値が仮置きであることを明示し、推定値と確定値を峻別</li>
+    <li><strong>CR-4・CR-5・CR-8：</strong>戦略論点にK6（E2E可視化・データ連携の切断面）／K7（競争優位でのFit to Standard判断）／K8（短期→中期の移行設計）を追加</li>
+    <li><strong>日本固有論点：</strong>補足論点にL8（サプライチェーンBCP）／L9（2025年の崖）を追加</li>
+    <li><strong>横展開：</strong>第9章で本資料を再利用可能な「型」として抽出（他SCM案件への展開）</li>
+    <li><strong>目的KPI接続：</strong>各戦略論点の効果を、手段KPIではなくDIO／CCC／納期遵守率／欠品率／引合量に置換</li>
+  </ul>
+</div>
+
+<table class="review-table">
+  <thead>
+    <tr>
+      <th style="width:60px;">#</th>
+      <th style="width:110px;">観点</th>
+      <th>想定指摘</th>
+      <th style="width:80px;">痛烈度</th>
+      <th style="width:30%;">本資料での対応</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="review-code">CR-1</td>
+      <td class="review-cat">上位目的</td>
+      <td>「需給調整改善」は目的か手段か。<strong>経営KPI（利益率／CCC／ROIC）への接続</strong>が描かれていない。改革のドライバーが見えない</td>
+      <td class="severity">★★★</td>
+      <td class="response">第7章でK1〜K5の戦略論点を経営KPIに接続。利益率（K1・K4）、CCC（K2・K3）、ROIC（A3関連）に紐付け</td>
+    </tr>
+    <tr>
+      <td class="review-code">CR-2</td>
+      <td class="review-cat">ファクト不在</td>
+      <td>すべての課題が観察ベース。<strong>頻度・影響額・コスト試算がない</strong>。「どれが一番痛いか」が分からないため改革優先順位が立てられない</td>
+      <td class="severity">★★★</td>
+      <td class="response">第8章「ファクト確認リスト」として10項目の数値を5/13打ち合わせで聴取。優先順位付けは数値取得後に再構築</td>
+    </tr>
+    <tr>
+      <td class="review-code">CR-3</td>
+      <td class="review-cat">二分の限界</td>
+      <td>「事象／構造」二分の上に<strong>「経営判断不在」軸</strong>が抜けている。標準LT・ロット粒度・顧客優先度ルールは現場ではなく経営の意思決定マターのはず</td>
+      <td class="severity">★★★</td>
+      <td class="response">第2章サマリに<span class="badge b-mgmt">経営判断</span>バッジを追加。A3・B1・B2・C1の4課題が経営判断軸に該当することを明示</td>
+    </tr>
+    <tr>
+      <td class="review-code">CR-4</td>
+      <td class="review-cat">AI万能視</td>
+      <td>AI以外の打ち手（<strong>契約変更／組織再設計／設備投資／顧客選別</strong>）が排除されている。「AIで解決」と言った時点でコンサルは負け。打ち手の選択肢を狭めている</td>
+      <td class="severity">★★★</td>
+      <td class="response">第7章でAI以外の打ち手を5戦略論点として整理。第4章の「AI解決策マトリクス」は<strong>あくまで1つの打ち手</strong>と位置付け</td>
+    </tr>
+    <tr>
+      <td class="review-code">CR-5</td>
+      <td class="review-cat">バイイングパワー欠落</td>
+      <td><strong>業界最大手という前提を活かしていない</strong>。受け身の最適化（顧客要求に従う前提でAIで効率化）に終始。最大手なら「断る／決める／業界標準を作る」選択肢がある</td>
+      <td class="severity">★★★</td>
+      <td class="response">第7章K1で正面から扱う。B1（短納期）・B2（顧客独自ルール）の解決策を「システム化」から「<strong>交渉力の発動</strong>」に再定義</td>
+    </tr>
+    <tr>
+      <td class="review-code">CR-6</td>
+      <td class="review-cat">ロジック整合性</td>
+      <td>A1「歩留＝事象」と判定したが、歩留<strong>予測精度向上</strong>は構造改善。D1「乖離＝事象」も実はシステム実装の構造問題。バッジ判定にブレがある</td>
+      <td class="severity">★★</td>
+      <td class="response">第2章でA1・A2は「事象＋構造」両面に再分類。D1は「構造」に再判定済</td>
+    </tr>
+    <tr>
+      <td class="review-code">CR-7</td>
+      <td class="review-cat">5案並列の弱点</td>
+      <td>5案並列は「<strong>絞れていないコンサル</strong>」に見える。最終提案は1案＋差別化説明であるべき。<strong>クライアントに選択を委ねるのは責任放棄</strong></td>
+      <td class="severity">★★</td>
+      <td class="response">第8章で「打ち合わせ時の推奨は<strong>Tab3ハイブリッド型を主軸、Tab5を補助</strong>」と明示。他3案は使い分けガイドとして残す</td>
+    </tr>
+    <tr>
+      <td class="review-code">CR-8</td>
+      <td class="review-cat">業界特殊性</td>
+      <td>化学反応の連続生産特性（<strong>バッチ／連続反応、品質期限、ロット粒度、洗浄コスト</strong>）が表現されていない。半導体材料の特性が活かされていない</td>
+      <td class="severity">★★</td>
+      <td class="response">第7章K2でロット管理粒度の戦略選択として正面から扱う。バッチ反応・親ワニス・品目グループ・品質期限を統合的に検討</td>
+    </tr>
+    <tr>
+      <td class="review-code">CR-9</td>
+      <td class="review-cat">抜けた論点</td>
+      <td>安全在庫、需要予測（PO前段階）、ストック箇所（Push/Pullの境目）、廃棄コスト、組織インセンティブの諸論点が欠落</td>
+      <td class="severity">★★</td>
+      <td class="response">第7章「補足論点L1〜L7」として明示。次フェーズの深掘り対象として位置付け</td>
+    </tr>
+    <tr>
+      <td class="review-code">CR-10</td>
+      <td class="review-cat">効果見積もりの根拠</td>
+      <td>「▲40-60%」等の数字の根拠が薄い。<strong>類似業界（化学、半導体材料、医薬中間体）のベンチマーク引用がない</strong></td>
+      <td class="severity">★</td>
+      <td class="response">第8章ファクト確認リストでベンチマーク調査を次フェーズタスクとして明示。打ち合わせ前にデスクトップリサーチで簡易ベンチを準備</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ============ 7. 上位戦略論点 ============ -->
+<h2>7. 上位戦略論点（梯子上げ：現場最適化から経営選択肢へ）</h2>
+
+<div class="selfreview-intro" style="background: #f0f9ff; border-left-color: #0284c7;">
+  <strong style="color:#0284c7;">本章の位置づけ：</strong>第3〜5章までは「需給調整を所与とした上でのAI改善」を整理した。
+  本章は<strong>「需給調整の必要性自体を経営判断で減らす／変質させる」</strong>選択肢を8つの戦略論点として提示する。
+  AFTが<strong>業界最大手</strong>であるという前提を最大限活かす方向で整理。
+  <br><span style="font-size:11.5px; color:#475569;">K1〜K5＝経営の打ち手（バイイングパワー・粒度・引当単位・契約・組織）／K6〜K7＝SCM・システムの構造（E2E可視化・Fit to Standard）／K8＝改革の進め方（短期→中期の移行設計）。これらは第0章の階層接続マップの「SCM戦略」レイヤに位置する。</span>
+</div>
+
+<div class="strategy-card k-major">
+  <h4><span class="k-code">K1</span>業界最大手としてのバイイングパワー活用</h4>
+  <div class="reframe-quote">
+    「B1（短納期出荷依頼）・B2（顧客独自ルール）は引当ロジックの問題」ではなく、<strong>「顧客との交渉力をどう発動するかの問題」</strong>に再定義する。
+  </div>
+  <div class="strategy-section">
+    <span class="strategy-label">経営選択肢</span>受け身の「飲む」ではなく、3つの選択肢を経営として持つ：
+    <table class="strategy-table">
+      <thead><tr><th>選択肢</th><th>内容</th><th>想定リスク</th><th>適用例</th></tr></thead>
+      <tbody>
+        <tr><td><strong>断る</strong></td><td>標準LTを下回る依頼は受けない／顧客独自ルールに従わない</td><td>顧客離反、シェア低下</td><td>売上下位顧客／関係性が弱い顧客</td></tr>
+        <tr><td><strong>プレミアム化</strong></td><td>短納期対応・特殊ルール対応に追加料金を請求</td><td>顧客の値下げ交渉、関係性悪化</td><td>戦略顧客／継続的に短納期要求してくる顧客</td></tr>
+        <tr><td><strong>業界標準化</strong></td><td>AFTの標準条件を業界標準として顧客側に揃えてもらう（最大手の特権）</td><td>長期交渉、業界団体経由の調整</td><td>共通仕様化が可能な品目（A耳B耳ルール等）</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="strategy-section">
+    <span class="strategy-label">経営KPI接続</span><strong>利益率向上</strong>（プレミアム価格化）／<strong>受注選別による生産効率改善</strong>（断る・標準化）／<strong>業界ポジショニング強化</strong>（業界標準化）
+  </div>
+  <div class="strategy-section">
+    <span class="strategy-label">問い返し</span><strong>「業界最大手の御社が、本当に顧客に従う側でいいんですか？」</strong> — シェアと交渉力は使わなければ価値を生まない
+  </div>
+</div>
+
+<div class="strategy-card k-major">
+  <h4><span class="k-code">K2</span>ロット管理粒度の戦略的選択</h4>
+  <div class="reframe-quote">
+    「個別の完成品ロット単位で需給調整」する前提を疑う。<strong>管理粒度を意図的に荒くする</strong>ことで、需給調整の難度自体を構造的に下げられる可能性。
+  </div>
+  <div class="strategy-section">
+    <span class="strategy-label">管理粒度の3段階</span>
+    <table class="strategy-table">
+      <thead><tr><th>粒度</th><th>管理単位</th><th>需給調整難度</th><th>顧客対応の柔軟性</th></tr></thead>
+      <tbody>
+        <tr><td>細</td><td>完成品ロット単位（現状）</td><td>高（顧客毎・ロット毎に引当）</td><td>高</td></tr>
+        <tr><td>中</td><td><strong>同じワニスから作る完成品グループ単位</strong>（親ワニス単位）</td><td>中（最終仕上げ前で振替可能）</td><td>中</td></tr>
+        <tr><td>荒</td><td>品目大分類グループ単位</td><td>低（在庫プール化）</td><td>低</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="strategy-section">
+    <span class="strategy-label">論点</span>化学反応で作るワニスは<strong>最終仕上げ前段階では同一</strong>。完成品（フィルム）の段階で顧客毎に差別化されているのなら、<strong>仕上げ前の親ワニス段階で在庫プール化</strong>すれば歩留ばらつきを内部吸収でき、顧客間引き剥がしも減る
+  </div>
+  <div class="strategy-section">
+    <span class="strategy-label">経営KPI接続</span><strong>在庫回転率向上</strong>（プール化）／<strong>引き剥がし発生率▲50〜80%</strong>（仕上げ前で振替）／<strong>計画工数▲40%</strong>（粒度低下）
+  </div>
+  <div class="strategy-section">
+    <span class="strategy-label">問い返し</span><strong>「完成品の段階で需給調整しなければならないのは、本当に技術的制約ですか？それとも管理上の慣行ですか？」</strong> — Push/Pullの境目を経営判断として動かす
+  </div>
+</div>
+
+<div class="strategy-card k-major">
+  <h4><span class="k-code">K3</span>引当単位と納品単位の見直し</h4>
+  <div class="reframe-quote">
+    「個別PO単位の引当」前提を疑う。顧客×品目グループ単位の<strong>包括引当</strong>に切り替えれば、A耳B耳同数納品ルールも月次バランスに緩和できる。
+  </div>
+  <div class="strategy-section">
+    <span class="strategy-label">現状 vs 提案</span>
+    <table class="strategy-table">
+      <thead><tr><th>項目</th><th>現状</th><th>提案</th><th>効果</th></tr></thead>
+      <tbody>
+        <tr><td>引当単位</td><td>PO毎・完成品毎</td><td>顧客×品目グループ×期間（週/月）</td><td>引当ロジック単純化</td></tr>
+        <tr><td>A耳B耳同数</td><td>納品毎に同数厳守</td><td>月次バランスで同数</td><td>引き剥がし減</td></tr>
+        <tr><td>納品ロット</td><td>顧客指定ロット厳守</td><td>±10%幅で運用</td><td>仕掛在庫減</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="strategy-section">
+    <span class="strategy-label">経営KPI接続</span><strong>引当工数▲60%</strong>／<strong>CCC短縮</strong>（仕掛在庫減）／<strong>顧客満足度の本質維持</strong>（月次で帳尻が合えば実害なし）
+  </div>
+  <div class="strategy-section">
+    <span class="strategy-label">問い返し</span><strong>「A耳B耳が納品毎に同数でなければならない理由を、顧客は技術的に説明できますか？」</strong> — 慣行を疑う
+  </div>
+</div>
+
+<div class="strategy-card k-major">
+  <h4><span class="k-code">K4</span>標準LT・契約条件の業界標準化</h4>
+  <div class="reframe-quote">
+    現在の標準LTは「顧客との交渉で決まったもの」だが、最大手として<strong>業界標準を主導する立場</strong>にある。受け身から主導へ。
+  </div>
+  <div class="strategy-section">
+    <span class="strategy-label">契約に組み込むべき条件</span>
+    <ul style="margin: 4px 0 0 18px; padding: 0; font-size: 12px;">
+      <li><strong>標準LT遵守義務（双方向）：</strong>顧客が短納期要求する場合の事前通知期間、AFTの遵守率KPI</li>
+      <li><strong>変更デッドライン：</strong>受注後の数量変更／納期変更を受け付ける期限</li>
+      <li><strong>最小発注ロット：</strong>顧客側の発注単位を標準化</li>
+      <li><strong>短納期対応プレミアム：</strong>標準LT外要求への追加料金</li>
+      <li><strong>違反時ペナルティ：</strong>双方向（顧客側違反時の歩留補填免除等）</li>
+    </ul>
+  </div>
+  <div class="strategy-section">
+    <span class="strategy-label">経営KPI接続</span><strong>標準LT遵守率向上</strong>／<strong>計画外コスト顧客転嫁による収益改善</strong>／<strong>業界ポジショニング</strong>
+  </div>
+  <div class="strategy-section">
+    <span class="strategy-label">問い返し</span><strong>「契約に組み込めば解決する問題を、現場のオペレーションで吸収し続けているのではないですか？」</strong>
+  </div>
+</div>
+
+<div class="strategy-card k-major">
+  <h4><span class="k-code">K5</span>営業vs SCMの組織インセンティブ統一</h4>
+  <div class="reframe-quote">
+    全課題の<strong>組織論的根本原因</strong>。営業の受注金額KPIとSCMの計画品質KPIが対立構造になっている限り、C1（優先順位属人化）もB1（短納期受諾）も解消されない。
+  </div>
+  <div class="strategy-section">
+    <span class="strategy-label">対立構造の例</span>
+    <table class="strategy-table">
+      <thead><tr><th>主体</th><th>現状KPI</th><th>結果として起こる行動</th></tr></thead>
+      <tbody>
+        <tr><td>営業</td><td>受注金額／顧客満足度</td><td>短納期要求を飲む／顧客独自ルールを受け入れる</td></tr>
+        <tr><td>SCM</td><td>計画達成率／引き剥がし回数</td><td>計画を硬直化／柔軟対応を拒否</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="strategy-section">
+    <span class="strategy-label">統一KPI候補</span><strong>粗利貢献</strong>（受注金額 − 計画外コスト）／<strong>顧客LTV</strong>（短期売上ではなく長期収益）／<strong>標準LT遵守率</strong>（共通指標）
+  </div>
+  <div class="strategy-section">
+    <span class="strategy-label">経営KPI接続</span><strong>利益率向上</strong>（計画外コスト最小化）／<strong>意思決定速度向上</strong>（合議不要）／<strong>需給調整会議の存在意義の変質</strong>（部門間政治の場から戦略議論の場へ）
+  </div>
+  <div class="strategy-section">
+    <span class="strategy-label">問い返し</span><strong>「需給調整会議は、本当に需給を調整する場ですか？それとも、対立するKPIを部門間で配分する場ですか？」</strong>
+  </div>
+</div>
+
+<div class="strategy-card k-major">
+  <h4><span class="k-code">K6</span>E2E可視化とデータ連携の「切断面」の特定</h4>
+  <div class="reframe-quote">
+    需給調整を「自社工場内」で閉じて解こうとする前提を疑う。本質は<strong>データ連携が切れている箇所（切断面）</strong>にあり、それは自社内だけでなく<strong>顧客・サプライヤーとの境界</strong>にもある。
+  </div>
+  <div class="strategy-section">
+    <span class="strategy-label">切断面の所在</span>
+    <table class="strategy-table">
+      <thead><tr><th>切断面</th><th>内容</th><th>需給調整への影響</th></tr></thead>
+      <tbody>
+        <tr><td>社内①</td><td>仮引当（②）と本引当（⑨）の情報乖離（D1）／CSシステムとオーダー登録ツールの2システム並存</td><td>引き剥がしの温床。社内で完結すべき切断面</td></tr>
+        <tr><td>顧客境界</td><td>顧客の需要計画がPO受領時点まで見えない（先読み不能）</td><td>B1短納期・B3変更の根本原因。VMI／需要情報共有で解消余地</td></tr>
+        <tr><td>サプライヤー境界</td><td>原料調達リードタイムと生産計画の非連動</td><td>キャパ制約（A3）の上流要因。Tier-N可視化の対象</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="strategy-section">
+    <span class="strategy-label">段階設計</span>自社内切断面の解消（短期）→ 戦略顧客とのVMI／需要情報共有（中期）→ 原料サプライヤーまでのTier-N連携（長期）。<strong>形式化しやすい領域から先行、暗黙知が多い領域は粘る（領域別アジャイル進化）</strong>
+  </div>
+  <div class="strategy-section">
+    <span class="strategy-label">経営KPI接続</span><strong>DIO短縮</strong>（先読みによる在庫圧縮）／<strong>欠品率低下</strong>（早期検知）／<strong>引合量増加</strong>（情報開示の事業価値）<span class="num-todo">★要確認</span>
+  </div>
+  <div class="question-callout">
+    <span class="q-type">前提を壊す問い</span><strong>「需給調整が難しいのは、調整ロジックが複雑だからですか？それとも、調整に必要な情報が、必要なタイミングで繋がっていないからですか？」</strong>
+  </div>
+</div>
+
+<div class="strategy-card k-major">
+  <h4><span class="k-code">K7</span>競争優位での切り分け（Fit to Standard判断）</h4>
+  <div class="reframe-quote">
+    顧客独自ルール（A耳B耳等）・引当ロジックを「すべてシステムで作り込む」前提を疑う。問うべきは<strong>「その業務は競争優位の源泉か？」</strong>。源泉なら磨き込む、そうでないなら標準に揃える。
+  </div>
+  <div class="strategy-section">
+    <span class="strategy-label">切り分けの問い</span>
+    <table class="strategy-table">
+      <thead><tr><th>業務</th><th>競争優位の源泉か？</th><th>打ち手の方向</th></tr></thead>
+      <tbody>
+        <tr><td>歩留予測・生産最適化（A1/A2）</td><td><strong>源泉である可能性</strong>（化学反応のノウハウ）</td><td>カスタマイズ／AI内製で磨き込む</td></tr>
+        <tr><td>A耳B耳等の顧客独自ルール（B2）</td><td><strong>源泉ではない可能性</strong>（顧客慣行の受け入れ）</td><td>業界標準化（K1）or ルールエンジンで吸収</td></tr>
+        <tr><td>引当・洗い替え（C1/C2）</td><td>源泉ではない（管理業務）</td><td>標準機能（SAP S/4HANA等）にFit</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="strategy-section">
+    <span class="strategy-label">システム含意</span>競争優位領域のみカスタマイズし、それ以外は標準機能に業務を合わせる。<strong>2システム並存（2025年の崖）</strong>を機にCSシステム／オーダー登録ツールの統合を検討。グローバル展開・SCM統合が絡むなら統合基幹（SAP S/4HANA等）を軸に
+  </div>
+  <div class="strategy-section">
+    <span class="strategy-label">経営KPI接続</span><strong>システム投資の選択と集中</strong>（優位領域に投資集中）／<strong>保守コスト削減</strong>（標準化領域）／<strong>2025年の崖リスク低減</strong>
+  </div>
+  <div class="question-callout">
+    <span class="q-type">矛盾を顕在化する問い</span><strong>「A耳B耳ルールを精緻にシステム化することは、御社の競争力を高めますか？それとも、顧客の慣行に縛られ続けるコストを固定化するだけですか？」</strong>
+  </div>
+</div>
+
+<div class="strategy-card">
+  <h4><span class="k-code" style="background:#0e7490;">K8</span>短期TOBEを「中期の通過点」として設計する（既得権益化リスク）</h4>
+  <div class="reframe-quote">
+    短期TOBE（業務内＝AI／業務間＝人）は、<strong>成功するほど中期に進めなくなるリスク</strong>を孕む。「AI＋人の承認」が組織に馴染むと既得権益化し、慣性で中期（Orchestrator化・会議廃止）が頓挫する。
+  </div>
+  <div class="strategy-section">
+    <span class="strategy-label">論点</span>短期は最初から中期の通過点として設計する。<strong>会議廃止は副次効果ではなく本丸</strong>。会議が消えると暗黙のすり合わせ機能（部門間政治・例外慣行）が表出するため、その承継設計（誰がポリシーを持つか）を短期のうちに着手する
+  </div>
+  <div class="strategy-section">
+    <span class="strategy-label">新中核スキル</span>中期の中核業務は「計画立案・調整」ではなく<strong>「Orchestratorのポリシー設計と例外監督」</strong>＝SCM部門のAIガバナンス組織化。人事・評価・キャリアパスを同時設計しないと、改革は技術導入で止まる
+  </div>
+  <div class="strategy-section">
+    <span class="strategy-label">経営KPI接続</span><strong>改革の完遂率</strong>（中期到達）／<strong>意思決定リードタイム短縮</strong>（会議律速の解消）
+  </div>
+  <div class="question-callout">
+    <span class="q-type">前提を壊す問い</span><strong>「短期で人が承認ループに残るのは、AIの信頼性の問題ですか？それとも、責任の所在を決めたくないという組織の問題ですか？」</strong>
+  </div>
+</div>
+
+<div class="supplement-list">
+  <h4>補足論点（次フェーズの深掘り対象）</h4>
+  <ul>
+    <li><span class="l-code">L1</span><strong>需要予測（PO前段階の先読み）：</strong>顧客発注前に動くための予測モデル整備。VMI連携の前提</li>
+    <li><span class="l-code">L2</span><strong>ストック箇所（Push/Pullの境目）の戦略選択：</strong>原料／中間品／完成品のどこに在庫を持つか。K2と直結</li>
+    <li><span class="l-code">L3</span><strong>廃棄・品質期限切れの経済影響定量化：</strong>余剰在庫の保管コスト＋廃棄コスト＋機会損失の総和</li>
+    <li><span class="l-code">L4</span><strong>引き剥がしされた顧客への補填ルール：</strong>信用毀損コストの内部化（経済設計）</li>
+    <li><span class="l-code">L5</span><strong>安全在庫・バッファ設計：</strong>歩留ばらつきを吸収するための戦略在庫</li>
+    <li><span class="l-code">L6</span><strong>顧客とのVMI（Vendor Managed Inventory）連携：</strong>戦略顧客との在庫共同管理</li>
+    <li><span class="l-code">L7</span><strong>計画立案頻度の動的化：</strong>週次固定 → 状況に応じた日次／時間単位への柔軟化</li>
+    <li><span class="l-code">L8</span><strong>サプライチェーンBCP（日本固有論点）：</strong>半導体材料は地政学リスク・市況急変動・地震リスクの影響が大きい。需給調整が「常時走り続ける」のは、こうした外部変動への備えが在庫戦略・調達戦略に組み込まれていないことの表れでもある。在庫戦略（L5安全在庫）とBCPを統合設計する</li>
+    <li><span class="l-code">L9</span><strong>2025年の崖（日本固有論点）：</strong>CSシステムとオーダー登録ツールの2システム並存＝レガシー基幹の老朽化・人材枯渇リスク。K7のFit to Standard判断と合わせ、SCMシステム化構想／ERP刷新の文脈で論点化する</li>
+  </ul>
+</div>
+
+<!-- ============ 8. 顧客視点での想定反応とプレゼン設計 ============ -->
+<h2>8. 顧客視点での想定反応とプレゼン設計</h2>
+
+<div class="selfreview-intro" style="background: #fdf2f8; border-left-color: #be185d;">
+  <strong style="color:#be185d;">本章の位置づけ：</strong>本資料をクライアント（AFT）に見せた時の<strong>4種類の反応</strong>を予想し、それぞれへの対処方針を整理する。
+  最後に5/13打ち合わせの会話設計（時間配分・推奨提示順序）を明示。
+</div>
+
+<h3>8-1. 想定される4つの反応タイプ</h3>
+
+<div class="reaction-card r-defense">
+  <h5>反応①【防衛反応】「分かっている課題を整理しただけ。で？」</h5>
+  <div class="client-voice">需給調整が難しいことは20年前から分かっている。整理してもらってもね…</div>
+  <div class="response-plan">
+    <strong>対処：</strong>第3〜4章を「整理」ではなく「<strong>共通言語化</strong>」と位置付け、議論の起点として提示。本論は第7章の戦略論点であることを冒頭で明示。
+  </div>
+</div>
+
+<div class="reaction-card r-defense">
+  <h5>反応②【防衛反応】「うちの業界特殊性・最大手の立場が考慮されていない」</h5>
+  <div class="client-voice">化学反応の歩留ばらつきは仕方ない。それを前提に皆頑張ってるんですよ。</div>
+  <div class="response-plan">
+    <strong>対処：</strong>冒頭オープニング（8-3）で「<strong>業界最大手という前提と化学反応特性を理解した上で</strong>、それでも取り得る選択肢を提示する」ことを声明。第7章K1・K2・K8で正面から扱う。
+  </div>
+</div>
+
+<div class="reaction-card r-defense">
+  <h5>反応③【防衛反応】「現場が頑張って回している実態を見ていない。机上の空論」</h5>
+  <div class="client-voice">理屈は分かりますが、現場の判断が回している部分が大きいんです。</div>
+  <div class="response-plan">
+    <strong>対処：</strong>「<strong>現場の勘・属人的判断の価値を否定しない</strong>」「むしろ勘の知識化が改革の本質」というメッセージを明示。C1・C2の言い回しも「属人化＝悪」ではなく「属人化の価値を全社共有財産化」に調整。
+  </div>
+</div>
+
+<div class="reaction-card r-painful">
+  <h5>反応④【痛いところ突かれた感覚】「うちの運用ガバナンス不足を責められている」</h5>
+  <div class="client-voice">（沈黙）洗い替え機能を使う／使わないで差が出ているのは事実なんですけど…</div>
+  <div class="response-plan">
+    <strong>対処：</strong>C2の言い回しを「<strong>担当者の問題</strong>」ではなく「<strong>機能設計／業務設計／意思決定権限の問題</strong>」として客観化。「使わない担当者にも合理性があるはず」という前提を示し、業務監査の結果を共有する形で提示。
+  </div>
+</div>
+
+<div class="reaction-card r-painful">
+  <h5>反応⑤【痛いところ突かれた感覚】「投資判断ができていないと言われている」</h5>
+  <div class="client-voice">キャパvs受注総量と言われても、経営の話なので。</div>
+  <div class="response-plan">
+    <strong>対処：</strong>A3を「投資判断の不足」ではなく「<strong>受け身の経営選択肢</strong>」として提示。バイイングパワー活用（K1）の選択肢が経営として取れることを示し、設備投資以外の道（断る・プレミアム化・標準化）を並列で見せる。
+  </div>
+</div>
+
+<div class="reaction-card r-want">
+  <h5>反応⑥【知りたい答え】「結局どこから手をつければいい？」</h5>
+  <div class="client-voice">10課題並べてもらってもね。優先順位を付けてくださいよ。</div>
+  <div class="response-plan">
+    <strong>対処：</strong>ファクト不在のため<strong>優先順位の確定はファクト取得後</strong>と明示。8-2のファクト確認リストで5/13に聴取すべき10数字を提示。仮置きの優先順位案として「<strong>K5 組織インセンティブ統一 → K2 ロット粒度見直し → K1 バイイングパワー</strong>」を提示。
+  </div>
+</div>
+
+<div class="reaction-card r-want">
+  <h5>反応⑦【知りたい答え】「いくらかかって、いくら儲かる？」</h5>
+  <div class="client-voice">投資対効果が見えないと社内稟議が通らないんです。</div>
+  <div class="response-plan">
+    <strong>対処：</strong>本資料では<strong>定量効果は仮置き</strong>とし、第8-2ファクト確認リストで取得した数値から再算出することを明示。打ち合わせ前にデスクトップリサーチで類似業界ベンチマークを準備（タスク化）。
+  </div>
+</div>
+
+<div class="reaction-card r-debate">
+  <h5>反応⑧【議論呼ぶ】「需給調整会議は本当に廃止していいのか？」</h5>
+  <div class="client-voice">会議があるから部門間の合意ができている面もあって、廃止は怖い。</div>
+  <div class="response-plan">
+    <strong>対処：</strong>中期TOBEの「会議廃止」は<strong>慎重に二段階提示</strong>。短期は「会議準備工数▲80%」に留め、中期で「会議の機能を再定義（部門間政治の場→戦略議論の場）」と整理。K5と接続して、会議の存在意義そのものを問い直す形に。
+  </div>
+</div>
+
+<div class="reaction-card r-debate">
+  <h5>反応⑨【議論呼ぶ】「顧客選別＝断る、はうちの文化に合わない」</h5>
+  <div class="client-voice">うちは長く付き合ってきた顧客との関係を大事にしている。断るなんて。</div>
+  <div class="response-plan">
+    <strong>対処：</strong>K1で「<strong>断る／プレミアム化／業界標準化</strong>」を並列で提示し、断るは1つの選択肢に過ぎないことを示す。文化に合わせやすい「業界標準化」を主軸に提案。「<strong>長期関係を大事にするからこそ、無理な要求を受け続けてはいけない</strong>」と再フレーム。
+  </div>
+</div>
+
+<div class="reaction-card r-debate">
+  <h5>反応⑩【議論呼ぶ】「属人的な勘も価値がある」</h5>
+  <div class="client-voice">ベテランの勘で回している部分は、データ化できないものもある。</div>
+  <div class="response-plan">
+    <strong>対処：</strong><strong>勘の価値を否定せず、勘の知識化・伝承を改革の中核に</strong>位置付け。C1の「優先順位ポリシー学習AI」は属人判断を集約してルール化する設計であることを明示。「勘を消す」ではなく「勘を組織知に変える」というメッセージで貫く。
+  </div>
+</div>
+
+<h3>8-2. ファクト確認リスト（5/13打ち合わせで聴取すべき10数字）</h3>
+
+<table class="review-table">
+  <thead>
+    <tr>
+      <th style="width:50px;">#</th>
+      <th style="width:30%;">確認したい数字</th>
+      <th>聴取の意義（何が分かるか）</th>
+      <th style="width:80px;">関連課題</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td class="review-code">F-1</td><td>直近6か月の<strong>標準LT遵守率</strong></td><td>A3（キャパ）が構造問題か事象問題かの切り分け／K4契約見直しの必要度</td><td>A3 / K4</td></tr>
+    <tr><td class="review-code">F-2</td><td><strong>引き剥がし発生頻度</strong>（週次／月次）</td><td>C3（履歴体系化）の改革優先度／L4補填ルールの必要性</td><td>C3 / L4</td></tr>
+    <tr><td class="review-code">F-3</td><td><strong>歩留ばらつき幅</strong>（過去8週の計画vs実績の標準偏差）</td><td>A1の影響度／安全在庫設計（L5）の根拠</td><td>A1 / L5</td></tr>
+    <tr><td class="review-code">F-4</td><td><strong>余剰在庫の廃棄率／品質期限切れ発生件数</strong></td><td>L3廃棄コストの定量化／K2ロット粒度見直しの効果見積</td><td>L3 / K2</td></tr>
+    <tr><td class="review-code">F-5</td><td><strong>顧客独自ルールの種類数</strong>と<strong>記録媒体</strong></td><td>B2の規模感／K3引当単位見直しの可能性</td><td>B2 / K3</td></tr>
+    <tr><td class="review-code">F-6</td><td><strong>自動洗い替え機能の担当者別使用率</strong></td><td>C2の実態／C2の原因（仕様起因 or 運用起因）切り分け</td><td>C2</td></tr>
+    <tr><td class="review-code">F-7</td><td><strong>短納期要求の頻度</strong>と<strong>平均短縮日数</strong></td><td>B1の規模感／K1プレミアム化の収益試算根拠</td><td>B1 / K1</td></tr>
+    <tr><td class="review-code">F-8</td><td><strong>受注後変更（数量・納期）の発生率</strong></td><td>B3の規模感／K4変更デッドライン設定の必要度</td><td>B3 / K4</td></tr>
+    <tr><td class="review-code">F-9</td><td><strong>需給調整会議の年間時間</strong>と<strong>参加者人数</strong></td><td>会議廃止の経済効果／K5組織インセンティブ統一の前提情報</td><td>K5</td></tr>
+    <tr><td class="review-code">F-10</td><td><strong>顧客別売上構成</strong>（パレート分析）</td><td>K1バイイングパワー発動の対象顧客選定／戦略顧客vs通常顧客の区分基準</td><td>K1</td></tr>
+  </tbody>
+</table>
+
+<h3>8-3. 5/13打ち合わせの会話設計（推奨）</h3>
+
+<div class="opening-statement">
+  <h4>オープニング3分：先回りの声明（防衛反応への先回り）</h4>
+  <div class="quote">
+    本資料は「<strong>需給調整改善コンサル</strong>」の整理資料ではありません。<br>
+    御社が業界最大手であるという前提、化学反応の歩留ばらつきが構造的に発生するという前提、現場のベテランの勘が事業を支えているという前提――<strong>これらをすべて受け入れた上で、それでも経営として取り得る選択肢</strong>を整理しました。<br>
+    本論は第7章の戦略論点5つです。第3〜5章はそのための共通言語化として位置付けています。<br>
+    本日のゴールは「合意」ではなく「<strong>5つの戦略論点のうち、御社として真剣に検討する価値があるものはどれかを選別する</strong>」ことです。
+  </div>
+</div>
+
+<div class="conversation-design">
+  <h4>時間配分（90分想定）</h4>
+  <div class="phase">
+    <div class="phase-tag">0-3分</div>
+    <div class="phase-content"><strong>オープニング：</strong>上記声明で防衛反応を先回り解除</div>
+  </div>
+  <div class="phase">
+    <div class="phase-tag">3-15分</div>
+    <div class="phase-content"><strong>共通言語化：</strong>第2章10課題サマリ＋第3章Tab3ハイブリッド型のみで概観（他Tabは資料参照）</div>
+  </div>
+  <div class="phase">
+    <div class="phase-tag">15-50分</div>
+    <div class="phase-content"><strong>本論：</strong>第7章K1〜K5を各6〜7分で提示。各論点の最後の<strong>「問い返し」</strong>で議論を呼ぶ</div>
+  </div>
+  <div class="phase">
+    <div class="phase-tag">50-70分</div>
+    <div class="phase-content"><strong>議論：</strong>反応①〜⑩のどれが出るかを想定済。8-1で対処方針が用意されている</div>
+  </div>
+  <div class="phase">
+    <div class="phase-tag">70-85分</div>
+    <div class="phase-content"><strong>ファクト依頼：</strong>第8-2のF-1〜F-10を提示し、次回までの数字提供を依頼</div>
+  </div>
+  <div class="phase">
+    <div class="phase-tag">85-90分</div>
+    <div class="phase-content"><strong>クロージング：</strong>「5戦略論点のうち、御社として真剣に検討する価値があるのはどれですか？」で選別を求める</div>
+  </div>
+</div>
+
+<div style="background: #fef3c7; border: 1px solid #92400e; border-radius: 6px; padding: 14px 18px; margin-top: 16px; font-size: 12.5px;">
+  <strong style="color: #92400e;">推奨提示順序の根拠：</strong>
+  <ul style="margin: 6px 0 0 18px; padding: 0;">
+    <li>5案のうち<strong>Tab3ハイブリッド型を主軸</strong>とする（数量増減と課題が同時に見え、論点が立つため）</li>
+    <li>戦略論点の提示順は<strong>K5 → K2 → K1 → K3 → K4</strong>がやや有効（組織論で頭を温めてから、粒度・交渉力・契約の順で具体化）</li>
+    <li>クライアントが防衛反応を強く見せた場合は、<strong>K2（ロット粒度）から入る</strong>（業界特殊性を活かす論点なので受容性が高い）</li>
+  </ul>
+</div>
+
+<!-- ============ 9. 横展開可能な型 ============ -->
+<h2>9. 本資料の横展開可能な「型」（他SCM案件への再利用）</h2>
+
+<div class="selfreview-intro" style="background: #faf5ff; border-left-color: #6d28d9;">
+  <strong style="color:#6d28d9;">本章の位置づけ：</strong>本資料はAFT固有の整理であると同時に、<strong>他のSCM業務改革案件にも再利用できる思考の型</strong>でもある。
+  「機能導入」ではなく「組織のオペレーティングモデル書き換え」として提示し、3段階抽象化で経営論に引き上げるアプローチは、業種を問わず横展開できる。本章でその型を抽出する。
+</div>
+
+<div class="template-card">
+  <h4>型①：業務プロセス × 需給軸マトリクス（発生箇所の構造化）</h4>
+  <div class="t-row"><span class="t-label">汎用構造</span>「縦軸＝業務プロセスの時系列」×「横軸＝需要／供給の2分割」で、課題・数量・AI解決策を同一座標で照合する</div>
+  <div class="t-row"><span class="t-label">再利用条件</span>受注〜出荷／調達〜生産など、需要と供給のミスマッチを扱う全SCM案件で利用可能</div>
+  <div class="t-row"><span class="t-label">横展開先</span><span class="t-frame">東レ（PSI可視化）</span><span class="t-frame">他メーカーの受発注改革</span></div>
+</div>
+
+<div class="template-card">
+  <h4>型②：3段階抽象化＋「だとすると」（現場論→経営論への引き上げ）</h4>
+  <div class="t-row"><span class="t-label">汎用構造</span>表層（資料の記述）→ 構造の言い換え → パターン認識 → 組織論・経営論 へ抽象度を上げ、「だとすると」で含意を引き出す</div>
+  <div class="t-row"><span class="t-label">本資料での適用</span>「需給調整が難しい」（表層）→「データ連携の切断面」（構造）→「意思決定と実行の分離」（パターン）→「SCM部門のAIガバナンス組織化」（経営論）</div>
+  <div class="t-row"><span class="t-label">横展開先</span><span class="t-frame">全SCM業務改革案件</span><span class="t-frame">DX構想策定</span></div>
+</div>
+
+<div class="template-card">
+  <h4>型③：二層構造（短期TOBE＝業務内AI／業務間人　→　中期TOBE＝Orchestrator）</h4>
+  <div class="t-row"><span class="t-label">汎用構造</span>短期は「業務内＝AI／業務間＝人」の二層構造、中期は業務横断調整をOrchestratorエージェントに集約。<strong>短期は中期の通過点として設計（K8）</strong></div>
+  <div class="t-row"><span class="t-label">勘所</span>ROIは「AI性能」ではなく「承認フローをどこまで薄くできるか」で決まる。会議廃止＝暗黙のすり合わせ機能の承継設計が本丸</div>
+  <div class="t-row"><span class="t-label">横展開先</span><span class="t-frame">AIエージェント業務改革全般</span></div>
+</div>
+
+<div class="template-card">
+  <h4>型④：領域別アジャイル進化（一律でなく、領域ごとに進化速度を変える）</h4>
+  <div class="t-row"><span class="t-label">汎用構造</span>全業務一律に短期→中期へ移すのではなく、<strong>形式化しやすい業務（PO受領・出荷依頼）は中期へ先行、暗黙知が多い業務（需給調整）は短期で粘る</strong></div>
+  <div class="t-row"><span class="t-label">本資料での適用</span>第7章K7のFit to Standard判断（競争優位の有無で線引き）と接続。優位領域は内製で磨き、非優位領域は標準化・先行Agent化</div>
+  <div class="t-row"><span class="t-label">横展開先</span><span class="t-frame">全SCM業務改革案件</span><span class="t-frame">ERP刷新</span></div>
+</div>
+
+<div class="question-callout" style="margin-top:14px;">
+  <span class="q-type">他業界アナロジーの問い</span>
+  <strong>「この需給調整の構造は、銀行（窓口→オンライン→APIエコノミー）やアマゾン物流（人手→自動倉庫→ロボット群自律連携）と同じ進化を辿るのではないか？だとすると、AFTのSCMエージェントは最終的に『誰のため』に動くべきか――自社最適か、顧客の顧客まで遡るサプライチェーン全体最適か？」</strong>
+</div>
+
+</main>
+
+<footer>
+  半導体材料メーカー 受注・出荷業務改革プロジェクト ／ 需給調整発生箇所整理 ／ 作成：2026-05-22
+</footer>
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-button').forEach(el => el.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelector('[data-tab="' + id + '"]').classList.add('active');
+}
+</script>
+
+</body>
+</html>

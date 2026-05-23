@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>半導体材料メーカー 受注・出荷業務改革整理</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Yu Gothic", "Meiryo", "Hiragino Sans", sans-serif;
+    margin: 0; padding: 24px 32px; background: #f5f6f8; color: #1f2937;
+    line-height: 1.65; font-size: 14px;
+  }
+  h1 { font-size: 26px; border-bottom: 4px solid #1e3a8a; padding-bottom: 8px; color: #1e3a8a; }
+  h2 { font-size: 20px; border-left: 6px solid #1e3a8a; padding: 6px 12px; background: #e0e7ff; margin-top: 40px; color: #1e3a8a; }
+  h3 { font-size: 16px; color: #1e3a8a; margin-top: 24px; border-bottom: 1px dashed #94a3b8; padding-bottom: 4px; }
+  h4 { font-size: 14px; color: #334155; margin: 12px 0 4px; }
+  .meta { color: #64748b; font-size: 12px; margin-bottom: 24px; }
+  .toc { background: white; border: 1px solid #cbd5e1; padding: 12px 24px; border-radius: 6px; margin-bottom: 24px; }
+  .toc ul { margin: 4px 0; padding-left: 20px; }
+  .toc a { color: #1e3a8a; text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+
+  /* ==== Swim Lane Flow ==== */
+  .lane-wrapper { overflow-x: auto; background: white; border: 1px solid #cbd5e1; border-radius: 6px; padding: 16px; margin-top: 16px; }
+  .lane-grid {
+    display: grid;
+    grid-template-columns: 56px repeat(5, 1fr);
+    gap: 0;
+    min-width: 1100px;
+  }
+  .lane-head {
+    background: #1e3a8a; color: white; font-weight: bold; padding: 10px 8px; text-align: center;
+    border: 1px solid #1e3a8a; position: sticky; top: 0;
+  }
+  .step-col-head { background: #475569; }
+  .lane-row {
+    display: contents;
+  }
+  .lane-cell {
+    border: 1px solid #e2e8f0; min-height: 70px; padding: 6px;
+    display: flex; align-items: center; justify-content: center; position: relative;
+    background: #fafafa;
+  }
+  .step-num {
+    background: #475569; color: white; font-weight: bold; text-align: center;
+    border: 1px solid #475569; display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+  .box {
+    background: #dbeafe; border: 2px solid #1e3a8a; border-radius: 6px;
+    padding: 8px 10px; font-size: 12px; text-align: center; width: 100%;
+    box-shadow: 1px 1px 3px rgba(0,0,0,0.08); line-height: 1.4;
+  }
+  .box.system { background: #fef3c7; border-color: #d97706; }
+  .box.meeting { background: #fce7f3; border-color: #be185d; }
+  .box.customer { background: #dcfce7; border-color: #15803d; }
+  .arrow-down::after {
+    content: "▼"; position: absolute; bottom: -14px; left: 50%; transform: translateX(-50%);
+    color: #1e3a8a; font-size: 14px; z-index: 2;
+  }
+  .arrow-right { position: relative; }
+  .arrow-right::after { content: "→"; position: absolute; right: -8px; top: 50%; transform: translateY(-50%); color: #1e3a8a; font-weight: bold; }
+  .issue-tag {
+    background: #fee2e2; color: #991b1b; border: 1px solid #dc2626; border-radius: 4px;
+    padding: 2px 6px; font-size: 11px; margin-top: 4px; display: inline-block;
+  }
+  .warn { color: #dc2626; font-weight: bold; }
+
+  /* ==== Tables ==== */
+  table {
+    width: 100%; border-collapse: collapse; background: white; margin-top: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 12.5px;
+  }
+  th, td { border: 1px solid #cbd5e1; padding: 10px 12px; vertical-align: top; text-align: left; }
+  th { background: #1e3a8a; color: white; font-weight: bold; text-align: center; }
+  tbody tr:nth-child(even) { background: #f8fafc; }
+  td.step-cell { background: #e0e7ff; font-weight: bold; text-align: center; width: 130px; color: #1e3a8a; }
+  td.label-cell { background: #f1f5f9; font-weight: bold; width: 140px; }
+  .ecrs-e { color: #b91c1c; font-weight: bold; }
+  .ecrs-c { color: #b45309; font-weight: bold; }
+  .ecrs-r { color: #1d4ed8; font-weight: bold; }
+  .ecrs-s { color: #047857; font-weight: bold; }
+
+  /* ==== Mechanism analysis ==== */
+  .mech-card {
+    background: white; border: 1px solid #cbd5e1; border-left: 6px solid #be185d;
+    padding: 16px 20px; margin: 12px 0; border-radius: 4px;
+  }
+  .mech-card h4 { color: #be185d; margin-top: 0; font-size: 15px; }
+  .tradeoff {
+    background: #fffbeb; border: 1px dashed #d97706; padding: 8px 12px; margin: 8px 0;
+    border-radius: 4px; font-size: 13px;
+  }
+  .tradeoff::before { content: "⚖ トレードオフ："; font-weight: bold; color: #b45309; }
+  ul.compact { margin: 4px 0 4px 20px; padding: 0; }
+  ul.compact li { margin: 2px 0; }
+  .legend {
+    display: flex; gap: 16px; flex-wrap: wrap; margin: 12px 0;
+    background: white; padding: 12px 16px; border-radius: 6px; border: 1px solid #cbd5e1;
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+  .legend-swatch { width: 18px; height: 18px; border-radius: 3px; border: 2px solid; }
+  .sw-process { background: #dbeafe; border-color: #1e3a8a; }
+  .sw-system { background: #fef3c7; border-color: #d97706; }
+  .sw-meeting { background: #fce7f3; border-color: #be185d; }
+  .sw-customer { background: #dcfce7; border-color: #15803d; }
+  .sw-issue { background: #fee2e2; border-color: #dc2626; }
+
+  .summary-box {
+    background: #eff6ff; border: 1px solid #1e3a8a; padding: 14px 18px;
+    border-radius: 6px; margin: 12px 0;
+  }
+  code { background: #f1f5f9; padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+
+  /* ==== Charts ==== */
+  .chart-section { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 14px 18px; margin: 12px 0; }
+  .chart-section h5 { margin: 0 0 8px; color: #1e3a8a; font-size: 13.5px; }
+  .chart-caption { font-size: 11.5px; color: #64748b; margin-bottom: 8px; }
+  .bar-chart { margin: 6px 0; }
+  .bar-row { display: flex; align-items: center; margin: 4px 0; font-size: 12px; }
+  .bar-label { width: 180px; font-weight: bold; color: #334155; text-align: right; padding-right: 10px; flex-shrink: 0; font-size: 11.5px; }
+  .bar-area { flex: 1; background: #e2e8f0; border-radius: 4px; height: 24px; position: relative; }
+  .bar { height: 100%; display: flex; align-items: center; padding-left: 8px; color: white; font-weight: bold; font-size: 11px; border-radius: 4px; white-space: nowrap; }
+  .bar.b-blue { background: #1e3a8a; }
+  .bar.b-green { background: #15803d; }
+  .bar.b-amber { background: #d97706; }
+  .bar.b-red { background: #b91c1c; }
+  .bar.b-purple { background: #6d28d9; }
+  .bar.b-pink { background: #be185d; }
+  .bar.b-gray { background: #64748b; }
+  .bar.b-orange { background: #ea580c; }
+  .chart-legend { display: flex; gap: 12px; flex-wrap: wrap; margin: 6px 0 10px; font-size: 11px; color: #475569; }
+  .chart-legend span { display: inline-flex; align-items: center; gap: 4px; }
+  .chart-legend i { width: 12px; height: 12px; display: inline-block; border-radius: 2px; }
+  .scenario-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+  .scenario-card-c { background: white; border: 1px solid #cbd5e1; border-radius: 6px; padding: 12px; }
+  .scenario-card-c h6 { margin: 0 0 6px; font-size: 12.5px; }
+  .scenario-a { border-left: 4px solid #15803d; }
+  .scenario-a h6 { color: #15803d; }
+  .scenario-b { border-left: 4px solid #b91c1c; }
+  .scenario-b h6 { color: #b91c1c; }
+  .flow-decision { background: #fefce8; border: 1px dashed #ca8a04; padding: 6px 10px; margin-top: 8px; border-radius: 4px; font-size: 11.5px; }
+  .flow-decision::before { content: "判断分岐 → "; font-weight: bold; color: #854d0e; }
+  .time-series-chart { display: flex; gap: 4px; align-items: end; justify-content: space-around; height: 170px; padding: 12px 8px 8px; background: white; border: 1px solid #cbd5e1; border-radius: 4px; margin: 8px 0; }
+  .ts-week { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; min-width: 50px; }
+  .ts-bars-wrap { display: flex; gap: 2px; align-items: end; height: 110px; position: relative; }
+  .ts-bar { width: 16px; min-height: 3px; position: relative; }
+  .ts-bar.plan { background: #94a3b8; }
+  .ts-bar.over { background: #15803d; }
+  .ts-bar.under { background: #b91c1c; }
+  .ts-val { font-size: 9.5px; color: #475569; position: absolute; top: -14px; left: 50%; transform: translateX(-50%); white-space: nowrap; }
+  .ts-week-label { font-size: 11px; color: #1e3a8a; font-weight: bold; margin-top: 2px; }
+  .ts-delta { font-size: 9.5px; padding: 1px 4px; border-radius: 3px; }
+  .ts-delta.plus { background: #dcfce7; color: #15803d; }
+  .ts-delta.minus { background: #fee2e2; color: #b91c1c; }
+  .arrow-block { text-align: center; color: #475569; font-size: 18px; margin: 6px 0; }
+  .conseq-card { background: #fff7ed; border: 1px solid #ea580c; border-left: 4px solid #ea580c; padding: 10px 14px; border-radius: 4px; margin-top: 8px; font-size: 12px; }
+  .conseq-card::before { content: "🔗 連鎖影響："; font-weight: bold; color: #c2410c; }
+</style>
+</head>
+<body>
+
+<h1>半導体材料メーカー 受注・出荷業務改革整理</h1>
+<div class="meta">対象業務：受注～納期回答～出荷｜作成日：2026-05-14｜ECRS準拠 To-Be設計</div>
+
+<!-- ============ 目次 ============ -->
+<div class="toc">
+  <strong>目次</strong>
+  <ul>
+    <li><a href="#overview">1. 業務全体像・前提</a></li>
+    <li><a href="#quantity-overview">1.5 数量関係の全体構造（受注・在庫・生産・出荷）</a></li>
+    <li><a href="#flow-simple">2. 業務フロー（シンプル版）</a></li>
+    <li><a href="#flow-detail">3. 業務フロー（詳細版・課題マーク付き）</a></li>
+    <li><a href="#mechanism">4. 需給調整メカニズム詳細分析</a></li>
+    <li><a href="#improvement">5. 業務改善ポイント整理表</a></li>
+    <li><a href="#ecrs-summary">6. ECRS適用方針サマリー</a></li>
+  </ul>
+</div>
+
+<!-- ============ 1. 概要 ============ -->
+<h2 id="overview">1. 業務全体像・前提</h2>
+<div class="summary-box">
+  <strong>対象企業：</strong> 半導体材料（化学反応プロセスで生産）の受注生産メーカー<br>
+  <strong>顧客：</strong> 半導体基盤メーカー（B2B、複数顧客）<br>
+  <strong>特殊性：</strong>
+  <ul class="compact">
+    <li>受注生産だが、化学反応の歩留まりばらつきにより<strong>計画数量どおりに生産されない</strong>（過剰／不足）。過剰分は「余剰在庫」として次回PO引き当てに回り、不足分は翌週生産計画へ追加される。</li>
+    <li>顧客は発注した数量を<strong>必ず引き取らなければならない</strong>（顧客側の引取義務）。</li>
+    <li>同一品目を複数顧客に出荷するため、<strong>顧客間引き当て調整</strong>が発生する。</li>
+    <li>1ラインで複数品目を生産可能なため、品目01の急遽増産時には<strong>同ライン品目02の減産</strong>といった<strong>品目間調整</strong>が発生する。</li>
+  </ul>
+  <strong>主要システム：</strong> CSシステム（PO登録・在庫引き当て・納期回答）／オーダー登録ツール（生産依頼）
+</div>
+
+<div class="legend">
+  <div class="legend-item"><span class="legend-swatch sw-process"></span>通常業務</div>
+  <div class="legend-item"><span class="legend-swatch sw-system"></span>システム処理</div>
+  <div class="legend-item"><span class="legend-swatch sw-meeting"></span>会議・合議</div>
+  <div class="legend-item"><span class="legend-swatch sw-customer"></span>顧客アクション</div>
+  <div class="legend-item"><span class="legend-swatch sw-issue"></span><span class="warn">⚠ 課題ポイント</span></div>
+</div>
+
+<!-- ============ 1.5 数量関係の全体構造 ============ -->
+<h2 id="quantity-overview">1.5 数量関係の全体構造（受注・在庫・生産・出荷）</h2>
+<p>本業務の判断・調整は「数量の大小関係」によって分岐する。同じ業務フローでも、受注数量・余剰在庫・生産能力・物理在庫の大小が変わると、判断ロジック・需給調整プロセス・引き剥がし発生有無が変化する。以下、数量関係の基本構造と分岐条件を可視化する。</p>
+
+<div class="chart-section">
+  <h5>基本構造：受注 ⇔ 余剰在庫 ⇔ 生産依頼 ⇔ 生産能力</h5>
+  <div class="chart-caption">1週分・1品目の代表例。受注総数を満たすために「余剰在庫引き当て」＋「新規生産依頼」を組み合わせる二段階構造。</div>
+  <div class="bar-chart">
+    <div class="bar-row">
+      <div class="bar-label">受注総数（PO合計）</div>
+      <div class="bar-area"><div class="bar b-blue" style="width: 55%;">1,000</div></div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">　うち余剰在庫引当（②）</div>
+      <div class="bar-area"><div class="bar b-green" style="width: 16.5%;">300</div></div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">　うち新規生産依頼（③）</div>
+      <div class="bar-area"><div class="bar b-amber" style="width: 38.5%;">700</div></div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">ライン週次生産能力</div>
+      <div class="bar-area"><div class="bar b-gray" style="width: 82%;">1,500</div></div>
+    </div>
+  </div>
+  <div class="flow-decision">通常時は「生産能力(1,500) ≥ 新規生産依頼(700)」のため納期通り生産可能。能力余裕800は他品目に転用可能。</div>
+</div>
+
+<div class="chart-section">
+  <h5>数量の大小関係による業務フロー分岐条件</h5>
+  <div class="chart-caption">同じ業務でも、以下の数量条件によって判断・調整プロセスが大きく変わる。</div>
+  <table style="width:100%; font-size:11.5px;">
+    <thead>
+      <tr>
+        <th style="width:30%;">数量条件</th>
+        <th>業務フロー・判断への影響</th>
+        <th style="width:18%;">対応するメカニズム</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>余剰在庫 ≥ 受注総数</td><td>新規生産依頼=0、即時引き当てで業務完結。生産計画策定（⑤）も簡略化される。</td><td style="text-align:center;">−</td></tr>
+      <tr><td>余剰在庫 &lt; 受注総数 ≤ 余剰在庫 + 生産能力</td><td>通常の業務フロー。標準LT納期回答可能で、需給調整会議の論点も少ない。</td><td style="text-align:center;">−</td></tr>
+      <tr><td>受注総数 &gt; 余剰在庫 + 生産能力</td><td>顧客間引き当て調整・納期延伸交渉が必須。需給調整会議の最大論点。</td><td style="text-align:center;"><strong>②</strong></td></tr>
+      <tr><td>同一ラインで複数品目の合計需要 &gt; ライン能力</td><td>品目間で生産配分の調整発生。段取り替えコストも判断軸に加わる。</td><td style="text-align:center;"><strong>③</strong></td></tr>
+      <tr><td>実績生産数 &gt; 計画生産数</td><td>余剰在庫発生 → 次回PO引き当て原資へ。保管コスト発生。</td><td style="text-align:center;"><strong>①</strong></td></tr>
+      <tr><td>実績生産数 &lt; 計画生産数</td><td>不足発生 → 翌週生産計画にしわ寄せ。他顧客在庫からの引き剥がしの一因。</td><td style="text-align:center;"><strong>①</strong></td></tr>
+      <tr><td>出荷時 物理在庫 &lt; 引き当て済み数量合計</td><td>引き剥がし発生（他顧客向け確保在庫の取り崩し）。翌週計画への補填要求発生。</td><td style="text-align:center;"><strong>④</strong></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ============ 2. シンプルフロー ============ -->
+<h2 id="flow-simple">2. 業務フロー（シンプル版）</h2>
+<p>9ステップの業務を縦スイムレーンで表現。「顧客 / 営業部 / SCM部 / 生産部 / システム」の5レーン構成。</p>
+
+<div class="lane-wrapper">
+  <div class="lane-grid">
+    <div class="lane-head step-col-head">No.</div>
+    <div class="lane-head">顧客（半導体基盤メーカー）</div>
+    <div class="lane-head">営業部</div>
+    <div class="lane-head">SCM部</div>
+    <div class="lane-head">生産部</div>
+    <div class="lane-head">システム</div>
+
+    <!-- ① -->
+    <div class="step-num">①</div>
+    <div class="lane-cell"><div class="box customer arrow-down">注文発行<br>（PO送付）</div></div>
+    <div class="lane-cell"><div class="box arrow-down">PO受領・確認</div></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"><div class="box system arrow-down">CSシステム<br>PO登録</div></div>
+
+    <!-- ② -->
+    <div class="step-num">②</div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"><div class="box arrow-down">在庫引き当て①<br>（余剰在庫×PO）</div></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"><div class="box system arrow-down">在庫照会・引当処理</div></div>
+
+    <!-- ③ -->
+    <div class="step-num">③</div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"><div class="box arrow-down">生産依頼数入力</div></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"><div class="box system arrow-down">オーダー登録ツール</div></div>
+
+    <!-- ④ -->
+    <div class="step-num">④</div>
+    <div class="lane-cell"><div class="box customer arrow-down">納期一次回答受領</div></div>
+    <div class="lane-cell"><div class="box arrow-down">納期一次回答<br>（標準LT）</div></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"><div class="box system arrow-down">CSシステム<br>標準LT自動回答</div></div>
+
+    <!-- ⑤ -->
+    <div class="step-num">⑤</div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"><div class="box arrow-down">生産計画策定</div></div>
+    <div class="lane-cell"><div class="box arrow-down">能力情報提供</div></div>
+    <div class="lane-cell"><div class="box system arrow-down">オーダー登録ツール参照</div></div>
+
+    <!-- ⑥ -->
+    <div class="step-num">⑥</div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"><div class="box meeting arrow-down">需給調整会議<br>（営業）</div></div>
+    <div class="lane-cell"><div class="box meeting arrow-down">需給調整会議<br>（SCM）</div></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"><div class="box system arrow-down">計画・在庫データ照会</div></div>
+
+    <!-- ⑦ -->
+    <div class="step-num">⑦</div>
+    <div class="lane-cell"><div class="box customer arrow-down">納期二次回答受領</div></div>
+    <div class="lane-cell"><div class="box arrow-down">計画確認・<br>二次回答</div></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"><div class="box system arrow-down">CSシステム<br>二次回答登録</div></div>
+
+    <!-- ⑧ -->
+    <div class="step-num">⑧</div>
+    <div class="lane-cell"><div class="box customer arrow-down">出荷依頼発行</div></div>
+    <div class="lane-cell"><div class="box arrow-down">出荷依頼受領</div></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"><div class="box system arrow-down">CSシステム<br>出荷依頼登録</div></div>
+
+    <!-- ⑨ -->
+    <div class="step-num">⑨</div>
+    <div class="lane-cell"><div class="box customer">出荷品受領</div></div>
+    <div class="lane-cell"><div class="box">在庫引き当て②<br>不足時は引き剥がし調整</div></div>
+    <div class="lane-cell"><div class="box">需給調整<br>（必要時）</div></div>
+    <div class="lane-cell"><div class="box">出荷準備</div></div>
+    <div class="lane-cell"><div class="box system">在庫引当処理／出荷指示</div></div>
+  </div>
+</div>
+
+<!-- ============ 3. 詳細フロー ============ -->
+<h2 id="flow-detail">3. 業務フロー（詳細版・課題マーク付き）</h2>
+<p>各ステップの作業詳細と現状課題（<span class="warn">⚠</span>）を可視化。</p>
+
+<div class="lane-wrapper">
+  <div class="lane-grid">
+    <div class="lane-head step-col-head">No.</div>
+    <div class="lane-head">顧客</div>
+    <div class="lane-head">営業部</div>
+    <div class="lane-head">SCM部</div>
+    <div class="lane-head">生産部</div>
+    <div class="lane-head">システム</div>
+
+    <!-- ① -->
+    <div class="step-num">①</div>
+    <div class="lane-cell"><div class="box customer arrow-down">PO発行（FAX/メール/<br>EDI混在）</div></div>
+    <div class="lane-cell">
+      <div class="box arrow-down">
+        PO内容確認・手入力でCS登録
+        <div class="issue-tag">⚠ FAX/PDF手入力で工数大</div>
+        <div class="issue-tag">⚠ 入力ミス／二重入力リスク</div>
+      </div>
+    </div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"><div class="box system arrow-down">CSシステム PO登録</div></div>
+
+    <!-- ② -->
+    <div class="step-num">②</div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell">
+      <div class="box arrow-down">
+        余剰在庫とPOを引き当て
+        <div class="issue-tag">⚠ 顧客優先順位ルールが属人的</div>
+        <div class="issue-tag">⚠ 引き当て判断に時間</div>
+      </div>
+    </div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell">
+      <div class="box system arrow-down">
+        在庫照会・引当
+        <div class="issue-tag">⚠ ロジック半自動・例外多発</div>
+      </div>
+    </div>
+
+    <!-- ③ -->
+    <div class="step-num">③</div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell">
+      <div class="box arrow-down">
+        引当後の不足分を生産依頼として手入力
+        <div class="issue-tag">⚠ CS→オーダー登録ツール手作業転記</div>
+        <div class="issue-tag">⚠ 2システム間で整合性管理コスト</div>
+      </div>
+    </div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell">
+      <div class="box system arrow-down">
+        オーダー登録ツール
+        <div class="issue-tag">⚠ CSシステムと未連携</div>
+      </div>
+    </div>
+
+    <!-- ④ -->
+    <div class="step-num">④</div>
+    <div class="lane-cell"><div class="box customer arrow-down">一次回答受領（標準LT）</div></div>
+    <div class="lane-cell">
+      <div class="box arrow-down">
+        標準LTを暫定納期として通知
+        <div class="issue-tag">⚠ 実生産能力非考慮で不正確</div>
+        <div class="issue-tag">⚠ 後の二次回答とのギャップ大</div>
+      </div>
+    </div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"><div class="box system arrow-down">CSシステム自動回答</div></div>
+
+    <!-- ⑤ -->
+    <div class="step-num">⑤</div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell">
+      <div class="box arrow-down">
+        生産計画策定（手動／Excel）
+        <div class="issue-tag">⚠ 計画立案が属人的・工数大</div>
+        <div class="issue-tag">⚠ 歩留まり予測が経験則</div>
+        <div class="issue-tag">⚠ ライン段取り最適化が不十分</div>
+      </div>
+    </div>
+    <div class="lane-cell">
+      <div class="box arrow-down">
+        ライン能力・段取り情報共有
+        <div class="issue-tag">⚠ 能力情報が日次更新でない</div>
+      </div>
+    </div>
+    <div class="lane-cell"><div class="box system arrow-down">オーダー登録ツール照会</div></div>
+
+    <!-- ⑥ -->
+    <div class="step-num">⑥</div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell">
+      <div class="box meeting arrow-down">
+        需給調整会議（営業）
+        <div class="issue-tag">⚠ 顧客優先度判断が会議依存</div>
+        <div class="issue-tag">⚠ 週次会議で意思決定リードタイム長</div>
+      </div>
+    </div>
+    <div class="lane-cell">
+      <div class="box meeting arrow-down">
+        需給調整会議（SCM）
+        <div class="issue-tag">⚠ 議論の前提データ作成に膨大な準備工数</div>
+        <div class="issue-tag">⚠ トレードオフが定量化されず合議依存</div>
+      </div>
+    </div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell">
+      <div class="box system arrow-down">
+        各種データを手集計（Excel）
+        <div class="issue-tag">⚠ 統合ダッシュボード不在</div>
+      </div>
+    </div>
+
+    <!-- ⑦ -->
+    <div class="step-num">⑦</div>
+    <div class="lane-cell"><div class="box customer arrow-down">二次回答受領<br>（一次と乖離）</div></div>
+    <div class="lane-cell">
+      <div class="box arrow-down">
+        計画確認・顧客へ二次回答
+        <div class="issue-tag">⚠ 一次と乖離した場合の顧客対応工数</div>
+        <div class="issue-tag">⚠ 顧客満足度低下リスク</div>
+      </div>
+    </div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"><div class="box system arrow-down">CSシステム二次回答更新</div></div>
+
+    <!-- ⑧ -->
+    <div class="step-num">⑧</div>
+    <div class="lane-cell"><div class="box customer arrow-down">出荷依頼発行</div></div>
+    <div class="lane-cell">
+      <div class="box arrow-down">
+        出荷依頼受領・PO紐付け
+        <div class="issue-tag">⚠ 顧客毎にフォーマット差</div>
+        <div class="issue-tag">⚠ 手作業紐付けにミス</div>
+      </div>
+    </div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"></div>
+    <div class="lane-cell"><div class="box system arrow-down">CSシステム登録</div></div>
+
+    <!-- ⑨ -->
+    <div class="step-num">⑨</div>
+    <div class="lane-cell"><div class="box customer">出荷品受領</div></div>
+    <div class="lane-cell">
+      <div class="box">
+        在庫引き当て②／引き剥がし調整
+        <div class="issue-tag">⚠ 引き剥がし判断が属人的</div>
+        <div class="issue-tag">⚠ 引き剥がされた顧客への代替手当が後追い</div>
+        <div class="issue-tag">⚠ トレードオフの可視化なし</div>
+      </div>
+    </div>
+    <div class="lane-cell">
+      <div class="box">
+        需給再調整（緊急時）
+        <div class="issue-tag">⚠ 翌週生産計画にしわ寄せ</div>
+      </div>
+    </div>
+    <div class="lane-cell"><div class="box">出荷準備・出庫</div></div>
+    <div class="lane-cell">
+      <div class="box system">
+        引当処理・出荷指示
+        <div class="issue-tag">⚠ 引き剥がし履歴が体系化されず</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 4. 需給調整メカニズム詳細分析 ============ -->
+<h2 id="mechanism">4. 需給調整メカニズム詳細分析</h2>
+<p>本業務の本質的複雑性は<strong>「化学反応の歩留まりばらつき」「複数顧客」「複数品目共通ライン」「顧客の引取義務」</strong>という4要素から生じる需給調整にある。以下、4つのメカニズムに分解して詳細分析する。</p>
+
+<!-- メカニズム1 -->
+<div class="mech-card">
+  <h4>メカニズム①：化学反応による歩留まりばらつきと余剰／不足の吸収</h4>
+  <p><strong>事象：</strong>化学反応プロセスのため、生産計画数量どおりに完成しない。<strong>計画値±α</strong>の振れ幅が常態化。</p>
+  <h4>調整内容</h4>
+  <ul class="compact">
+    <li><strong>過剰生産時：</strong>余剰在庫として倉庫保管。次回PO受領時の引き当て原資（②）になる → 受注生産でありながらPO受領時点で在庫引き当てが成立する根本理由。</li>
+    <li><strong>過少生産時：</strong>不足分は翌週生産計画に追加。当該PO顧客への納期が後ろ倒し、または他顧客向け在庫からの引き剥がし（⑨）が発生。</li>
+  </ul>
+  <h4>判断軸</h4>
+  <ul class="compact">
+    <li>過剰時：保管コスト vs 次回機会損失リスク → 通常は保管が選択される（顧客の引取義務があるため需要見込みが立ちやすい）。</li>
+    <li>過少時：①翌週生産で追いつくか／②他顧客在庫を引き剥がすか／③顧客に納期延伸を申し出るか。</li>
+  </ul>
+  <div class="tradeoff">在庫保管コスト・倉庫スペース・期限切れリスク <strong>vs</strong> 次回受注に対する充足率・納期遵守。化学品の品質保証期間が短い品目では保管リスクが顕在化する。</div>
+  <div class="tradeoff">過少時の翌週生産計画追加 <strong>vs</strong> 翌週分の他品目／他顧客向け生産計画への圧迫（しわ寄せの連鎖）。</div>
+
+  <div class="chart-section">
+    <h5>歩留まりばらつきの実態（過去8週の計画 vs 実績）</h5>
+    <div class="chart-caption">化学反応プロセス特有のばらつき。±10%程度の振れが循環的に発生し、余剰と不足が交互に発生する。</div>
+    <div class="chart-legend">
+      <span><i style="background:#94a3b8"></i>計画数量</span>
+      <span><i style="background:#15803d"></i>実績数量（計画超過＝余剰発生）</span>
+      <span><i style="background:#b91c1c"></i>実績数量（計画未達＝不足発生）</span>
+    </div>
+    <div class="time-series-chart">
+      <div class="ts-week">
+        <div class="ts-bars-wrap">
+          <div class="ts-bar plan" style="height: 80px;"><span class="ts-val">200</span></div>
+          <div class="ts-bar over" style="height: 88px;"><span class="ts-val">220</span></div>
+        </div>
+        <span class="ts-week-label">W1</span>
+        <span class="ts-delta plus">+20</span>
+      </div>
+      <div class="ts-week">
+        <div class="ts-bars-wrap">
+          <div class="ts-bar plan" style="height: 80px;"><span class="ts-val">200</span></div>
+          <div class="ts-bar under" style="height: 72px;"><span class="ts-val">180</span></div>
+        </div>
+        <span class="ts-week-label">W2</span>
+        <span class="ts-delta minus">−20</span>
+      </div>
+      <div class="ts-week">
+        <div class="ts-bars-wrap">
+          <div class="ts-bar plan" style="height: 96px;"><span class="ts-val">240</span></div>
+          <div class="ts-bar over" style="height: 100px;"><span class="ts-val">250</span></div>
+        </div>
+        <span class="ts-week-label">W3</span>
+        <span class="ts-delta plus">+10</span>
+      </div>
+      <div class="ts-week">
+        <div class="ts-bars-wrap">
+          <div class="ts-bar plan" style="height: 96px;"><span class="ts-val">240</span></div>
+          <div class="ts-bar under" style="height: 88px;"><span class="ts-val">220</span></div>
+        </div>
+        <span class="ts-week-label">W4</span>
+        <span class="ts-delta minus">−20</span>
+      </div>
+      <div class="ts-week">
+        <div class="ts-bars-wrap">
+          <div class="ts-bar plan" style="height: 80px;"><span class="ts-val">200</span></div>
+          <div class="ts-bar over" style="height: 86px;"><span class="ts-val">215</span></div>
+        </div>
+        <span class="ts-week-label">W5</span>
+        <span class="ts-delta plus">+15</span>
+      </div>
+      <div class="ts-week">
+        <div class="ts-bars-wrap">
+          <div class="ts-bar plan" style="height: 88px;"><span class="ts-val">220</span></div>
+          <div class="ts-bar under" style="height: 80px;"><span class="ts-val">200</span></div>
+        </div>
+        <span class="ts-week-label">W6</span>
+        <span class="ts-delta minus">−20</span>
+      </div>
+      <div class="ts-week">
+        <div class="ts-bars-wrap">
+          <div class="ts-bar plan" style="height: 80px;"><span class="ts-val">200</span></div>
+          <div class="ts-bar over" style="height: 90px;"><span class="ts-val">225</span></div>
+        </div>
+        <span class="ts-week-label">W7</span>
+        <span class="ts-delta plus">+25</span>
+      </div>
+      <div class="ts-week">
+        <div class="ts-bars-wrap">
+          <div class="ts-bar plan" style="height: 96px;"><span class="ts-val">240</span></div>
+          <div class="ts-bar under" style="height: 86px;"><span class="ts-val">215</span></div>
+        </div>
+        <span class="ts-week-label">W8</span>
+        <span class="ts-delta minus">−25</span>
+      </div>
+    </div>
+    <div class="scenario-grid">
+      <div class="scenario-card-c scenario-a">
+        <h6>余剰発生時（W1/W3/W5/W7）</h6>
+        <div class="bar-chart">
+          <div class="bar-row"><div class="bar-label">計画生産数</div><div class="bar-area"><div class="bar b-gray" style="width:65%;">200</div></div></div>
+          <div class="bar-row"><div class="bar-label">実績生産数</div><div class="bar-area"><div class="bar b-green" style="width:72%;">220</div></div></div>
+          <div class="bar-row"><div class="bar-label">→ 余剰在庫として保管</div><div class="bar-area"><div class="bar b-amber" style="width:7%;">+20</div></div></div>
+        </div>
+        <div class="flow-decision">次回PO受領時の引き当て原資へ／保管コスト発生／品質期限のリスク</div>
+      </div>
+      <div class="scenario-card-c scenario-b">
+        <h6>不足発生時（W2/W4/W6/W8）</h6>
+        <div class="bar-chart">
+          <div class="bar-row"><div class="bar-label">計画生産数</div><div class="bar-area"><div class="bar b-gray" style="width:65%;">200</div></div></div>
+          <div class="bar-row"><div class="bar-label">実績生産数</div><div class="bar-area"><div class="bar b-red" style="width:59%;">180</div></div></div>
+          <div class="bar-row"><div class="bar-label">→ 翌週生産計画へ追加</div><div class="bar-area"><div class="bar b-orange" style="width:7%;">+20</div></div></div>
+        </div>
+        <div class="flow-decision">翌週生産能力を圧迫／他品目減産または他顧客向け在庫の引き剥がし（メカニズム④）の起点</div>
+      </div>
+    </div>
+    <div class="conseq-card">余剰／不足が±10%程度のばらつきで循環的に発生するため、需給調整は「常時走り続ける」状態になる。これが受注生産でありながら在庫引き当てが必要な根本要因。</div>
+  </div>
+</div>
+
+<!-- メカニズム2 -->
+<div class="mech-card">
+  <h4>メカニズム②：同一品目×複数顧客間の引き当て優先順位調整</h4>
+  <p><strong>事象：</strong>同一品目に対し顧客A・顧客B双方からPOを受領した際、在庫＋計画生産数が両者合計を下回ると優先順位調整が発生。</p>
+  <h4>調整内容</h4>
+  <ul class="compact">
+    <li>PO受領時引き当て（②）：余剰在庫を顧客優先度・先着順・契約条件で按分。</li>
+    <li>出荷時再調整（⑨）：在庫不足が判明した時点で、他顧客向け確保在庫を取り崩し（引き剥がし）。引き剥がされた側には翌週生産分を補填するが、次顧客の出荷タイミングが遅延するリスク。</li>
+  </ul>
+  <h4>判断軸</h4>
+  <ul class="compact">
+    <li>顧客重要度（売上規模・戦略顧客指定・長期契約）</li>
+    <li>契約条件（最低保証数量／優先供給枠の有無）</li>
+    <li>納期緊急度（顧客側の生産ライン停止リスク）</li>
+    <li>過去の引き剥がし履歴（同一顧客への連続引き剥がしは関係悪化）</li>
+    <li>顧客の引取義務との整合性（=最終的にはどの顧客にも納める前提）</li>
+  </ul>
+  <div class="tradeoff">大口・戦略顧客優先 <strong>vs</strong> 中小顧客の満足度低下・離反リスク。戦略顧客への過剰追従は中長期で顧客ポートフォリオの偏在化を招く。</div>
+  <div class="tradeoff">直近納期遵守 <strong>vs</strong> 次回出荷分のコミット崩れ。引き剥がしは「今を救って次を傷つける」性質を持つ。</div>
+  <div class="tradeoff">合議による調整 <strong>vs</strong> ルールベース自動化。合議は柔軟だが時間がかかり属人的。ルール化は速いが例外対応が困難。</div>
+
+  <div class="chart-section">
+    <h5>顧客間引き当ての分岐（同一品目・3顧客競合の例）</h5>
+    <div class="chart-caption">同じ業務でも、在庫＋計画量と顧客需要合計の大小関係で引き当てロジックが変わる。シナリオAは通常フロー、シナリオBは需給調整会議の最大論点となる。</div>
+    <div class="scenario-grid">
+      <div class="scenario-card-c scenario-a">
+        <h6>シナリオA：在庫充足（在庫+計画 1,000 ≥ 需要 900）</h6>
+        <div class="bar-chart">
+          <div class="bar-row"><div class="bar-label">在庫＋計画生産</div><div class="bar-area"><div class="bar b-green" style="width:100%;">1,000</div></div></div>
+          <div class="bar-row"><div class="bar-label">顧客A（優先A）需要</div><div class="bar-area"><div class="bar b-blue" style="width:40%;">400</div></div></div>
+          <div class="bar-row"><div class="bar-label">　顧客A 引当結果</div><div class="bar-area"><div class="bar b-green" style="width:40%;">400 (100%)</div></div></div>
+          <div class="bar-row"><div class="bar-label">顧客B（優先A）需要</div><div class="bar-area"><div class="bar b-blue" style="width:30%;">300</div></div></div>
+          <div class="bar-row"><div class="bar-label">　顧客B 引当結果</div><div class="bar-area"><div class="bar b-green" style="width:30%;">300 (100%)</div></div></div>
+          <div class="bar-row"><div class="bar-label">顧客C（優先B）需要</div><div class="bar-area"><div class="bar b-blue" style="width:20%;">200</div></div></div>
+          <div class="bar-row"><div class="bar-label">　顧客C 引当結果</div><div class="bar-area"><div class="bar b-green" style="width:20%;">200 (100%)</div></div></div>
+        </div>
+        <div class="flow-decision">優先度判断不要・通常フロー進行／需給調整会議では議論対象外</div>
+      </div>
+      <div class="scenario-card-c scenario-b">
+        <h6>シナリオB：在庫不足（在庫+計画 700 &lt; 需要 900、▲200）</h6>
+        <div class="bar-chart">
+          <div class="bar-row"><div class="bar-label">在庫＋計画生産</div><div class="bar-area"><div class="bar b-red" style="width:70%;">700</div></div></div>
+          <div class="bar-row"><div class="bar-label">顧客A（優先A）需要</div><div class="bar-area"><div class="bar b-blue" style="width:40%;">400</div></div></div>
+          <div class="bar-row"><div class="bar-label">　顧客A 引当結果</div><div class="bar-area"><div class="bar b-green" style="width:40%;">400 (100%)</div></div></div>
+          <div class="bar-row"><div class="bar-label">顧客B（優先A）需要</div><div class="bar-area"><div class="bar b-blue" style="width:30%;">300</div></div></div>
+          <div class="bar-row"><div class="bar-label">　顧客B 引当結果</div><div class="bar-area"><div class="bar b-amber" style="width:20%;">200 (67%)</div></div></div>
+          <div class="bar-row"><div class="bar-label">顧客C（優先B）需要</div><div class="bar-area"><div class="bar b-blue" style="width:20%;">200</div></div></div>
+          <div class="bar-row"><div class="bar-label">　顧客C 引当結果</div><div class="bar-area"><div class="bar b-red" style="width:10%;">100 (50%)</div></div></div>
+        </div>
+        <div class="flow-decision">需給調整会議招集／顧客優先度（A &gt; B）で配分／顧客B・Cへは納期延伸を交渉</div>
+      </div>
+    </div>
+    <div class="conseq-card">シナリオBが発生すると、納期一次回答（標準LT）と二次回答の乖離が顕在化。顧客B・Cへの説明工数が増大し、引き剥がし履歴にも蓄積される。</div>
+  </div>
+
+  <div class="chart-section">
+    <h5>顧客優先度ランクの違いによる配分パターン（シナリオB詳細）</h5>
+    <div class="chart-caption">同じ在庫不足でも、顧客優先度ランクの設定で配分結果が大きく変わる。現状はこのロジックが属人的。</div>
+    <div class="bar-chart">
+      <div class="bar-row"><div class="bar-label">パターン1：A優先固定</div><div class="bar-area"><div class="bar b-blue" style="width:100%;">A:400 / B:300 / C:0 （Cは次回繰越）</div></div></div>
+      <div class="bar-row"><div class="bar-label">パターン2：優先度均等比例</div><div class="bar-area"><div class="bar b-purple" style="width:100%;">A:311 / B:233 / C:156 （全顧客部分充足）</div></div></div>
+      <div class="bar-row"><div class="bar-label">パターン3：契約最低保証優先</div><div class="bar-area"><div class="bar b-pink" style="width:100%;">A:400(保証) / B:200 / C:100</div></div></div>
+      <div class="bar-row"><div class="bar-label">パターン4：過去引き剥がし回避</div><div class="bar-area"><div class="bar b-orange" style="width:100%;">A:350 / B:250 / C:100 （前回B引剥されたため微調整）</div></div></div>
+    </div>
+    <div class="flow-decision">どのパターンを採用するかが需給調整会議の核心論点／現状は属人的合議のため一貫性が担保されない</div>
+  </div>
+</div>
+
+<!-- メカニズム3 -->
+<div class="mech-card">
+  <h4>メカニズム③：複数品目×共通生産ライン間の生産計画調整</h4>
+  <p><strong>事象：</strong>1ラインで複数品目を生産可能なため、品目01の急遽増産要求が発生すると、同ラインの品目02の生産計画が減産方向に圧迫される。</p>
+  <h4>調整内容</h4>
+  <ul class="compact">
+    <li>品目01増産 → 同ライン品目02減産 → 品目02向けPO顧客への納期影響発生。</li>
+    <li>段取り替え（品目切替）の頻度増加は、ライン稼働率・歩留まりに二次的悪影響。</li>
+    <li>SCM部が生産計画策定（⑤）と需給調整会議（⑥）で品目間バランスを調整。</li>
+  </ul>
+  <h4>判断軸</h4>
+  <ul class="compact">
+    <li>ライン能力（最大生産量／時間当たり生産速度）</li>
+    <li>段取り替えコスト（時間・歩留まりロス・洗浄コスト）</li>
+    <li>品目別在庫水準（安全在庫を割り込んでいるか）</li>
+    <li>品目別納期緊急度</li>
+    <li>歩留まりの品目別実績（化学反応の不確実性）</li>
+  </ul>
+  <div class="tradeoff">品目01の納期遵守（増産） <strong>vs</strong> 品目02の納期遅延。品目間で「どちらの顧客を救うか」の判断に直結。</div>
+  <div class="tradeoff">段取り替え頻度を増やして柔軟対応 <strong>vs</strong> ライン稼働率・歩留まり低下。段取り増は短期柔軟性と長期コスト効率のトレードオフ。</div>
+  <div class="tradeoff">計画頻繁見直し <strong>vs</strong> 生産現場の混乱・現場負荷増。計画を動かしすぎると現場が回らない。</div>
+
+  <div class="chart-section">
+    <h5>同一ライン×複数品目の調整（ライン能力 1,000／週）</h5>
+    <div class="chart-caption">同じラインで複数品目を生産可能なため、合計需要とライン能力の大小で品目間調整の必要性が変わる。</div>
+    <div class="scenario-grid">
+      <div class="scenario-card-c scenario-a">
+        <h6>シナリオA：能力余裕あり（合計 950 ≤ 能力 1,000）</h6>
+        <div class="bar-chart">
+          <div class="bar-row"><div class="bar-label">ライン週次能力</div><div class="bar-area"><div class="bar b-gray" style="width:100%;">1,000</div></div></div>
+          <div class="bar-row"><div class="bar-label">品目01 計画</div><div class="bar-area"><div class="bar b-blue" style="width:60%;">600</div></div></div>
+          <div class="bar-row"><div class="bar-label">品目02 計画</div><div class="bar-area"><div class="bar b-purple" style="width:35%;">350</div></div></div>
+          <div class="bar-row"><div class="bar-label">能力使用率</div><div class="bar-area"><div class="bar b-green" style="width:95%;">950 / 1,000 (95%)</div></div></div>
+          <div class="bar-row"><div class="bar-label">　余裕</div><div class="bar-area"><div class="bar b-amber" style="width:5%;">50</div></div></div>
+        </div>
+        <div class="flow-decision">両品目とも計画通り生産可能／段取り替えも通常頻度／品目間調整不要</div>
+      </div>
+      <div class="scenario-card-c scenario-b">
+        <h6>シナリオB：品目01が緊急増産要求（顧客緊急対応）</h6>
+        <div class="bar-chart">
+          <div class="bar-row"><div class="bar-label">ライン週次能力</div><div class="bar-area"><div class="bar b-gray" style="width:100%;">1,000</div></div></div>
+          <div class="bar-row"><div class="bar-label">品目01 修正計画</div><div class="bar-area"><div class="bar b-blue" style="width:80%;">800 (+200)</div></div></div>
+          <div class="bar-row"><div class="bar-label">品目02 修正計画</div><div class="bar-area"><div class="bar b-red" style="width:20%;">200 (−150)</div></div></div>
+          <div class="bar-row"><div class="bar-label">能力使用率</div><div class="bar-area"><div class="bar b-red" style="width:100%;">1,000 / 1,000 (100%)</div></div></div>
+        </div>
+        <div class="flow-decision">品目01増産のため品目02を減産せざるを得ない／段取り替え頻度増／品目02顧客への納期影響発生</div>
+      </div>
+    </div>
+    <div class="conseq-card">品目01救済が品目02顧客への約束破りを誘発。さらに段取り替え増加でライン稼働率が低下し、歩留まりリスクも上昇（メカニズム①へ波及）。</div>
+  </div>
+
+  <div class="chart-section">
+    <h5>品目間調整の複数選択肢比較</h5>
+    <div class="chart-caption">品目01の200増産要求に対する複数の対応案。それぞれトレードオフが異なる。</div>
+    <div class="bar-chart">
+      <div class="bar-row"><div class="bar-label">案1：品目02減産</div><div class="bar-area"><div class="bar b-red" style="width:100%;">品01:800 / 品02:200 → 品02顧客に納期延伸</div></div></div>
+      <div class="bar-row"><div class="bar-label">案2：時間外稼働</div><div class="bar-area"><div class="bar b-orange" style="width:90%;">品01:800 / 品02:350 / 残業 → コスト増・人員調整必要</div></div></div>
+      <div class="bar-row"><div class="bar-label">案3：別ラインへ振替</div><div class="bar-area"><div class="bar b-amber" style="width:80%;">他ライン能力次第／段取り替え2回発生で歩留まりリスク</div></div></div>
+      <div class="bar-row"><div class="bar-label">案4：顧客に納期延伸</div><div class="bar-area"><div class="bar b-purple" style="width:70%;">品01:600 / 品02:350 → 品01顧客に詫び・関係悪化</div></div></div>
+    </div>
+    <div class="flow-decision">どの案を取るかで影響を受ける顧客・品目・コストが変わる／現状は経験則ベースの合議で決定</div>
+  </div>
+</div>
+
+<!-- メカニズム4 -->
+<div class="mech-card">
+  <h4>メカニズム④：出荷依頼時の在庫引き剥がしと次回しわ寄せ</h4>
+  <p><strong>事象：</strong>出荷依頼受領時（⑧）に再度在庫照合（⑨）し、引き当て済み在庫が物理的に不足している場合、他顧客向け確保在庫から取り崩す。</p>
+  <h4>調整内容</h4>
+  <ul class="compact">
+    <li>顧客Aの出荷依頼分が物理在庫として不足 → 顧客B向け確保在庫を引き剥がす → 顧客Bは次回生産から補填。</li>
+    <li>補填は翌週生産計画に追加されるため、翌週分の他PO・他品目に対する生産能力を圧迫（メカニズム①③と連鎖）。</li>
+    <li>引き剥がし履歴は属人的なメモに残るのみで体系化されていない（再発・連続引き剥がしに気付きにくい）。</li>
+  </ul>
+  <h4>判断軸</h4>
+  <ul class="compact">
+    <li>出荷依頼の緊急度（顧客側生産影響）</li>
+    <li>引き剥がし候補顧客の次回出荷予定日</li>
+    <li>翌週生産での補填可能性（歩留まりリスク込み）</li>
+    <li>過去引き剥がし回数（同顧客への連続引き剥がし回避）</li>
+  </ul>
+  <div class="tradeoff">顧客A緊急対応（引き剥がし実行） <strong>vs</strong> 顧客Bへのコミット維持。引き剥がしは「約束を破る」行為であり信用毀損につながる。</div>
+  <div class="tradeoff">その場対応の即時性 <strong>vs</strong> 翌週生産計画への負荷集中。今週の救済は来週のしわ寄せを生む。</div>
+  <div class="tradeoff">引き剥がし容易性（顧客への説明コストなし） <strong>vs</strong> 顧客信頼の中長期毀損。説明なしでの引き剥がしは短期工数を下げるが、信頼を侵食。</div>
+
+  <div class="chart-section">
+    <h5>出荷時引き剥がしの発生メカニズム（物理在庫 vs 引き当て済み数量）</h5>
+    <div class="chart-caption">PO受領時引き当て（②）と出荷時実在庫（⑨）の間に、化学反応の歩留まり差によるギャップが発生する場合に引き剥がしが発生する。</div>
+    <div class="scenario-grid">
+      <div class="scenario-card-c scenario-a">
+        <h6>シナリオA：物理在庫 ≥ 引き当て済合計（引き剥がし不発生）</h6>
+        <div class="bar-chart">
+          <div class="bar-row"><div class="bar-label">物理在庫（実数）</div><div class="bar-area"><div class="bar b-green" style="width:100%;">500</div></div></div>
+          <div class="bar-row"><div class="bar-label">顧客A 出荷依頼</div><div class="bar-area"><div class="bar b-blue" style="width:60%;">300</div></div></div>
+          <div class="bar-row"><div class="bar-label">顧客B 確保在庫</div><div class="bar-area"><div class="bar b-blue" style="width:40%;">200</div></div></div>
+          <div class="bar-row"><div class="bar-label">引き当て合計</div><div class="bar-area"><div class="bar b-green" style="width:100%;">500（在庫と一致）</div></div></div>
+        </div>
+        <div class="flow-decision">引き剥がし発生せず／顧客A出荷OK／顧客B確保維持</div>
+      </div>
+      <div class="scenario-card-c scenario-b">
+        <h6>シナリオB：歩留まり下振れで物理在庫が引き当て合計を下回る</h6>
+        <div class="bar-chart">
+          <div class="bar-row"><div class="bar-label">物理在庫（実数）</div><div class="bar-area"><div class="bar b-red" style="width:80%;">400 （計画より▲100）</div></div></div>
+          <div class="bar-row"><div class="bar-label">顧客A 出荷依頼</div><div class="bar-area"><div class="bar b-blue" style="width:60%;">300</div></div></div>
+          <div class="bar-row"><div class="bar-label">顧客B 確保在庫</div><div class="bar-area"><div class="bar b-blue" style="width:40%;">200</div></div></div>
+          <div class="bar-row"><div class="bar-label">引き当て合計（需要）</div><div class="bar-area"><div class="bar b-blue" style="width:100%;">500 （在庫不足▲100）</div></div></div>
+          <div class="bar-row"><div class="bar-label">→ 顧客A 出荷確定</div><div class="bar-area"><div class="bar b-green" style="width:60%;">300 (100%)</div></div></div>
+          <div class="bar-row"><div class="bar-label">→ 顧客B 残在庫（引剥後）</div><div class="bar-area"><div class="bar b-red" style="width:20%;">100 (▲100 引き剥がし)</div></div></div>
+        </div>
+        <div class="flow-decision">顧客A優先 → 顧客Bから100を引き剥がし／顧客Bには翌週生産で補填／顧客Bへの説明・謝罪が必要</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-section">
+    <h5>引き剥がしの連鎖影響（翌週生産計画へのしわ寄せ）</h5>
+    <div class="chart-caption">引き剥がしは「今を救って次を傷つける」性質を持つ。翌週生産計画への補填要求が、他品目・他顧客へ連鎖的に波及する。</div>
+    <div class="bar-chart">
+      <div class="bar-row"><div class="bar-label">翌週 通常計画</div><div class="bar-area"><div class="bar b-gray" style="width:95%;">950 / ライン能力1,000（余裕50）</div></div></div>
+      <div class="bar-row"><div class="bar-label">　＋顧客B補填要求</div><div class="bar-area"><div class="bar b-orange" style="width:10%;">+100</div></div></div>
+      <div class="bar-row"><div class="bar-label">翌週 補填後合計</div><div class="bar-area"><div class="bar b-red" style="width:100%;">1,050（▲50 能力超過）</div></div></div>
+    </div>
+    <div class="arrow-block">▼ ライン能力超過のため、さらなる調整が必要 ▼</div>
+    <div class="bar-chart">
+      <div class="bar-row"><div class="bar-label">対応1：品目間調整</div><div class="bar-area"><div class="bar b-purple" style="width:100%;">他品目を50減産 → メカニズム③発動</div></div></div>
+      <div class="bar-row"><div class="bar-label">対応2：他顧客から引剥</div><div class="bar-area"><div class="bar b-pink" style="width:100%;">顧客Cから50引剥 → 翌々週に補填繰り越し</div></div></div>
+      <div class="bar-row"><div class="bar-label">対応3：時間外稼働</div><div class="bar-area"><div class="bar b-orange" style="width:100%;">残業対応 → 生産コスト増・人員負荷</div></div></div>
+      <div class="bar-row"><div class="bar-label">対応4：顧客Bへ納期延伸</div><div class="bar-area"><div class="bar b-amber" style="width:100%;">補填しない判断 → 顧客B信頼毀損</div></div></div>
+    </div>
+    <div class="conseq-card">引き剥がし1回が翌週・翌々週への調整を連鎖的に発生させる。連鎖全体を俯瞰している人がいないため、個別判断はすべて合理的でも全体最適は失われる構造。</div>
+  </div>
+
+  <div class="chart-section">
+    <h5>顧客別 引き剥がし発生回数の偏り（仮想例・直近6ヶ月）</h5>
+    <div class="chart-caption">引き剥がし履歴が体系化されていないため、特定顧客への連続発生に気付かないまま信頼を侵食している可能性。</div>
+    <div class="bar-chart">
+      <div class="bar-row"><div class="bar-label">顧客A（優先A・大口）</div><div class="bar-area"><div class="bar b-green" style="width:5%;">1回</div></div></div>
+      <div class="bar-row"><div class="bar-label">顧客B（優先A）</div><div class="bar-area"><div class="bar b-amber" style="width:25%;">5回</div></div></div>
+      <div class="bar-row"><div class="bar-label">顧客C（優先B）</div><div class="bar-area"><div class="bar b-red" style="width:60%;">12回 ⚠連続発生</div></div></div>
+      <div class="bar-row"><div class="bar-label">顧客D（優先B）</div><div class="bar-area"><div class="bar b-orange" style="width:35%;">7回</div></div></div>
+      <div class="bar-row"><div class="bar-label">顧客E（優先C）</div><div class="bar-area"><div class="bar b-pink" style="width:45%;">9回</div></div></div>
+    </div>
+    <div class="flow-decision">優先度ランクの低い顧客に引き剥がしが集中／顧客Cは離反予兆／公平性可視化と是正が急務</div>
+  </div>
+</div>
+
+<div class="summary-box">
+  <strong>需給調整メカニズム間の連鎖構造：</strong>
+  メカニズム①（歩留まりばらつき）が②（顧客間調整）④（出荷時引き剥がし）の根本原因となり、③（品目間調整）と相互に絡む。
+  特に「④引き剥がし → 翌週補填 → ③品目間圧迫 → ②他顧客への波及」という<strong>連鎖反応</strong>が、SCM全体の見通しを失わせている。
+  <br><br>
+  <strong>本質的論点：</strong>個別判断はすべて合理的でも、連鎖の全体最適は誰も見ていない。
+  これを解決する鍵が「<strong>需給調整会議の高度化（⑥）</strong>」と「<strong>引き剥がしのトレードオフ定量化</strong>」である。
+</div>
+
+<!-- ============ 5. 業務改善ポイント整理表 ============ -->
+<h2 id="improvement">5. 業務改善ポイント整理表</h2>
+<p>ECRS（<span class="ecrs-e">E:排除</span> → <span class="ecrs-c">C:統合</span> → <span class="ecrs-r">R:入替</span> → <span class="ecrs-s">S:簡素化</span>）の順で TO-BE を設計し、施策を「業務変更／システム改修・データ活用／AI活用」の3レイヤで整理。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width:120px;">業務ステップ</th>
+      <th style="width:18%;">現状業務の作業内容説明</th>
+      <th style="width:22%;">TOBE業務（ECRS）</th>
+      <th>施策：業務変更</th>
+      <th>施策：システム改修／データ活用</th>
+      <th>施策：AI活用</th>
+    </tr>
+  </thead>
+  <tbody>
+
+  <!-- ① -->
+  <tr>
+    <td class="step-cell">①PO受領<br>（CSシステム登録）</td>
+    <td>顧客から FAX／メール／一部EDI で PO を受領。営業担当が PO 内容（品目・数量・希望納期・顧客コード等）を CSシステムに手入力。FAX/PDF 中心で工数が大きく、入力ミス・二重入力・登録遅延が発生。顧客毎にフォーマットが異なり、解釈の属人化も発生。</td>
+    <td><span class="ecrs-e">E：手入力業務を排除</span>。主要顧客は EDI／APIで自動取込、それ以外は AI-OCR で自動構造化。営業担当の作業は<strong>例外確認のみ</strong>に縮退。</td>
+    <td>
+      <ul class="compact">
+        <li>主要顧客との EDI 接続契約締結（売上上位80%の顧客から段階展開）</li>
+        <li>PO受領～CS登録のSLA設定（受領後N時間以内）</li>
+        <li>例外時のエスカレーションフロー整備</li>
+        <li>顧客毎フォーマット定義書の整備・共通化交渉</li>
+      </ul>
+    </td>
+    <td>
+      <ul class="compact">
+        <li>EDI/API 連携基盤の構築（CSシステム前段）</li>
+        <li>CSシステムへの自動取込APIの実装</li>
+        <li>取込結果のバリデーション・ダッシュボード化</li>
+        <li>顧客マスタ・品目マスタの整備・名寄せ</li>
+      </ul>
+    </td>
+    <td>
+      <ul class="compact">
+        <li>AI-OCR（FAX/PDF自動構造化、項目抽出）</li>
+        <li>顧客フォーマット差を吸収する LLM ベースのパーサ</li>
+        <li>異常値検知AI（過去パターンと乖離する数量・納期を自動フラグ）</li>
+      </ul>
+    </td>
+  </tr>
+
+  <!-- ② -->
+  <tr>
+    <td class="step-cell">②在庫引き当て①<br>（PO受領時点）</td>
+    <td>営業担当が CSシステム上で余剰在庫を確認し、PO に手動で引き当て。同一品目で複数顧客POが競合する場合、顧客優先度・先着順・契約条件を担当者が判断。引き当てルールが明文化されておらず属人的。<span class="warn">メカニズム②の起点</span>。</td>
+    <td><span class="ecrs-e">E：判断業務を排除＋</span><span class="ecrs-s">S：ルールベース自動化</span>。引き当て優先順位を顧客重要度・契約条件・納期緊急度の3軸ルールで標準化し、CSシステムが自動引き当て。例外のみ営業が確認。</td>
+    <td>
+      <ul class="compact">
+        <li>顧客優先度ランク（A/B/C）の制度化・営業役員承認</li>
+        <li>引き当てルール文書化（顧客×品目マトリクス）</li>
+        <li>引き当て結果のレビュー会議を週次→例外対応のみへ</li>
+        <li>引き剥がし回数の顧客別KPI管理</li>
+      </ul>
+    </td>
+    <td>
+      <ul class="compact">
+        <li>自動引当ロジックを CSシステムに実装</li>
+        <li>リアルタイム在庫参照API（倉庫システム連携）</li>
+        <li>引き当て履歴のデータレイク蓄積</li>
+        <li>顧客別充足率・引き剥がし率の可視化ダッシュボード</li>
+      </ul>
+    </td>
+    <td>
+      <ul class="compact">
+        <li>顧客優先度AI（過去引き当て履歴・売上・関係性から推奨優先度を提示）</li>
+        <li>引き当てシミュレーションAI（複数シナリオの顧客別影響を試算）</li>
+        <li>異常パターン検知（同一顧客への連続不利配分の自動アラート）</li>
+      </ul>
+    </td>
+  </tr>
+
+  <!-- ③ -->
+  <tr>
+    <td class="step-cell">③生産依頼入力<br>（オーダー登録ツール）</td>
+    <td>営業担当が CSシステムの引き当て後の不足数を確認し、オーダー登録ツールへ生産依頼数として手作業転記。2システム間の二重入力・整合性チェックに工数。両システムの未連携が根本課題。</td>
+    <td><span class="ecrs-c">C：CSシステムと統合</span>。引き当て後の不足数が自動で生産依頼として SCM部側に渡る。営業の二重入力は完全排除。</td>
+    <td>
+      <ul class="compact">
+        <li>CSシステムとオーダー登録ツールの責務再定義</li>
+        <li>営業→SCMの引き渡しルールをデータ駆動に変更</li>
+        <li>生産依頼数の追加・変更権限の整理</li>
+      </ul>
+    </td>
+    <td>
+      <ul class="compact">
+        <li>CS→オーダー登録ツール間のAPI/イベント連携</li>
+        <li>将来的にはオーダー登録ツールのCSシステム統合（廃止）</li>
+        <li>共通マスタ（品目・顧客・ライン）の整備</li>
+        <li>差分検知・整合性監視機能</li>
+      </ul>
+    </td>
+    <td>
+      <ul class="compact">
+        <li>生産依頼数の妥当性チェックAI（過去パターン・季節性から異常値検出）</li>
+        <li>歩留まりリスクを織り込んだ依頼数の推奨補正値提示</li>
+      </ul>
+    </td>
+  </tr>
+
+  <!-- ④ -->
+  <tr>
+    <td class="step-cell">④納期一次回答<br>（標準LT通知）</td>
+    <td>生産依頼入力と同時に CSシステムが標準リードタイム（固定値）を自動で顧客に回答。実生産能力・現状計画を考慮しないため、後の二次回答との乖離が大きく、顧客は二度手間。</td>
+    <td><span class="ecrs-e">E：一次回答を排除</span>（または一次=二次に統合）。生産能力・歩留まり予測を織り込んだ<strong>精度の高い納期回答</strong>を初回から返す。一次／二次の二段階を解消。</td>
+    <td>
+      <ul class="compact">
+        <li>納期回答プロセスを一本化（一次／二次の区別廃止）</li>
+        <li>回答SLAを定義（PO受領後N時間以内に確定納期回答）</li>
+        <li>顧客との回答プロセス変更合意取付</li>
+      </ul>
+    </td>
+    <td>
+      <ul class="compact">
+        <li>リアルタイム生産能力可視化（オーダー登録ツール／APS連携）</li>
+        <li>納期算出エンジン（在庫＋計画＋能力＋歩留まりリスク）</li>
+        <li>CSシステムから自動回答する確定納期API</li>
+      </ul>
+    </td>
+    <td>
+      <ul class="compact">
+        <li>納期予測AI（歩留まり予測・他PO競合を加味した期待納期＋信頼区間）</li>
+        <li>生産シミュレーションAIによる「最早納期」算出</li>
+      </ul>
+    </td>
+  </tr>
+
+  <!-- ⑤ -->
+  <tr>
+    <td class="step-cell">⑤生産計画策定<br>（SCM部）</td>
+    <td>SCM部がオーダー登録ツールの生産依頼数を集約し、Excel等で手動で生産計画を策定。ライン能力・段取り替え・歩留まり予測は経験則。<span class="warn">メカニズム③の中核</span>。計画立案に長時間を要し、見直し頻度が低い。</td>
+    <td><span class="ecrs-s">S：計画立案を自動化／最適化</span>＋<span class="ecrs-r">R：例外対応中心へ役割転換</span>。APS（先進生産計画）＋AIで最適計画を自動生成。SCM担当は例外・制約条件のチューニングに専念。</td>
+    <td>
+      <ul class="compact">
+        <li>SCM部の役割を「立案者」→「監督・例外対応者」へ再定義</li>
+        <li>計画見直し頻度を週次→日次／随時へ</li>
+        <li>計画変更時の現場通知ルール整備（現場混乱抑制）</li>
+        <li>段取り替えコストのKPI化</li>
+      </ul>
+    </td>
+    <td>
+      <ul class="compact">
+        <li>APS導入（Asprova／Kinaxis 等）</li>
+        <li>ライン能力・段取り替え時間のマスタ整備</li>
+        <li>歩留まり実績データの自動収集（MES連携）</li>
+        <li>生産計画の版管理・変更履歴トレーサビリティ</li>
+      </ul>
+    </td>
+    <td>
+      <ul class="compact">
+        <li>歩留まり予測AI（化学反応条件・原料ロット・季節性から予測）</li>
+        <li>生産最適化AI（複数品目・複数ライン・複数顧客の多目的最適化）</li>
+        <li>計画感応度分析AI（前提変動時の影響シミュレーション）</li>
+      </ul>
+    </td>
+  </tr>
+
+  <!-- ⑥ -->
+  <tr>
+    <td class="step-cell">⑥需給調整会議<br>（SCM部×営業部）</td>
+    <td>SCM部と営業部が定例（週次等）で集まり、生産計画と顧客需要のすり合わせを実施。トレードオフ（顧客間・品目間）を合議で判断。会議準備のためのExcel集計に膨大な工数。意思決定リードタイムが長く、緊急変動への対応が遅い。<span class="warn">メカニズム①〜④が全て収束する論点</span>。</td>
+    <td><span class="ecrs-r">R：会議中心 → 常時調整中心へ役割転換</span>＋<span class="ecrs-s">S：トレードオフ可視化で意思決定を簡素化</span>。Control Tower型のダッシュボードで需給ギャップ・引き剥がしリスクを常時可視化。会議は<strong>例外・戦略判断のみ</strong>に限定し、ルーチン調整はシステム上で非同期実施。</td>
+    <td>
+      <ul class="compact">
+        <li>常時調整プロセスの導入（ダッシュボード監視＋アラート対応）</li>
+        <li>会議体を週次→月次（戦略）＋随時（例外）に再編</li>
+        <li>需給調整ルールのドキュメント化（誰がいつ何を判断するか）</li>
+        <li>判断履歴の蓄積と振り返り（学習サイクル化）</li>
+        <li>引き剥がし候補の事前合意プロセス整備</li>
+      </ul>
+    </td>
+    <td>
+      <ul class="compact">
+        <li>需給調整 Control Tower 構築（在庫・計画・顧客需要・歩留まりリスクを一画面で）</li>
+        <li>顧客別充足率・引き剥がし率・納期遵守率のリアルタイムKPI</li>
+        <li>シナリオ比較ダッシュボード（複数案の顧客・品目影響を可視化）</li>
+        <li>需給ギャップアラート（閾値超過時に自動通知）</li>
+      </ul>
+    </td>
+    <td>
+      <ul class="compact">
+        <li>需給最適化AI（顧客間・品目間トレードオフを定量化し最適案を提示）</li>
+        <li>連鎖影響シミュレーションAI（「品目01増産→品目02減産→顧客C納期遅延」を自動展開）</li>
+        <li>意思決定支援AI（過去判断との整合性チェック・推奨理由の自然言語説明）</li>
+        <li>会議サマリの自動生成（Generative AI）</li>
+      </ul>
+    </td>
+  </tr>
+
+  <!-- ⑦ -->
+  <tr>
+    <td class="step-cell">⑦営業確認＆<br>納期二次回答</td>
+    <td>SCM部から確定した生産計画を受け、営業担当が顧客へ二次回答（正確な納期）を送付。一次回答（標準LT）と乖離する場合、顧客への説明・調整に工数がかかり、顧客満足度低下のリスク。</td>
+    <td><span class="ecrs-e">E：二次回答業務を排除</span>。④で精度の高い一発回答を実施するため、二次回答自体が原則不要。例外的な計画変更時のみ顧客通知。</td>
+    <td>
+      <ul class="compact">
+        <li>顧客への通知ルール再定義（変更発生時のみ自動通知）</li>
+        <li>顧客への説明テンプレート整備</li>
+        <li>顧客満足度の継続モニタリング</li>
+      </ul>
+    </td>
+    <td>
+      <ul class="compact">
+        <li>顧客ポータルでの納期・進捗の自己照会機能</li>
+        <li>納期変更時のプッシュ通知（メール／API）</li>
+        <li>計画変更履歴の顧客可視範囲設計</li>
+      </ul>
+    </td>
+    <td>
+      <ul class="compact">
+        <li>顧客問い合わせAIチャットボット（納期・進捗・代替案提示）</li>
+        <li>納期変更通知文の自動生成（顧客毎のトーンに最適化）</li>
+        <li>顧客感情分析（過去やり取りから顧客満足度推定・離反予兆検知）</li>
+      </ul>
+    </td>
+  </tr>
+
+  <!-- ⑧ -->
+  <tr>
+    <td class="step-cell">⑧出荷依頼受領</td>
+    <td>顧客から出荷依頼を受領（PO紐付き）。フォーマットは顧客毎に異なり、PO番号での手作業紐付けが必要。手作業によるミスや紐付け漏れが発生。</td>
+    <td><span class="ecrs-c">C：①と同じ仕組みで統合</span>。EDI／AI-OCRで出荷依頼も自動取込・自動紐付け。営業の手作業は例外のみ。</td>
+    <td>
+      <ul class="compact">
+        <li>EDIスコープに出荷依頼も含めて拡張</li>
+        <li>顧客とのPO番号体系統一</li>
+        <li>例外発生時の確認プロセス整備</li>
+      </ul>
+    </td>
+    <td>
+      <ul class="compact">
+        <li>EDI/API連携基盤を出荷依頼にも適用</li>
+        <li>PO自動紐付けロジック実装</li>
+        <li>取込ステータスダッシュボード</li>
+      </ul>
+    </td>
+    <td>
+      <ul class="compact">
+        <li>AI-OCR・LLMパーサで顧客毎フォーマット差を吸収</li>
+        <li>紐付けあいまい性をAIが解消（PO番号誤記・部分一致）</li>
+      </ul>
+    </td>
+  </tr>
+
+  <!-- ⑨ -->
+  <tr>
+    <td class="step-cell">⑨在庫引き当て②／<br>受給調整／出荷</td>
+    <td>出荷依頼時点で物理在庫と再照合。不足時は他顧客向け確保在庫を引き剥がし。判断は営業＋SCM合議で属人的。<span class="warn">メカニズム④の中核</span>。引き剥がし履歴が体系化されず、同一顧客への連続引き剥がしに気付かない／翌週生産へのしわ寄せが見えない。</td>
+    <td><span class="ecrs-s">S：引き剥がし判断を自動化＋可視化</span>＋<span class="ecrs-r">R：事後合議 → 事前ルール化</span>。引き剥がしのトレードオフ（影響顧客・補填可能性・連続発生履歴）を自動定量化し、推奨案を提示。営業／SCMは承認のみ。</td>
+    <td>
+      <ul class="compact">
+        <li>引き剥がしルール・閾値の明文化と承認権限整備</li>
+        <li>引き剥がし発生時の顧客連絡SLA整備</li>
+        <li>引き剥がし回数の顧客別KPI管理（公平性担保）</li>
+        <li>翌週生産しわ寄せの影響評価プロセス組込み</li>
+        <li>引き剥がしの事後レビュー会議（学習サイクル）</li>
+      </ul>
+    </td>
+    <td>
+      <ul class="compact">
+        <li>リアルタイム在庫＋自動引き当て処理</li>
+        <li>引き剥がし候補の自動抽出・影響範囲シミュレーション</li>
+        <li>引き剥がし履歴のデータレイク蓄積</li>
+        <li>顧客別「引き剥がし回数」「補填遅延日数」KPIダッシュボード</li>
+        <li>翌週計画への自動反映ロジック</li>
+      </ul>
+    </td>
+    <td>
+      <ul class="compact">
+        <li>引き剥がしトレードオフ定量化AI（A救済 vs B約束維持の影響を数値化）</li>
+        <li>連鎖影響予測AI（引き剥がし→翌週生産→他品目／他顧客への波及を展開）</li>
+        <li>引き剥がし推奨案AI（複数候補から「最も損失が小さい案」を提示・理由説明）</li>
+        <li>顧客離反リスク予測AI（連続引き剥がしを受けた顧客の離反確率推定）</li>
+      </ul>
+    </td>
+  </tr>
+
+  </tbody>
+</table>
+
+<!-- ============ 6. ECRS サマリー ============ -->
+<h2 id="ecrs-summary">6. ECRS適用方針サマリー</h2>
+<table>
+  <thead>
+    <tr>
+      <th style="width:80px;">ECRS</th>
+      <th style="width:200px;">適用ステップ</th>
+      <th>適用内容</th>
+      <th>期待効果</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="label-cell" style="text-align:center;"><span class="ecrs-e">E：Eliminate（排除）</span></td>
+      <td>①PO受領 手入力／②引き当て手動判断／④納期一次回答／⑦納期二次回答</td>
+      <td>EDI／AI-OCRによる手入力業務排除、引き当て判断の自動化、一次／二次の二段階回答の一本化。</td>
+      <td>営業部の作業工数▲40〜60%、顧客満足度向上、回答リードタイム短縮。</td>
+    </tr>
+    <tr>
+      <td class="label-cell" style="text-align:center;"><span class="ecrs-c">C：Combine（統合）</span></td>
+      <td>③生産依頼入力（CS×オーダー登録ツール統合）／⑧出荷依頼（①と同基盤統合）</td>
+      <td>2システム間の二重入力を排除し、CS基盤に統合。PO／出荷依頼を同じEDI基盤で受領。</td>
+      <td>システム統合効果、データ整合性向上、運用保守コスト削減。</td>
+    </tr>
+    <tr>
+      <td class="label-cell" style="text-align:center;"><span class="ecrs-r">R：Rearrange（入替）</span></td>
+      <td>⑤生産計画策定（立案→監督）／⑥需給調整会議（合議→常時調整）／⑨引き剥がし（事後→事前）</td>
+      <td>人とシステムの役割を入替。システムが立案・調整・推奨し、人は承認・例外対応に専念。会議を週次→月次戦略＋随時例外に再編。</td>
+      <td>意思決定リードタイム短縮、緊急変動への対応力向上、ルーチン会議削減。</td>
+    </tr>
+    <tr>
+      <td class="label-cell" style="text-align:center;"><span class="ecrs-s">S：Simplify（簡素化）</span></td>
+      <td>②引き当て自動化／⑤計画立案自動最適化／⑥トレードオフ可視化／⑨引き剥がし定量化</td>
+      <td>属人的判断をルール化・AI支援化し、判断軸を可視化。複雑な需給調整を「数値化された推奨案＋承認」に簡素化。</td>
+      <td>属人化解消、教育コスト削減、判断品質の安定化、トレーサビリティ向上。</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="summary-box" style="margin-top:24px;">
+  <strong>変革ロードマップ示唆（参考）：</strong>
+  <ul class="compact">
+    <li><strong>Quick Win（〜3ヶ月）：</strong>引き当てルール文書化・顧客優先度ランク制度化・KPIダッシュボード構築・引き剥がしKPI可視化</li>
+    <li><strong>中期（〜1年）：</strong>EDI拡大／AI-OCR導入・CS×オーダー登録ツールAPI連携・歩留まり予測AI・需給Control Tower構築</li>
+    <li><strong>長期（1〜3年）：</strong>APS本格導入・自律的需給最適化AI・顧客ポータル＋チャットボット・引き剥がしトレードオフ定量化AI</li>
+  </ul>
+  <strong>KPI設計示唆：</strong>OTIF（On-Time In-Full）、納期回答精度（一次vs実績乖離日数）、引き剥がし発生率、顧客別公平性指数、計画遵守率、歩留まり予測精度（MAPE）、需給調整リードタイム。
+</div>
+
+</body>
+</html>
